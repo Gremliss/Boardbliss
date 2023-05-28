@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { AppRegistry } from "react-native";
 import Collection from "./app/screens/Collection";
 import MainScreen from "./app/screens/MainScreen";
-import BoardgameDetail from "./app/components/BoardgameDetail";
 
 const Stack = createStackNavigator();
 
