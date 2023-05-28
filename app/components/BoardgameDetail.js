@@ -18,10 +18,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const BoardgameDetail = (props) => {
+const BoardGameDetail = (props) => {
   const [detailData, setDetailData] = useState(null);
   const gameId = props.route.params.stringGameId;
-  const [collection, setCollection] = useState({});
+  const [collection, setCollection] = useState([]);
 
   useEffect(() => {
     axios
@@ -39,15 +39,16 @@ const BoardgameDetail = (props) => {
       .catch((error) => {
         console.error(error);
       });
-    const fetchCollection = async () => {
-      const result = await AsyncStorage.getItem("collection");
-      if (result?.length) {
-        console.log("created coll");
-        setCollection(JSON.parse(result));
-      }
-    };
     fetchCollection();
   }, []);
+
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) {
+      console.log("created coll");
+      setCollection(JSON.parse(result));
+    }
+  };
 
   if (!detailData) {
     return (
@@ -57,15 +58,16 @@ const BoardgameDetail = (props) => {
     );
   }
 
-  const addToYourCollection = async () => {
+  const addToCollection = async (owner) => {
     if (!collection) {
-      collection = {};
+      collection = [];
     }
-    if (!collection.yourGames) {
-      collection.yourGames = {};
-    }
-    if (collection.yourGames[game.name[0].$.value] === undefined) {
-      collection.yourGames[game.name[0].$.value] = {
+    if (collection.some((obj) => obj.name === game.name[0].$.value)) {
+      displayExistAlert();
+      console.log(collection);
+    } else {
+      const newGame = {
+        name: game.name[0].$.value,
         yearpublished: game.yearpublished[0]?.$.value,
         minPlayers: game.minplayers[0]?.$.value,
         maxPlayers: game.maxplayers[0]?.$.value,
@@ -73,18 +75,34 @@ const BoardgameDetail = (props) => {
         maxPlaytime: game.maxplaytime[0]?.$.value,
         bggImage: game.image,
         id: gameId,
+        owner: owner,
+        isChecked: false,
+        stats: [],
       };
-    } else {
-      displayExistAlert();
+
+      const updatedCollection = [...collection, newGame];
+      setCollection(updatedCollection);
+      displayAddedAlert();
+      console.log(collection);
+      await AsyncStorage.setItem(
+        "collection",
+        JSON.stringify(updatedCollection)
+      );
     }
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-    console.log(collection);
   };
 
   const displayExistAlert = () => {
     Alert.alert(
       "Duplicate",
-      "Board game with that name already exists in this collection",
+      "Board game with that name already exists in collection",
+      [{ text: "Ok", onPress: () => null }],
+      { cancelable: true }
+    );
+  };
+  const displayAddedAlert = () => {
+    Alert.alert(
+      "Added to collection",
+      "",
       [{ text: "Ok", onPress: () => null }],
       { cancelable: true }
     );
@@ -141,12 +159,12 @@ const BoardgameDetail = (props) => {
             </View>
           </View>
           <Text style={styles.description}>{decodedDescription}</Text>
-          <TouchableOpacity onPress={() => addToYourCollection()}>
+          <TouchableOpacity onPress={() => addToCollection("You")}>
             <View>
               <Text style={styles.closeButton}>Add to your collection</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => addToCollection("Friend")}>
             <View>
               <Text style={styles.closeButton}>Add to friends collection</Text>
             </View>
@@ -233,4 +251,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BoardgameDetail;
+export default BoardGameDetail;

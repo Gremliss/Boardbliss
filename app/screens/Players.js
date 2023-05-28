@@ -17,26 +17,25 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import FilterModal from "../components/FilterModal";
-import NewGameModal from "../components/NewGameModal";
 import RoundIconBtn from "../components/RoundIconButton";
+import NewPlayerModal from "../components/NewPlayerModal";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Collection = (props) => {
-  const [collection, setCollection] = useState();
+const Players = (props) => {
+  const [players, setPlayers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
 
-  const fetchCollection = async () => {
-    const result = await AsyncStorage.getItem("collection");
-    if (result?.length) setCollection(JSON.parse(result));
+  const fetchPlayers = async () => {
+    const result = await AsyncStorage.getItem("players");
+    if (result?.length) setPlayers(JSON.parse(result));
   };
   useEffect(() => {
-    console.log(collection);
-    fetchCollection();
+    fetchPlayers();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackButton
@@ -46,12 +45,12 @@ const Collection = (props) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchCollection();
+      fetchPlayers();
     }, [])
   );
 
   const handleBackButton = () => {
-    fetchCollection();
+    fetchPlayers();
     return;
   };
 
@@ -61,7 +60,7 @@ const Collection = (props) => {
 
   const handleLongPress = async (item) => {
     if (!longPressActive) {
-      collection.forEach((item) => {
+      players.forEach((item) => {
         item.isChecked = false;
       });
       handleCheckButton(item);
@@ -73,12 +72,12 @@ const Collection = (props) => {
     item.isChecked == false
       ? (item.isChecked = true)
       : (item.isChecked = false);
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-    fetchCollection();
+    await AsyncStorage.setItem("players", JSON.stringify(players));
+    fetchPlayers();
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? "#a5bec0" : "#c3d4d5";
+    const backgroundColor = index % 2 === 0 ? "#00ADB5" : "#0b6c70";
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -95,19 +94,19 @@ const Collection = (props) => {
                     item.isChecked ? "check-box" : "check-box-outline-blank"
                   }
                   size={20}
+                  color="white"
                 />
               </View>
             ) : null}
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
             >
-              <Text style={[{ color: "#1b232e" }]}>{index + 1}</Text>
+              <Text>{index + 1}</Text>
             </View>
             <View style={[styles.cellContainer, { flex: 4 }]}>
               <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
-              <Text style={styles.yearText}>{item.yearpublished}</Text>
             </View>
-            <View style={[styles.centerStyle, styles.cellContainer]}>
+            {/* <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.rating}</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
@@ -115,7 +114,7 @@ const Collection = (props) => {
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.maxPlaytime}</Text>
-            </View>
+            </View> */}
           </View>
         </View>
       </TouchableOpacity>
@@ -123,17 +122,15 @@ const Collection = (props) => {
   };
 
   const handleItemPressed = async (item) => {
-    longPressActive
-      ? handleCheckButton(item)
-      : openCollectionBoardgameDetail(item);
+    longPressActive ? handleCheckButton(item) : openPlayerDetail(item);
   };
 
-  const openCollectionBoardgameDetail = (item) => {
-    props.navigation.navigate("CollectionBoardgameDetail", { item });
+  const openPlayerDetail = (item) => {
+    // props.navigation.navigate("CollectionBoardgameDetail", { item });
   };
 
   const handleExitButton = async () => {
-    collection.forEach((item) => {
+    players.forEach((item) => {
       item.isChecked = false;
     });
     setLongPressActive(false);
@@ -141,24 +138,24 @@ const Collection = (props) => {
 
   const displayDeleteAlert = () => {
     var count = 0;
-    collection.forEach((item) => {
+    players.forEach((item) => {
       item.isChecked ? count++ : null;
     });
     Alert.alert(
       "Are you sure?",
-      `This will delete ${count} checked games from collection with all their stats`,
+      `This will delete ${count} checked players with all their stats`,
       [
-        { text: "Delete", onPress: () => deleteCheckedGames() },
+        { text: "Delete", onPress: () => deleteCheckedPlayers() },
         { text: "Cancel", onPress: () => null },
       ],
       { cancelable: true }
     );
   };
 
-  const deleteCheckedGames = async () => {
-    const newCollection = collection.filter((n) => n.isChecked !== true);
-    setCollection(newCollection);
-    await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
+  const deleteCheckedPlayers = async () => {
+    const newPlayers = players.filter((n) => n.isChecked !== true);
+    setPlayers(newPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(newPlayers));
   };
 
   const openMainScreen = async () => {
@@ -169,106 +166,112 @@ const Collection = (props) => {
     setSearchText(text);
     if (!text.trim()) {
       setSearchText("");
-      fetchCollection();
+      fetchPlayers();
     }
-    const filteredCollection = collection.filter((item) => {
-      if (item.name?.toLowerCase().includes(text.toLowerCase())) {
+    const filteredPlayers = players.filter((item) => {
+      if (item.name.toLowerCase().includes(text.toLowerCase())) {
         return item;
       }
     });
 
-    if (filteredCollection.length) {
-      setCollection([...filteredCollection]);
+    if (filteredPlayers.length) {
+      setPlayers([...filteredPlayers]);
     } else {
-      ToastAndroid.show("Games not found", 2000);
+      ToastAndroid.show("Players not found", 2000);
     }
   };
 
   const handleOnClear = async () => {
     setSearchText("");
-    await fetchCollection();
+    await fetchPlayers();
   };
 
-  const addNewGame = async (newGame) => {
-    if (!collection) {
-      collection = [];
+  const addNewPlayer = async (text) => {
+    if (!players) {
+      players = [];
     }
-    const updatedCollection = [...collection, newGame];
-    setCollection(updatedCollection);
-    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+    const newPlayer = {
+      name: text,
+      id: Date.now(),
+      isChecked: false,
+    };
+
+    const updatedPlayers = [...players, newPlayer];
+    setPlayers(updatedPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
   };
 
-  const handleFilter = async (filterItems) => {
-    var filteredCollection = collection;
-    if (filterItems.yearpublished) {
-      filteredCollection = filteredCollection.filter((item) => {
-        if (item.yearpublished) {
-          if (item.yearpublished.includes(filterItems.yearpublished)) {
-            return item;
-          }
-        }
-      });
-    }
+  // const handleFilter = async (filterItems) => {
+  //   var filteredPlayers = players;
+  //   if (filterItems.yearpublished) {
+  //     filteredPlayers = filteredPlayers.filter((item) => {
+  //       if (item.yearpublished) {
+  //         if (item.yearpublished.includes(filterItems.yearpublished)) {
+  //           return item;
+  //         }
+  //       }
+  //     });
+  //   }
 
-    if (filterItems.players) {
-      filteredCollection = filteredCollection.filter((item) => {
-        if (item.maxPlayers) {
-          if (
-            item.minPlayers <= filterItems.players &&
-            filterItems.players <= item.maxPlayers
-          ) {
-            return item;
-          }
-        }
-      });
-    }
-    if (filterItems.maxPlaytime) {
-      filteredCollection = filteredCollection.filter((item) => {
-        if (item.maxPlaytime) {
-          if (Number(item.maxPlaytime) <= Number(filterItems.maxPlaytime)) {
-            return item;
-          }
-        }
-      });
-    }
-    if (filterItems.minPlaytime) {
-      filteredCollection = filteredCollection.filter((item) => {
-        if (item.minPlaytime) {
-          if (Number(item.minPlaytime) >= Number(filterItems.minPlaytime)) {
-            return item;
-          }
-        }
-      });
-    }
-    if (filterItems.rating) {
-      filteredCollection = filteredCollection.filter((item) => {
-        if (item.rating) {
-          if (Number(item.rating) >= Number(filterItems.rating)) {
-            return item;
-          }
-        }
-      });
-    }
+  //   if (filterItems.players) {
+  //     filteredPlayers = filteredPlayers.filter((item) => {
+  //       if (item.maxPlayers) {
+  //         if (
+  //           item.minPlayers <= filterItems.players &&
+  //           filterItems.players <= item.maxPlayers
+  //         ) {
+  //           return item;
+  //         }
+  //       }
+  //     });
+  //   }
+  //   if (filterItems.maxPlaytime) {
+  //     filteredPlayers = filteredPlayers.filter((item) => {
+  //       if (item.maxPlaytime) {
+  //         if (Number(item.maxPlaytime) <= Number(filterItems.maxPlaytime)) {
+  //           return item;
+  //         }
+  //       }
+  //     });
+  //   }
+  //   if (filterItems.minPlaytime) {
+  //     filteredPlayers = filteredPlayers.filter((item) => {
+  //       if (item.minPlaytime) {
+  //         if (Number(item.minPlaytime) >= Number(filterItems.minPlaytime)) {
+  //           return item;
+  //         }
+  //       }
+  //     });
+  //   }
+  //   if (filterItems.rating) {
+  //     filteredPlayers = filteredPlayers.filter((item) => {
+  //       if (item.rating) {
+  //         if (Number(item.rating) >= Number(filterItems.rating)) {
+  //           return item;
+  //         }
+  //       }
+  //     });
+  //   }
 
-    if (filterItems.owner) {
-      if (filterItems.owner !== "All") {
-        filteredCollection = filteredCollection.filter((item) => {
-          if (item.owner) {
-            if (item.owner === filterItems.owner) {
-              return item;
-            }
-          }
-        });
-      }
-    }
+  //   if (filterItems.owner) {
+  //     if (filterItems.owner !== "All") {
+  //       filteredPlayers = filteredPlayers.filter((item) => {
+  //         if (item.owner) {
+  //           if (item.owner === filterItems.owner) {
+  //             return item;
+  //           }
+  //         }
+  //       });
+  //     }
+  //   }
 
-    if (filteredCollection.length) {
-      setCollection(filteredCollection);
-    } else {
-      fetchCollection;
-      ToastAndroid.show("Games not found", 2000);
-    }
-  };
+  //   if (filteredPlayers.length) {
+  //     setPlayers(filteredPlayers);
+  //   } else {
+  //     fetchPlayers;
+  //     ToastAndroid.show("Games not found", 2000);
+  //   }
+  // };
 
   return (
     <View style={[styles.container]}>
@@ -278,10 +281,8 @@ const Collection = (props) => {
             style={[styles.addButton]}
             onPress={() => setModalVisible(true)}
           >
-            <Text
-              style={[{ fontSize: 20, textAlign: "center", color: "#EEEEEE" }]}
-            >
-              Add game
+            <Text style={[{ fontSize: 20, textAlign: "center" }]}>
+              Add player
             </Text>
           </TouchableOpacity>
         </View>
@@ -290,9 +291,8 @@ const Collection = (props) => {
         <TextInput
           value={searchText}
           onChangeText={(text) => handleSearchText(text)}
-          placeholder="Search collection"
-          style={[styles.searchBar, { color: "#EEEEEE" }]}
-          placeholderTextColor="#EEEEEE70"
+          placeholder="Search player"
+          style={[styles.searchBar]}
         />
         <AntDesign
           name="close"
@@ -300,12 +300,12 @@ const Collection = (props) => {
           onPress={handleOnClear}
           style={styles.clearIcon}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.icon]}
           onPress={() => setFilterModalVisible(true)}
         >
           <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View style={[styles.itemContainer, { opacity: 0.4 }]}>
@@ -313,31 +313,27 @@ const Collection = (props) => {
           <View
             style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
           >
-            <Text style={[{ color: "#EEEEEE" }]}>Nr</Text>
+            <Text>Nr</Text>
           </View>
           <View style={[styles.cellContainer, { flex: 4 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: "#EEEEEE" }]}>
-              Name
-            </Text>
+            <Text style={[{ paddingHorizontal: 8 }]}>Name</Text>
+          </View>
+          {/* <View style={[styles.centerStyle, styles.cellContainer]}>
+            <Text>Rating</Text>
           </View>
           <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Rating</Text>
+            <Text>Players</Text>
           </View>
           <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Players</Text>
-          </View>
-          <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Time</Text>
-          </View>
+            <Text>Time</Text>
+          </View> */}
         </View>
       </View>
 
       <FlatList
-        data={collection}
+        data={players}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${index}`}
-        showsVerticalScrollIndicator={true}
-        showsHorizontalScrollIndicator={true}
       />
       {longPressActive ? (
         <View>
@@ -354,37 +350,41 @@ const Collection = (props) => {
         </View>
       ) : (
         <View style={[styles.bottomContainer]}>
-          <View style={[styles.buttonBottom, { opacity: 1 }]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() => props.navigation.navigate("Collection")}
+          >
             <Text style={[styles.textBtn]}>Collection</Text>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBottom]}
             onPress={openMainScreen}
           >
-            <Text style={[styles.textBtn]}>Search BGG</Text>
+            <Text
+              style={[styles.textBtn]}
+              onPress={() => props.navigation.navigate("MainScreen")}
+            >
+              Search BGG
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("Players")}
-          >
+          <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Players</Text>
           </TouchableOpacity>
         </View>
       )}
-
-      <NewGameModal
+      <NewPlayerModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSubmit={addNewGame}
+        onSubmit={addNewPlayer}
       />
-      <FilterModal
+      {/* <FilterModal
         visible={filterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onSubmit={handleFilter}
-      />
+      /> */}
     </View>
   );
 };
@@ -420,11 +420,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     color: "#EEEEEE",
     padding: 10,
-    paddingBottom: 12,
     borderRadius: 50,
     elevation: 5,
-    marginVertical: 15,
-    marginHorizontal: 120,
+    marginVertical: 20,
+    marginHorizontal: 80,
   },
   itemContainer: {
     backgroundColor: "#00ADB5",
@@ -455,8 +454,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {
@@ -500,8 +499,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 70,
     alignSelf: "center",
-    color: "#EEEEEE",
   },
 });
 
-export default Collection;
+export default Players;
