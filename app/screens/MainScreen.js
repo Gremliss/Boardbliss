@@ -10,17 +10,19 @@ import {
   Dimensions,
   Keyboard,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import BoardgameDetail from "../components/BoardgameDetail";
+import NewPlayerModal from "../components/NewPlayerModal";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const MainScreen = ({ navigation, renderedCollection }) => {
+const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
+  const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState();
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,12 +35,10 @@ const MainScreen = ({ navigation, renderedCollection }) => {
     Keyboard.dismiss();
   };
   const handleSearchText = (text) => {
-    console.log(text);
     setSearchText(text);
   };
   const handleSearchButton = () => {
     var searchLink = `https://boardgamegeek.com/xmlapi2/search?query=${searchText}`;
-    console.log(searchLink);
     axios
       .get(searchLink)
       .then((response) => {
@@ -103,67 +103,103 @@ const MainScreen = ({ navigation, renderedCollection }) => {
 
   const openBoardgameDetail = (gameId) => {
     var stringGameId = gameId.toString();
-    navigation.navigate("BoardgameDetail", { stringGameId });
+    navigation.navigate("BoardGameDetail", { stringGameId });
   };
 
   const openCollection = async () => {
-    console.log("presssedf");
-    navigation.navigate("Collection", { collection });
+    navigation.navigate("Collection");
+  };
+
+  const addPlayer = async (text) => {
+    console.log("add player");
+    console.log(text);
+    if (!players) {
+      players = [];
+    }
+    const newPlayer = {
+      name: text,
+      id: Date.now(),
+      isChecked: false,
+    };
+
+    const updatedPlayers = [...players, newPlayer];
+    setPlayers(updatedPlayers);
+    console.log(updatedPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+  };
+
+  const displayExistAlert = () => {
+    Alert.alert(
+      "Duplicate",
+      "Item with that name already exists",
+      [{ text: "Ok", onPress: () => null }],
+      { cancelable: true }
+    );
+  };
+  const displayAddedAlert = () => {
+    Alert.alert("Player added", "", [{ text: "Ok", onPress: () => null }], {
+      cancelable: true,
+    });
   };
 
   return (
-    <View style={[styles.container]}>
-      <TouchableOpacity onPress={handleKeyboardClose}>
-        <View>
-          <Text
-            // onPress={onPress}
-            style={[styles.addButton]}
-          >
-            Add player
-          </Text>
-          <Text
-            // onPress={onPress}
-            style={[styles.addButton]}
-          >
-            Add game
-          </Text>
+    <>
+      <View style={[styles.container]}>
+        <TouchableOpacity onPress={handleKeyboardClose}>
+          {/* <View>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={[styles.addButton]}>Add player</Text>
+            </TouchableOpacity>
+          </View> */}
+        </TouchableOpacity>
+        <View style={styles.searchRow}>
+          <TextInput
+            onChangeText={(text) => handleSearchText(text)}
+            placeholder="Search game"
+            style={[styles.searchBar]}
+            placeholderTextColor="#EEEEEE70"
+          />
+          <TouchableOpacity style={[styles.icon]} onPress={handleSearchButton}>
+            <Fontisto name={"zoom"} size={24} color={"#EEEEEE"} />
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-      <View style={styles.searchRow}>
-        <TextInput
-          onChangeText={(text) => handleSearchText(text)}
-          placeholder="Search game"
-          style={[styles.searchBar]}
+
+        <FlatList
+          data={data.items.item}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `${index}`}
         />
-        <TouchableOpacity style={[styles.icon]} onPress={handleSearchButton}>
-          <Fontisto name={"zoom"} size={24} color={"#EEEEEE"} />
-        </TouchableOpacity>
-      </View>
 
-      <FlatList
-        data={data.items.item}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${index}`}
-      />
-
-      <View style={[styles.bottomContainer]}>
-        <View style={[styles.buttonBottom]}>
-          <Text style={[styles.textBtn]}>Main screen</Text>
+        <View style={[styles.bottomContainer]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={openCollection}
+          >
+            <Text style={[styles.textBtn]}>Collection</Text>
+          </TouchableOpacity>
+          <View style={[styles.buttonBottom, { opacity: 1 }]}>
+            <Text style={[styles.textBtn]}>Search BGG</Text>
+          </View>
+          <TouchableOpacity style={[styles.buttonBottom]}>
+            <Text style={[styles.textBtn]}>Game Calendar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.buttonBottom]}>
+            <Text
+              style={[styles.textBtn]}
+              onPress={() => navigation.navigate("Players")}
+            >
+              Players
+            </Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={openCollection}
-        >
-          <Text style={[styles.textBtn]}>Collection</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonBottom]}>
-          <Text style={[styles.textBtn]}>Game Calendar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonBottom]}>
-          <Text style={[styles.textBtn]}>Players</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+      <NewPlayerModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={addPlayer}
+        players={players}
+      />
+    </>
   );
 };
 
@@ -180,7 +216,7 @@ const styles = StyleSheet.create({
   },
   searchRow: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 4,
   },
   searchBar: {
@@ -206,7 +242,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
     elevation: 5,
-    marginVertical: 10,
+    marginVertical: 20,
     marginHorizontal: 30,
   },
   itemContainer: {
@@ -244,8 +280,7 @@ const styles = StyleSheet.create({
     height: windowHeight / 8,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    // zIndex: 1,
-    // borderRadius: 20,
+    opacity: 0.6,
   },
   textBtn: {
     fontSize: 18,
