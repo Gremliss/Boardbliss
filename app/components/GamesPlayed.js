@@ -220,13 +220,6 @@ const GamesPlayed = (props) => {
                 {renderPlayers(item.players, item.type, item.scoreType)}
               </View>
             )}
-
-            {/* <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text>{item.maxPlayers}</Text>
-            </View>
-            <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text>{item.maxPlaytime}</Text>
-            </View> */}
           </View>
         </View>
       </TouchableOpacity>
