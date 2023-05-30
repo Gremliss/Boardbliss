@@ -358,14 +358,9 @@ const Players = (props) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBottom]}
-            onPress={openMainScreen}
+            onPress={() => props.navigation.navigate("MainScreen")}
           >
-            <Text
-              style={[styles.textBtn]}
-              onPress={() => props.navigation.navigate("MainScreen")}
-            >
-              Search BGG
-            </Text>
+            <Text style={[styles.textBtn]}>Search BGG</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
@@ -454,8 +449,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

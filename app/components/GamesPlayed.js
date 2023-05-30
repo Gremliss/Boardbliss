@@ -213,6 +213,9 @@ const GamesPlayed = (props) => {
                   <Text>
                     {item.coop.victory == "Yes" ? "Victory" : "Loose"}
                   </Text>
+                  {item.coop.points ? (
+                    <Text>Score: {item.coop.points}</Text>
+                  ) : null}
                 </View>
               </>
             ) : (
@@ -298,11 +301,35 @@ const GamesPlayed = (props) => {
   };
 
   // Sort the gameParams.stats array by date
+  // const sortedStats = gameParams.stats.sort((a, b) => {
+  //   const dateA = new Date(a.date.year, a.date.month - 1, a.date.day);
+  //   const dateB = new Date(b.date.year, b.date.month - 1, b.date.day);
+  //   return dateA - dateB;
+  // });
+
   const sortedStats = gameParams.stats.sort((a, b) => {
-    const dateA = new Date(a.date.year, a.date.month - 1, a.date.day);
-    const dateB = new Date(b.date.year, b.date.month - 1, b.date.day);
-    return dateA - dateB;
+    // Compare the dates
+    const dateComparison = compareDates(a.date, b.date);
+    if (dateComparison !== 0) {
+      return dateComparison; // Sort by date
+    }
+
+    // Dates are the same, compare IDs
+    return a.id - b.id;
   });
+
+  function compareDates(date1, date2) {
+    // Compare years
+    if (date1.year !== date2.year) {
+      return date1.year - date2.year;
+    }
+    // Compare months
+    if (date1.month !== date2.month) {
+      return date1.month - date2.month;
+    }
+    // Compare days
+    return date1.day - date2.day;
+  }
 
   return (
     <View style={[styles.container]}>
@@ -340,9 +367,10 @@ const GamesPlayed = (props) => {
       <View style={[{ flex: 1 }]}>
         {gameParams.stats ? (
           <FlatList
-            data={sortedStats}
+            data={sortedStats.reverse()}
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
+            // inverted
           />
         ) : null}
       </View>
@@ -382,7 +410,14 @@ const GamesPlayed = (props) => {
           >
             <Text style={[styles.textBtn]}>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBottom]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("BoardGameStats", {
+                gameParams,
+              })
+            }
+          >
             <Text style={[styles.textBtn]}>Stats</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
@@ -463,8 +498,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

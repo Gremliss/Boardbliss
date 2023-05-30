@@ -455,8 +455,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

@@ -173,7 +173,7 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
         <View style={[styles.bottomContainer]}>
           <TouchableOpacity
             style={[styles.buttonBottom]}
-            onPress={openCollection}
+            onPress={() => navigation.navigate("Collection")}
           >
             <Text style={[styles.textBtn]}>Collection</Text>
           </TouchableOpacity>
@@ -183,13 +183,11 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
           <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBottom]}>
-            <Text
-              style={[styles.textBtn]}
-              onPress={() => navigation.navigate("Players")}
-            >
-              Players
-            </Text>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() => navigation.navigate("Players")}
+          >
+            <Text style={[styles.textBtn]}>Players</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -278,8 +276,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

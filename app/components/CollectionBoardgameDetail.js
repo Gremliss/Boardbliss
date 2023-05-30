@@ -56,8 +56,8 @@ const CollectionBoardgameDetail = (props) => {
   return (
     <>
       <StatusBar />
-      <ScrollView>
-        <View style={styles.container}>
+      <ScrollView style={styles.container}>
+        <View>
           {gameParams.bggImage?.length ? (
             <View style={styles.boargameImgContainer}>
               <Image
@@ -116,8 +116,15 @@ const CollectionBoardgameDetail = (props) => {
         >
           <Text style={[styles.textBtn]}>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonBottom]}>
-          <Text style={[styles.textBtn]}>Stats?</Text>
+        <TouchableOpacity
+          style={[styles.buttonBottom]}
+          onPress={() =>
+            props.navigation.navigate("BoardGameStats", {
+              gameParams,
+            })
+          }
+        >
+          <Text style={[styles.textBtn]}>Stats</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonBottom]}
@@ -127,7 +134,7 @@ const CollectionBoardgameDetail = (props) => {
             })
           }
         >
-          <Text style={[styles.textBtn]}>Played games</Text>
+          <Text style={[styles.textBtn]}>Games played</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -207,8 +214,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

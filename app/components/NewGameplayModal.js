@@ -45,6 +45,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
+    console.log(addGameplay);
     onSubmit(addGameplay);
     setAddGameplay({
       id: Date.now(),
@@ -165,9 +166,14 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               <View style={[styles.flexRow]}>
                 <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
                 <TextInput
-                  onChangeText={(text) =>
-                    (addGameplay.players[item.name] = text)
-                  }
+                  onChangeText={(text) => {
+                    console.log(text);
+                    addGameplay.players[item.name] = text;
+                    //   setAddGameplay((prevState) => ({
+                    //   ...prevState,
+                    //   players: { ...prevState.players, day: sanitizedText },
+                    // }));
+                  }}
                   placeholder={addGameplay.scoreType}
                   style={[styles.inputTextStyle]}
                   keyboardType="numeric"
@@ -262,11 +268,18 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
-            {/* </View>
-          <View style={[styles.flexRow]}> */}
-            {/* <Text style={[styles.nameOfInputStyle]}>:</Text> */}
             <TextInput
-              onChangeText={(text) => (addGameplay.duration.min = text)}
+              onChangeText={(text) => {
+                // Remove any non-digit characters from the input
+                const sanitizedText = text.replace(/[^0-9]/g, "");
+
+                // Check if the sanitized text is a number between 1 and 59
+                if (sanitizedText >= 1 && sanitizedText <= 59) {
+                  addGameplay.duration.min = sanitizedText;
+                } else {
+                  displayDateAlert(1, 59);
+                }
+              }}
               placeholder="Minutes"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"

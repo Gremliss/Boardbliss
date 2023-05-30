@@ -9,6 +9,7 @@ import Collection from "./app/screens/Collection";
 import MainScreen from "./app/screens/MainScreen";
 import Players from "./app/screens/Players";
 import GamesPlayed from "./app/components/GamesPlayed";
+import BoardGameStats from "./app/components/BoardGameStats";
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,13 @@ export default function App() {
           name="EditBoardGame"
           options={{
             title: "Edit board game",
+          }}
+        />
+        <Stack.Screen
+          component={BoardGameStats}
+          name="BoardGameStats"
+          options={{
+            title: "Board game stats",
           }}
         />
         <Stack.Screen
