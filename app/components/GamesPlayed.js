@@ -80,27 +80,31 @@ const GamesPlayed = (props) => {
 
   const renderPlayers = (players, type, scoreType) => {
     // Convert the players object into an array of [name, value] pairs
-    const playerArray = Object.entries(players);
     var sortedPlayers;
 
     if (type == "Rivalry") {
       if (scoreType == "Points") {
         // Sort the player array based on the values in descending order
-        sortedPlayers = playerArray.sort((a, b) => b[1] - a[1]);
+        sortedPlayers = players.sort((a, b) => b.points - a.points);
       } else {
         // Sort the player array based on the values in asscending order
-        sortedPlayers = playerArray.sort((a, b) => a[1] - b[1]);
+        sortedPlayers = players.sort((a, b) => a.points - b.points);
       }
 
-      return sortedPlayers.map(([name, value]) => (
-        <View key={name} style={[styles.flexRow]}>
+      return sortedPlayers.map((item) => (
+        <View key={item.name} style={[styles.flexRow]}>
           <View
             style={[
               styles.centerStyle,
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{name}</Text>
+            {item.victory ? (
+              <Text>{item.name} 🏆</Text>
+            ) : (
+              <Text>{item.name}</Text>
+            )}
+            {/* <Text>{item.name}</Text> */}
           </View>
           <View
             style={[
@@ -108,22 +112,22 @@ const GamesPlayed = (props) => {
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{value}</Text>
+            <Text>{item.points}</Text>
           </View>
         </View>
       ));
     } else {
       // Sort the player array based on the names in alphabetical order
-      sortedPlayers = playerArray.sort((a, b) => a[0].localeCompare(b[0]));
-      return sortedPlayers.map(([name]) => (
-        <View key={name} style={[styles.flexRow]}>
+      sortedPlayers = players.sort((a, b) => a.name.localeCompare(b.name));
+      return sortedPlayers.map((item) => (
+        <View key={item.name} style={[styles.flexRow]}>
           <View
             style={[
               styles.centerStyle,
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{name}</Text>
+            <Text>{item.name}</Text>
           </View>
         </View>
       ));

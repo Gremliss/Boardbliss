@@ -32,10 +32,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
       month: currentDate.getMonth() + 1,
       year: currentDate.getFullYear(),
     },
-    players: {},
+    players: [],
     type: "Rivalry",
     scoreType: "Points",
-    coop: { victory: "Yes", points: null },
+    // coop: { victory: "Yes", points: null },
     isChecked: false,
     duration: { hours: null, min: null },
   });
@@ -45,7 +45,37 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    console.log(addGameplay);
+    var winningPlayer;
+    console.log(addGameplay.scoreType);
+    if (addGameplay.type === "Rivalry") {
+      if (addGameplay.scoreType === "Points") {
+        winningPlayer = addGameplay.players.reduce(
+          (winPlayer, currentPlayer) => {
+            if (currentPlayer.points > winPlayer.points) {
+              return currentPlayer;
+            } else {
+              return winPlayer;
+            }
+          }
+        );
+      } else {
+        winningPlayer = addGameplay.players.reduce(
+          (winPlayer, currentPlayer) => {
+            if (currentPlayer.points < winPlayer.points) {
+              return currentPlayer;
+            } else {
+              return winPlayer;
+            }
+          }
+        );
+      }
+      if (winningPlayer) {
+        winningPlayer.victory = true;
+      }
+    }
+
+    console.log(winningPlayer);
+    console.log(addGameplay.players);
     onSubmit(addGameplay);
     setAddGameplay({
       id: Date.now(),
@@ -54,10 +84,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
         month: currentDate.getMonth() + 1,
         year: currentDate.getFullYear(),
       },
-      players: {},
+      players: [],
       type: "Rivalry",
       scoreType: "Points",
-      coop: { victory: "Yes", points: null },
+      // coop: { victory: "Yes", points: null },
       isChecked: false,
       duration: { hours: null, min: null },
     });
@@ -82,10 +112,19 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   }, []);
 
   const changeType = () => {
-    addGameplay.type === "Rivalry"
-      ? setAddGameplay({ ...addGameplay, type: "Co-Op" })
-      : setAddGameplay({ ...addGameplay, type: "Rivalry" });
+    if (addGameplay.type === "Rivalry") {
+      setAddGameplay({
+        ...addGameplay,
+        coop: { points: null, victory: "Yes" },
+        type: "Co-Op",
+      });
+      changePlayersIsCheckedToFalse();
+    } else {
+      const { coop, ...updatedGameplay } = addGameplay;
+      setAddGameplay({ ...updatedGameplay, type: "Rivalry" });
+    }
   };
+
   const changeScoreType = () => {
     addGameplay.scoreType === "Points"
       ? setAddGameplay({ ...addGameplay, scoreType: "Place" })
@@ -107,10 +146,31 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   const handleCheckButton = async (item) => {
     if (item.isChecked === false) {
       item.isChecked = true;
-      addGameplay.players[item.name] = null;
+      setAddGameplay((prevState) => {
+        const updatedPlayers = prevState.players.map((player) => {
+          return player;
+        });
+
+        // If player doesn't exist, add a new player object
+        if (!updatedPlayers.some((player) => player.name === item.name)) {
+          updatedPlayers.push({ name: item.name });
+        }
+
+        return { ...prevState, players: updatedPlayers };
+      });
     } else {
       item.isChecked = false;
-      delete addGameplay.players[item.name];
+      setAddGameplay((prevState) => {
+        const updatedPlayers = prevState.players.map((player) => {
+          if (player.name === item.name) {
+            // Update points of existing player
+            return;
+          }
+          return player;
+        });
+
+        return { ...prevState, players: updatedPlayers };
+      });
     }
     await AsyncStorage.setItem("players", JSON.stringify(players));
     fetchPlayers();
@@ -125,11 +185,16 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     );
   };
 
+  const changePlayersIsCheckedToFalse = async () => {
+    const updatedPlayers = players.map((player) => {
+      return { ...player, isChecked: false };
+    });
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+    fetchPlayers();
+  };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor = index % 2 === 0 ? "#00ADB5" : "#0b6c70";
-    if (item.isChecked === true) {
-      addGameplay.players[item.name] = null;
-    }
     return (
       <TouchableOpacity onPress={() => handleCheckButton(item)}>
         <View
@@ -167,12 +232,26 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
                 <TextInput
                   onChangeText={(text) => {
-                    console.log(text);
-                    addGameplay.players[item.name] = text;
-                    //   setAddGameplay((prevState) => ({
-                    //   ...prevState,
-                    //   players: { ...prevState.players, day: sanitizedText },
-                    // }));
+                    setAddGameplay((prevState) => {
+                      const updatedPlayers = prevState.players.map((player) => {
+                        if (player.name === item.name) {
+                          // Update points of existing player
+                          return { ...player, points: text };
+                        }
+                        return player;
+                      });
+
+                      // If player doesn't exist, add a new player object
+                      if (
+                        !updatedPlayers.some(
+                          (player) => player.name === item.name
+                        )
+                      ) {
+                        updatedPlayers.push({ name: item.name, points: text });
+                      }
+                      console.log(addGameplay);
+                      return { ...prevState, players: updatedPlayers };
+                    });
                   }}
                   placeholder={addGameplay.scoreType}
                   style={[styles.inputTextStyle]}
@@ -222,7 +301,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   style={[styles.inputTextStyle]}
                   onPress={() => changeVictory()}
                 >
-                  <Text>{addGameplay.coop.victory}</Text>
+                  <Text>{addGameplay.coop?.victory}</Text>
                 </TouchableOpacity>
               </View>
               <View style={[styles.flexRow]}>
