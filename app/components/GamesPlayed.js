@@ -37,7 +37,6 @@ const GamesPlayed = (props) => {
   };
   useEffect(() => {
     fetchCollection();
-    console.log(collection);
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackButton
@@ -80,27 +79,31 @@ const GamesPlayed = (props) => {
 
   const renderPlayers = (players, type, scoreType) => {
     // Convert the players object into an array of [name, value] pairs
-    const playerArray = Object.entries(players);
     var sortedPlayers;
 
     if (type == "Rivalry") {
       if (scoreType == "Points") {
         // Sort the player array based on the values in descending order
-        sortedPlayers = playerArray.sort((a, b) => b[1] - a[1]);
+        sortedPlayers = players.sort((a, b) => b.points - a.points);
       } else {
         // Sort the player array based on the values in asscending order
-        sortedPlayers = playerArray.sort((a, b) => a[1] - b[1]);
+        sortedPlayers = players.sort((a, b) => a.points - b.points);
       }
 
-      return sortedPlayers.map(([name, value]) => (
-        <View key={name} style={[styles.flexRow]}>
+      return sortedPlayers.map((item) => (
+        <View key={item.name} style={[styles.flexRow]}>
           <View
             style={[
               styles.centerStyle,
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{name}</Text>
+            {item.victory ? (
+              <Text>{item.name} 🏆</Text>
+            ) : (
+              <Text>{item.name}</Text>
+            )}
+            {/* <Text>{item.name}</Text> */}
           </View>
           <View
             style={[
@@ -108,22 +111,22 @@ const GamesPlayed = (props) => {
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{value}</Text>
+            <Text>{item.points}</Text>
           </View>
         </View>
       ));
     } else {
       // Sort the player array based on the names in alphabetical order
-      sortedPlayers = playerArray.sort((a, b) => a[0].localeCompare(b[0]));
-      return sortedPlayers.map(([name]) => (
-        <View key={name} style={[styles.flexRow]}>
+      sortedPlayers = players.sort((a, b) => a.name.localeCompare(b.name));
+      return sortedPlayers.map((item) => (
+        <View key={item.name} style={[styles.flexRow]}>
           <View
             style={[
               styles.centerStyle,
               { borderBottomWidth: 0, borderRightWidth: 0 },
             ]}
           >
-            <Text>{name}</Text>
+            <Text>{item.name}</Text>
           </View>
         </View>
       ));
@@ -213,6 +216,9 @@ const GamesPlayed = (props) => {
                   <Text>
                     {item.coop.victory == "Yes" ? "Victory" : "Loose"}
                   </Text>
+                  {item.coop.points ? (
+                    <Text>Score: {item.coop.points}</Text>
+                  ) : null}
                 </View>
               </>
             ) : (
@@ -271,7 +277,6 @@ const GamesPlayed = (props) => {
   };
 
   useEffect(() => {
-    console.log(gameParams.stats);
     setCollection((prevCollection) =>
       prevCollection.map((obj) =>
         obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
@@ -298,11 +303,35 @@ const GamesPlayed = (props) => {
   };
 
   // Sort the gameParams.stats array by date
+  // const sortedStats = gameParams.stats.sort((a, b) => {
+  //   const dateA = new Date(a.date.year, a.date.month - 1, a.date.day);
+  //   const dateB = new Date(b.date.year, b.date.month - 1, b.date.day);
+  //   return dateA - dateB;
+  // });
+
   const sortedStats = gameParams.stats.sort((a, b) => {
-    const dateA = new Date(a.date.year, a.date.month - 1, a.date.day);
-    const dateB = new Date(b.date.year, b.date.month - 1, b.date.day);
-    return dateA - dateB;
+    // Compare the dates
+    const dateComparison = compareDates(a.date, b.date);
+    if (dateComparison !== 0) {
+      return dateComparison; // Sort by date
+    }
+
+    // Dates are the same, compare IDs
+    return a.id - b.id;
   });
+
+  function compareDates(date1, date2) {
+    // Compare years
+    if (date1.year !== date2.year) {
+      return date1.year - date2.year;
+    }
+    // Compare months
+    if (date1.month !== date2.month) {
+      return date1.month - date2.month;
+    }
+    // Compare days
+    return date1.day - date2.day;
+  }
 
   return (
     <View style={[styles.container]}>
@@ -340,9 +369,10 @@ const GamesPlayed = (props) => {
       <View style={[{ flex: 1 }]}>
         {gameParams.stats ? (
           <FlatList
-            data={sortedStats}
+            data={sortedStats.reverse()}
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
+            // inverted
           />
         ) : null}
       </View>
@@ -382,7 +412,14 @@ const GamesPlayed = (props) => {
           >
             <Text style={[styles.textBtn]}>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBottom]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("BoardGameStats", {
+                gameParams,
+              })
+            }
+          >
             <Text style={[styles.textBtn]}>Stats</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
@@ -463,8 +500,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

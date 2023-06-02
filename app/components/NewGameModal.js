@@ -42,7 +42,6 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
   const handleSubmit = () => {
     if (collection.some((obj) => obj.name === addGame.name)) {
       displayExistAlert();
-      console.log("nope");
     } else {
       onSubmit(addGame);
       setAddGame({
@@ -101,35 +100,6 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
       ? setAddGame({ ...addGame, owner: "Friend" })
       : setAddGame({ ...addGame, owner: "You" });
   };
-
-  // const saveChanges = async () => {
-  //   console.log(yearpublished);
-  //   console.log(minPlayers);
-  //   const updatedCollection = collection.map((item) => {
-  //     if (item.name === gameParams.name) {
-  //       console.log(item);
-  //       return {
-  //         ...item,
-  //         name: name,
-  //         yearpublished: yearpublished,
-  //         minPlayers: minPlayers,
-  //         maxPlayers: maxPlayers,
-  //         minPlaytime: minPlaytime,
-  //         maxPlaytime: maxPlaytime,
-  //         bggImage: bggImage,
-  //         owner: owner,
-  //         rating: rating,
-  //       };
-  //     } else {
-  //       return item;
-  //     }
-  //   });
-
-  //   setCollection(updatedCollection);
-  //   console.log(updatedCollection);
-  //   await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
-  //   fetchCollection();
-  // };
 
   return (
     <>

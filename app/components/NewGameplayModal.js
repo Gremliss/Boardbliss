@@ -1,10 +1,11 @@
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
   Keyboard,
   Modal,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -13,18 +14,15 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import RoundIconBtn from "./RoundIconButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native-gesture-handler";
-import { MaterialIcons } from "@expo/vector-icons";
+import RoundIconBtn from "./RoundIconButton";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
-  const [collection, setCollection] = useState([]);
-  const [players, setPlayers] = useState([]);
   const currentDate = new Date();
+  const [players, setPlayers] = useState([]);
   const [addGameplay, setAddGameplay] = useState({
     id: Date.now(),
     date: {
@@ -32,10 +30,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
       month: currentDate.getMonth() + 1,
       year: currentDate.getFullYear(),
     },
-    players: {},
+    players: [],
     type: "Rivalry",
     scoreType: "Points",
-    coop: { victory: "Yes", points: null },
     isChecked: false,
     duration: { hours: null, min: null },
   });
@@ -45,6 +42,34 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
+    var winningPlayer;
+    if (addGameplay.type === "Rivalry") {
+      if (addGameplay.scoreType === "Points") {
+        winningPlayer = addGameplay.players.reduce(
+          (winPlayer, currentPlayer) => {
+            if (currentPlayer.points > winPlayer.points) {
+              return currentPlayer;
+            } else {
+              return winPlayer;
+            }
+          }
+        );
+      } else {
+        winningPlayer = addGameplay.players.reduce(
+          (winPlayer, currentPlayer) => {
+            if (currentPlayer.points < winPlayer.points) {
+              return currentPlayer;
+            } else {
+              return winPlayer;
+            }
+          }
+        );
+      }
+      if (winningPlayer) {
+        winningPlayer.victory = true;
+      }
+    }
+
     onSubmit(addGameplay);
     setAddGameplay({
       id: Date.now(),
@@ -53,10 +78,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
         month: currentDate.getMonth() + 1,
         year: currentDate.getFullYear(),
       },
-      players: {},
+      players: [],
       type: "Rivalry",
       scoreType: "Points",
-      coop: { victory: "Yes", points: null },
       isChecked: false,
       duration: { hours: null, min: null },
     });
@@ -67,49 +91,66 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     onClose();
   };
 
-  const fetchCollection = async () => {
-    const result = await AsyncStorage.getItem("collection");
-    if (result?.length) setCollection(JSON.parse(result));
-  };
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
   };
   useEffect(() => {
-    fetchCollection();
     fetchPlayers();
   }, []);
 
   const changeType = () => {
-    addGameplay.type === "Rivalry"
-      ? setAddGameplay({ ...addGameplay, type: "Co-Op" })
-      : setAddGameplay({ ...addGameplay, type: "Rivalry" });
+    if (addGameplay.type === "Rivalry") {
+      setAddGameplay({
+        ...addGameplay,
+        coop: { points: null, victory: "Yes" },
+        type: "Co-Op",
+      });
+      changePlayersIsCheckedToFalse();
+    } else {
+      const { coop, ...updatedGameplay } = addGameplay;
+      setAddGameplay({ ...updatedGameplay, type: "Rivalry" });
+    }
   };
+
   const changeScoreType = () => {
-    addGameplay.scoreType === "Points"
-      ? setAddGameplay({ ...addGameplay, scoreType: "Place" })
-      : setAddGameplay({ ...addGameplay, scoreType: "Points" });
+    setAddGameplay((prevState) => ({
+      ...prevState,
+      scoreType: prevState.scoreType === "Points" ? "Place" : "Points",
+    }));
   };
 
   const changeVictory = () => {
-    addGameplay.coop.victory === "No"
-      ? setAddGameplay((prevState) => ({
-          ...prevState,
-          coop: { ...prevState.coop, victory: "Yes" },
-        }))
-      : setAddGameplay((prevState) => ({
-          ...prevState,
-          coop: { ...prevState.coop, victory: "No" },
-        }));
+    setAddGameplay((prevState) => ({
+      ...prevState,
+      coop: {
+        ...prevState.coop,
+        victory: prevState.coop.victory === "No" ? "Yes" : "No",
+      },
+    }));
   };
 
   const handleCheckButton = async (item) => {
     if (item.isChecked === false) {
       item.isChecked = true;
-      addGameplay.players[item.name] = null;
+      setAddGameplay((prevState) => {
+        const updatedPlayers = [...prevState.players];
+
+        // If player doesn't exist, add a new player object
+        if (!updatedPlayers.some((player) => player.name === item.name)) {
+          updatedPlayers.push({ name: item.name });
+        }
+
+        return { ...prevState, players: updatedPlayers };
+      });
     } else {
       item.isChecked = false;
-      delete addGameplay.players[item.name];
+      setAddGameplay((prevState) => {
+        const updatedPlayers = prevState.players.filter(
+          (player) => player.name !== item.name
+        );
+        return { ...prevState, players: updatedPlayers };
+      });
     }
     await AsyncStorage.setItem("players", JSON.stringify(players));
     fetchPlayers();
@@ -124,13 +165,18 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     );
   };
 
+  const changePlayersIsCheckedToFalse = async () => {
+    const updatedPlayers = players.map((player) => {
+      return { ...player, isChecked: false };
+    });
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+    fetchPlayers();
+  };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor = index % 2 === 0 ? "#00ADB5" : "#0b6c70";
-    if (item.isChecked === true) {
-      addGameplay.players[item.name] = null;
-    }
     return (
-      <TouchableOpacity onPress={() => handleCheckButton(item)}>
+      <TouchableOpacity key={index} onPress={() => handleCheckButton(item)}>
         <View
           style={[styles.itemContainer, { backgroundColor: backgroundColor }]}
         >
@@ -158,16 +204,34 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
   const renderActivePlayer = ({ item, index }) => {
     return (
-      <View>
+      <View key={index}>
         {item.isChecked ? (
           <>
             {addGameplay?.type === "Rivalry" ? (
               <View style={[styles.flexRow]}>
                 <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
                 <TextInput
-                  onChangeText={(text) =>
-                    (addGameplay.players[item.name] = text)
-                  }
+                  onChangeText={(text) => {
+                    setAddGameplay((prevState) => {
+                      const updatedPlayers = prevState.players.map((player) => {
+                        if (player.name === item.name) {
+                          // Update points of existing player
+                          return { ...player, points: text };
+                        }
+                        return player;
+                      });
+
+                      // If player doesn't exist, add a new player object
+                      if (
+                        !updatedPlayers.some(
+                          (player) => player.name === item.name
+                        )
+                      ) {
+                        updatedPlayers.push({ name: item.name, points: text });
+                      }
+                      return { ...prevState, players: updatedPlayers };
+                    });
+                  }}
                   placeholder={addGameplay.scoreType}
                   style={[styles.inputTextStyle]}
                   keyboardType="numeric"
@@ -189,56 +253,60 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
       <StatusBar />
       <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
         <View style={[{ flex: 1, paddingBottom: 80 }]}>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Type:</Text>
-            <TouchableOpacity
-              style={[styles.inputTextStyle]}
-              onPress={() => changeType()}
-            >
-              <Text>{addGameplay.type}</Text>
-            </TouchableOpacity>
-          </View>
-          {addGameplay.type === "Rivalry" ? (
-            <View style={[styles.flexRow]}>
-              <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
-              <TouchableOpacity
-                style={[styles.inputTextStyle]}
-                onPress={() => changeScoreType()}
-              >
-                <Text>{addGameplay.scoreType}</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <>
+          <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
+            <View>
               <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>Victory:</Text>
+                <Text style={[styles.nameOfInputStyle]}>Type:</Text>
                 <TouchableOpacity
                   style={[styles.inputTextStyle]}
-                  onPress={() => changeVictory()}
+                  onPress={() => changeType()}
                 >
-                  <Text>{addGameplay.coop.victory}</Text>
+                  <Text>{addGameplay.type}</Text>
                 </TouchableOpacity>
               </View>
-              <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>Points:</Text>
-                <TextInput
-                  onChangeText={(text) =>
-                    setAddGameplay((prevState) => ({
-                      ...prevState,
-                      coop: { ...prevState.coop, points: text },
-                    }))
-                  }
-                  placeholder="Points"
-                  style={[styles.inputTextStyle]}
-                  keyboardType="numeric"
-                />
-              </View>
-            </>
-          )}
+              {addGameplay.type === "Rivalry" ? (
+                <View style={[styles.flexRow]}>
+                  <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
+                  <TouchableOpacity
+                    style={[styles.inputTextStyle]}
+                    onPress={() => changeScoreType()}
+                  >
+                    <Text>{addGameplay.scoreType}</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <>
+                  <View style={[styles.flexRow]}>
+                    <Text style={[styles.nameOfInputStyle]}>Victory:</Text>
+                    <TouchableOpacity
+                      style={[styles.inputTextStyle]}
+                      onPress={() => changeVictory()}
+                    >
+                      <Text>{addGameplay.coop?.victory}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={[styles.flexRow]}>
+                    <Text style={[styles.nameOfInputStyle]}>Points:</Text>
+                    <TextInput
+                      onChangeText={(text) =>
+                        setAddGameplay((prevState) => ({
+                          ...prevState,
+                          coop: { ...prevState.coop, points: text },
+                        }))
+                      }
+                      placeholder="Points"
+                      style={[styles.inputTextStyle]}
+                      keyboardType="numeric"
+                    />
+                  </View>
+                </>
+              )}
 
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Players:</Text>
-          </View>
+              <View style={[styles.flexRow]}>
+                <Text style={[styles.nameOfInputStyle]}>Players:</Text>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
           <View style={[{ flex: 1 }]}>
             <FlatList
               data={players}
@@ -257,16 +325,37 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           <View style={[styles.flexRow]}>
             <Text style={[styles.nameOfInputStyle]}>Time:</Text>
             <TextInput
-              onChangeText={(text) => (addGameplay.duration.hours = text)}
+              onChangeText={(text) =>
+                setAddGameplay((prevState) => ({
+                  ...prevState,
+                  duration: {
+                    ...prevState.duration,
+                    hours: text,
+                  },
+                }))
+              }
               placeholder="Hours"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
-            {/* </View>
-          <View style={[styles.flexRow]}> */}
-            {/* <Text style={[styles.nameOfInputStyle]}>:</Text> */}
             <TextInput
-              onChangeText={(text) => (addGameplay.duration.min = text)}
+              onChangeText={(text) => {
+                // Remove any non-digit characters from the input
+                const sanitizedText = text.replace(/[^0-9]/g, "");
+
+                // Check if the sanitized text is a number between 1 and 59
+                if (sanitizedText >= 1 && sanitizedText <= 59) {
+                  setAddGameplay((prevState) => ({
+                    ...prevState,
+                    duration: {
+                      ...prevState.duration,
+                      min: sanitizedText,
+                    },
+                  }));
+                } else {
+                  displayDateAlert(1, 59);
+                }
+              }}
               placeholder="Minutes"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"

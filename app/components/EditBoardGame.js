@@ -42,11 +42,8 @@ const EditBoardGame = (props) => {
   };
 
   const saveChanges = async () => {
-    console.log(yearpublished);
-    console.log(minPlayers);
     const updatedCollection = collection.map((item) => {
       if (item.name === gameParams.name) {
-        console.log(item);
         return {
           ...item,
           name: name,
@@ -65,7 +62,6 @@ const EditBoardGame = (props) => {
     });
 
     setCollection(updatedCollection);
-    console.log(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
     fetchCollection();
     props.navigation.goBack();
@@ -81,7 +77,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setName(text)}
             defaultValue={gameParams.name}
             placeholder="Name"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             multiline={true}
           />
@@ -92,7 +87,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setYearpublished(text)}
             defaultValue={gameParams.yearpublished}
             placeholder="Year published"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -112,7 +106,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setMinPlayers(text)}
             defaultValue={gameParams.minPlayers}
             placeholder="Min players"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -123,7 +116,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setMaxPlayers(text)}
             defaultValue={gameParams.maxPlayers}
             placeholder="Max players"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -134,7 +126,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setMinPlaytime(text)}
             defaultValue={gameParams.minPlaytime}
             placeholder="Min playtime"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -145,7 +136,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setMaxPlaytime(text)}
             defaultValue={gameParams.maxPlaytime}
             placeholder="Max playtime"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -156,7 +146,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setRating(text)}
             defaultValue={gameParams.rating}
             placeholder="Rating"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             keyboardType="numeric"
           />
@@ -167,7 +156,6 @@ const EditBoardGame = (props) => {
             onChangeText={(text) => setBggImage(text)}
             defaultValue={`${gameParams.bggImage}`}
             placeholder="Img link"
-            textAlignVertical="top"
             style={[styles.inputTextStyle]}
             multiline={true}
           />
@@ -193,8 +181,15 @@ const EditBoardGame = (props) => {
         <View style={[styles.buttonBottom, { opacity: 1 }]}>
           <Text style={[styles.textBtn]}>Edit</Text>
         </View>
-        <TouchableOpacity style={[styles.buttonBottom]}>
-          <Text style={[styles.textBtn]}>Stats?</Text>
+        <TouchableOpacity
+          style={[styles.buttonBottom]}
+          onPress={() =>
+            props.navigation.navigate("BoardGameStats", {
+              gameParams,
+            })
+          }
+        >
+          <Text style={[styles.textBtn]}>Stats</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonBottom]}
@@ -253,8 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     fontSize: 20,
     height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     opacity: 0.6,
   },
   textBtn: {

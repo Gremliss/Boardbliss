@@ -45,7 +45,6 @@ const BoardGameDetail = (props) => {
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) {
-      console.log("created coll");
       setCollection(JSON.parse(result));
     }
   };
@@ -64,7 +63,6 @@ const BoardGameDetail = (props) => {
     }
     if (collection.some((obj) => obj.name === game.name[0].$.value)) {
       displayExistAlert();
-      console.log(collection);
     } else {
       const newGame = {
         name: game.name[0].$.value,
@@ -83,7 +81,6 @@ const BoardGameDetail = (props) => {
       const updatedCollection = [...collection, newGame];
       setCollection(updatedCollection);
       displayAddedAlert();
-      console.log(collection);
       await AsyncStorage.setItem(
         "collection",
         JSON.stringify(updatedCollection)
