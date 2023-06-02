@@ -42,11 +42,8 @@ const EditBoardGame = (props) => {
   };
 
   const saveChanges = async () => {
-    console.log(yearpublished);
-    console.log(minPlayers);
     const updatedCollection = collection.map((item) => {
       if (item.name === gameParams.name) {
-        console.log(item);
         return {
           ...item,
           name: name,
@@ -65,7 +62,6 @@ const EditBoardGame = (props) => {
     });
 
     setCollection(updatedCollection);
-    console.log(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
     fetchCollection();
     props.navigation.goBack();

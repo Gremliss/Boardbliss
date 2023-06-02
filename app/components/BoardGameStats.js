@@ -3,6 +3,7 @@ import {
   Alert,
   BackHandler,
   Dimensions,
+  FlatList,
   Image,
   ScrollView,
   StatusBar,
@@ -48,7 +49,6 @@ const BoardGameStats = (props) => {
   );
 
   const handleBackButton = () => {
-    console.log("backbutt");
     fetchGameParams();
     return;
   };
@@ -133,9 +133,75 @@ const BoardGameStats = (props) => {
     .map((score) => parseInt(score))
     .filter((score) => !isNaN(score));
 
-  console.log(coOpScores);
-
   const bestScoreCoOp = Math.max(...coOpScores, 0);
+
+  // Count the number of games, victories, and best score for each player
+  const playerStats = gameParams.stats.reduce((statsMap, game) => {
+    if (game.type === "Co-Op") {
+      return statsMap;
+    } else {
+      game.players.forEach((player) => {
+        const { name, points, victory } = player;
+        statsMap[name] = statsMap[name] || {
+          games: 0,
+          victories: 0,
+          bestScore: 0,
+        };
+        statsMap[name].games++;
+        if (victory) {
+          statsMap[name].victories++;
+        }
+        if (points > statsMap[name].bestScore) {
+          statsMap[name].bestScore = points;
+        }
+      });
+      return statsMap;
+    }
+  }, {});
+
+  // Convert playerStats object to an array of player objects
+  const playerData = Object.entries(playerStats).map(
+    ([playerName, { games, victories, bestScore }]) => ({
+      name: playerName,
+      games,
+      victories,
+      bestScore,
+    })
+  );
+
+  // Render each player item in the FlatList
+  const renderPlayersStats = ({ item }) => (
+    <View style={styles.playerContainer}>
+      <View
+        style={[
+          styles.horizontalViewPlayers,
+          { alignItems: "center", justifyContent: "center" },
+        ]}
+      >
+        <Text style={[styles.gameInfo, { opacity: 1, color: "#EEEEEE" }]}>
+          {item.name}
+        </Text>
+      </View>
+      <View style={styles.horizontalViewPlayers}>
+        <Text style={styles.playerInfo}>Games:</Text>
+        <Text style={styles.playerInfoValue}>{item.games}</Text>
+      </View>
+      <View style={styles.horizontalViewPlayers}>
+        <Text style={styles.playerInfo}>Victories:</Text>
+        <Text style={styles.playerInfoValue}>{item.victories}</Text>
+      </View>
+      <View style={styles.horizontalViewPlayers}>
+        <Text style={styles.playerInfo}>Best Score: </Text>
+        <Text style={styles.playerInfoValue}>{item.bestScore}</Text>
+      </View>
+      <View style={styles.horizontalViewPlayers}>
+        <Text style={styles.playerInfo}>Win rate:</Text>
+        <Text style={styles.playerInfoValue}>
+          {((item.victories / item.games) * 100).toFixed(2)}%
+        </Text>
+      </View>
+    </View>
+  );
 
   return (
     <>
@@ -169,6 +235,12 @@ const BoardGameStats = (props) => {
           {gameParams.stats?.length - coOpGamesCount > 0 ? (
             <View>
               <Text style={styles.gameInfo}>Rivalry</Text>
+              <FlatList
+                data={playerData}
+                keyExtractor={(item) => item.name}
+                renderItem={renderPlayersStats}
+                horizontal
+              />
               <View style={styles.horizontalContainer}>
                 <View style={styles.horizontalView}>
                   <Text style={styles.gameInfo}>Games:</Text>
@@ -327,6 +399,7 @@ const styles = StyleSheet.create({
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
+    color: "#EEEEEE",
   },
   closeButton: {
     backgroundColor: "#00ADB5",
@@ -363,6 +436,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#EEEEEE",
+  },
+  playerContainer: {
+    backgroundColor: "#393E46",
+    margin: 3,
+    borderRadius: 8,
+  },
+  playerInfo: {
+    // fontSize: 16,
+    // paddingVertical: 5,
+    opacity: 0.7,
+    color: "#00ADB5",
+    margin: 2,
+  },
+  playerInfoValue: {
+    // fontSize: 16,
+    // paddingVertical: 5,
+    margin: 2,
+    color: "#EEEEEE",
+  },
+  horizontalViewPlayers: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    // padding: 10,
+    backgroundColor: "#393E46",
+    borderRadius: 20,
+    margin: 2,
   },
 });
 

@@ -363,9 +363,9 @@ const Collection = (props) => {
           >
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBottom]}>
+          {/* <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.buttonBottom]}
             onPress={() => props.navigation.navigate("Players")}

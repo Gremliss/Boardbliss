@@ -180,9 +180,9 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
           <View style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </View>
-          <TouchableOpacity style={[styles.buttonBottom]}>
+          {/* <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.buttonBottom]}
             onPress={() => navigation.navigate("Players")}

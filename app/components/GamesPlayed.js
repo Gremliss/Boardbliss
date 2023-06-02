@@ -37,7 +37,6 @@ const GamesPlayed = (props) => {
   };
   useEffect(() => {
     fetchCollection();
-    console.log(collection);
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackButton
@@ -278,7 +277,6 @@ const GamesPlayed = (props) => {
   };
 
   useEffect(() => {
-    console.log(gameParams.stats);
     setCollection((prevCollection) =>
       prevCollection.map((obj) =>
         obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj

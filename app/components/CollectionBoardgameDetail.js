@@ -48,7 +48,6 @@ const CollectionBoardgameDetail = (props) => {
   );
 
   const handleBackButton = () => {
-    console.log("backbutt");
     fetchGameParams();
     return;
   };
