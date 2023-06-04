@@ -85,25 +85,19 @@ const BoardGameStats = (props) => {
   const playerScores = gameParams.stats
     .filter((item) => item.players && typeof item.players === "object")
     .map((item) => item.players)
-    .map((players) => Object.values(players))
     .flat()
-    .map((score) => parseInt(score))
+    .map((player) => parseInt(player.points))
     .filter((score) => !isNaN(score));
 
   const averageScore =
     playerScores.length > 0
-      ? playerScores.reduce((sum, score) => sum + score, 0) /
-        playerScores.length
+      ? (
+          playerScores.reduce((sum, score) => sum + score, 0) /
+          playerScores.length
+        ).toFixed(2)
       : 0;
 
   const bestScore = Math.max(...playerScores, 0);
-
-  // const sumCoopPoints = gameParams.stats
-  // .filter(item => item.type === "Co-Op")
-  // .reduce((sum, game) => {
-  //   const coopPoints = game.coop.points;
-  //   return sum + (coopPoints !== null ? parseInt(coopPoints) : 0);
-  // }, 0);
 
   const coOpGames = gameParams.stats.filter((game) => game.type === "Co-Op");
   let totalPoints = 0;

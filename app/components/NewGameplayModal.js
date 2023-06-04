@@ -43,30 +43,32 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
   const handleSubmit = () => {
     var winningPlayer;
-    if (addGameplay.type === "Rivalry") {
-      if (addGameplay.scoreType === "Points") {
-        winningPlayer = addGameplay.players.reduce(
-          (winPlayer, currentPlayer) => {
-            if (currentPlayer.points > winPlayer.points) {
-              return currentPlayer;
-            } else {
-              return winPlayer;
+    if (addGameplay.players.length > 0) {
+      if (addGameplay.type === "Rivalry") {
+        if (addGameplay.scoreType === "Points") {
+          winningPlayer = addGameplay.players?.reduce(
+            (winPlayer, currentPlayer) => {
+              if (currentPlayer.points > winPlayer.points) {
+                return currentPlayer;
+              } else {
+                return winPlayer;
+              }
             }
-          }
-        );
-      } else {
-        winningPlayer = addGameplay.players.reduce(
-          (winPlayer, currentPlayer) => {
-            if (currentPlayer.points < winPlayer.points) {
-              return currentPlayer;
-            } else {
-              return winPlayer;
+          );
+        } else {
+          winningPlayer = addGameplay.players?.reduce(
+            (winPlayer, currentPlayer) => {
+              if (currentPlayer.points < winPlayer.points) {
+                return currentPlayer;
+              } else {
+                return winPlayer;
+              }
             }
-          }
-        );
-      }
-      if (winningPlayer) {
-        winningPlayer.victory = true;
+          );
+        }
+        if (winningPlayer) {
+          winningPlayer.victory = true;
+        }
       }
     }
 
@@ -188,13 +190,11 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 color="white"
               />
             </View>
-            <View
-              style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
-            >
+            {/* <View style={[styles.centerStyle, { flex: 1, padding: 2 }]}>
               <Text>{index + 1}</Text>
-            </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
-              <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
+            </View> */}
+            <View style={[styles.cellContainer]}>
+              <Text>{item.name}</Text>
             </View>
           </View>
         </View>
@@ -312,13 +312,15 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               data={players}
               renderItem={renderItem}
               keyExtractor={(item, index) => `${index}`}
+              horizontal
             />
           </View>
-          <View style={[{ flex: 2, backgroundColor: "#00ADB5" }]}>
+          <View style={[{ flex: 1 }]}>
             <FlatList
               data={players}
               renderItem={renderActivePlayer}
               keyExtractor={(item, index) => `${index}`}
+              horizontal
             />
           </View>
 
@@ -526,6 +528,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     borderRadius: 8,
     margin: 1,
+    padding: 10,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -535,10 +538,7 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 1,
-    borderColor: "#222831",
-    paddingVertical: 4,
+    padding: 5,
   },
 });
 
