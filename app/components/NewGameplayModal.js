@@ -42,33 +42,25 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    var winningPlayer;
+    let winningPlayers = [];
     if (addGameplay.players.length > 0) {
       if (addGameplay.type === "Rivalry") {
+        var maxScore;
         if (addGameplay.scoreType === "Points") {
-          winningPlayer = addGameplay.players?.reduce(
-            (winPlayer, currentPlayer) => {
-              if (currentPlayer.points > winPlayer.points) {
-                return currentPlayer;
-              } else {
-                return winPlayer;
-              }
-            }
+          maxScore = Math.max(
+            ...addGameplay.players.map((player) => player.points)
           );
         } else {
-          winningPlayer = addGameplay.players?.reduce(
-            (winPlayer, currentPlayer) => {
-              if (currentPlayer.points < winPlayer.points) {
-                return currentPlayer;
-              } else {
-                return winPlayer;
-              }
-            }
+          maxScore = Math.min(
+            ...addGameplay.players.map((player) => player.points)
           );
         }
-        if (winningPlayer) {
-          winningPlayer.victory = true;
-        }
+        winningPlayers = addGameplay.players.filter(
+          (player) => player.points === maxScore
+        );
+        winningPlayers.forEach((player) => {
+          player.victory = true;
+        });
       }
     }
 
@@ -216,7 +208,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                       const updatedPlayers = prevState.players.map((player) => {
                         if (player.name === item.name) {
                           // Update points of existing player
-                          return { ...player, points: text };
+                          return { ...player, points: parseInt(text) };
                         }
                         return player;
                       });
@@ -227,7 +219,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                           (player) => player.name === item.name
                         )
                       ) {
-                        updatedPlayers.push({ name: item.name, points: text });
+                        updatedPlayers.push({
+                          name: item.name,
+                          points: parseInt(text),
+                        });
                       }
                       return { ...prevState, players: updatedPlayers };
                     });
@@ -307,7 +302,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          <View style={[{ flex: 1 }]}>
+          <View style={[{}]}>
             <FlatList
               data={players}
               renderItem={renderItem}
@@ -315,7 +310,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               horizontal
             />
           </View>
-          <View style={[{ flex: 1 }]}>
+          <View style={[{}]}>
             <FlatList
               data={players}
               renderItem={renderActivePlayer}
@@ -513,13 +508,13 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     position: "absolute",
-    left: 25,
+    right: 25,
     bottom: 20,
     zIndex: 1,
   },
   closeBtn: {
     position: "absolute",
-    right: 25,
+    left: 25,
     bottom: 20,
     zIndex: 1,
     backgroundColor: "#9D9D9D",

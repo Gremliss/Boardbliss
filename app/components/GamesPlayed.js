@@ -267,13 +267,6 @@ const GamesPlayed = (props) => {
     const newGameplay = gameParams.stats.filter((n) => n.isChecked !== true);
 
     setGameParams({ ...gameParams, stats: newGameplay });
-    setCollection((prevCollection) =>
-      prevCollection.map((obj) =>
-        obj.id === gameParams.id ? (obj.stats = newGameplay) : obj
-      )
-    );
-    // setCollection(newGameplay);
-    // await AsyncStorage.setItem("players", JSON.stringify(newGameplay));
   };
 
   useEffect(() => {

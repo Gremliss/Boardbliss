@@ -297,13 +297,13 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     position: "absolute",
-    left: 25,
+    right: 25,
     bottom: 20,
     zIndex: 1,
   },
   closeBtn: {
     position: "absolute",
-    right: 25,
+    left: 25,
     bottom: 20,
     zIndex: 1,
     backgroundColor: "#9D9D9D",
