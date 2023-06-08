@@ -13,7 +13,7 @@ import {
   Modal,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { Fontisto } from "@expo/vector-icons";
+import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NewPlayerModal from "../components/NewPlayerModal";
 
@@ -26,10 +26,7 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [data, setData] = useState();
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleOnSubmitModal = async () => {
-    console.log("submit Modal");
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleKeyboardClose = () => {
     Keyboard.dismiss();
@@ -38,6 +35,7 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
     setSearchText(text);
   };
   const handleSearchButton = () => {
+    setLoading(true);
     var searchLink = `https://boardgamegeek.com/xmlapi2/search?query=${searchText}`;
     axios
       .get(searchLink)
@@ -49,10 +47,12 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
           } else {
             setData(result);
           }
+          setLoading(false);
         });
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
       });
   };
   useEffect(() => {
@@ -106,10 +106,6 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
     navigation.navigate("BoardGameDetail", { stringGameId });
   };
 
-  const openCollection = async () => {
-    navigation.navigate("Collection");
-  };
-
   const addPlayer = async (text) => {
     console.log("add player");
     console.log(text);
@@ -128,18 +124,8 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
   };
 
-  const displayExistAlert = () => {
-    Alert.alert(
-      "Duplicate",
-      "Item with that name already exists",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
-  };
-  const displayAddedAlert = () => {
-    Alert.alert("Player added", "", [{ text: "Ok", onPress: () => null }], {
-      cancelable: true,
-    });
+  const handleOnClear = () => {
+    setSearchText("");
   };
 
   return (
@@ -158,17 +144,32 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
             placeholder="Search game"
             style={[styles.searchBar]}
             placeholderTextColor="#EEEEEE70"
+            value={searchText}
+            onSubmitEditing={handleSearchButton}
+          />
+          <AntDesign
+            name="close"
+            size={20}
+            onPress={handleOnClear}
+            style={styles.clearIcon}
           />
           <TouchableOpacity style={[styles.icon]} onPress={handleSearchButton}>
             <Fontisto name={"zoom"} size={24} color={"#EEEEEE"} />
           </TouchableOpacity>
         </View>
 
-        <FlatList
-          data={data.items.item}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => `${index}`}
-        />
+        {loading ? (
+          <View style={[styles.loadingView]}>
+            <Text>Loading data...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={data.items.item}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => `${index}`}
+            keyboardShouldPersistTaps="always"
+          />
+        )}
 
         <View style={[styles.bottomContainer]}>
           <TouchableOpacity
@@ -220,7 +221,6 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: "#393E46",
     fontSize: 20,
-    textAlign: "center",
     color: "#EEEEEE",
     padding: 10,
     flex: 5,
@@ -282,6 +282,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#EEEEEE",
+  },
+  clearIcon: {
+    position: "absolute",
+    right: 80,
+    alignSelf: "center",
+    color: "#EEEEEE",
+    zIndex: 1,
   },
 });
 

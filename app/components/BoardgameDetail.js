@@ -115,6 +115,7 @@ const BoardGameDetail = (props) => {
           <View style={styles.boargameImgContainer}>
             <Image
               style={styles.boargameImg}
+              resizeMode="contain"
               source={{
                 uri: `${game.image}`,
               }}

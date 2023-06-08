@@ -42,49 +42,55 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    var winningPlayer;
-    if (addGameplay.type === "Rivalry") {
-      if (addGameplay.scoreType === "Points") {
-        winningPlayer = addGameplay.players.reduce(
-          (winPlayer, currentPlayer) => {
-            if (currentPlayer.points > winPlayer.points) {
-              return currentPlayer;
-            } else {
-              return winPlayer;
-            }
+    if (
+      parseInt(addGameplay.date.day) < 1 ||
+      parseInt(addGameplay.date.day) > 59
+    ) {
+      displayDateAlert(1, 59, "day");
+    } else if (
+      parseInt(addGameplay.date.month) > 12 ||
+      parseInt(addGameplay.date.month) < 1
+    ) {
+      displayDateAlert(1, 12, "month");
+    } else {
+      let winningPlayers = [];
+      if (addGameplay.players.length > 0) {
+        if (addGameplay.type === "Rivalry") {
+          var maxScore;
+          if (addGameplay.scoreType === "Points") {
+            maxScore = Math.max(
+              ...addGameplay.players.map((player) => player.points)
+            );
+          } else {
+            maxScore = Math.min(
+              ...addGameplay.players.map((player) => player.points)
+            );
           }
-        );
-      } else {
-        winningPlayer = addGameplay.players.reduce(
-          (winPlayer, currentPlayer) => {
-            if (currentPlayer.points < winPlayer.points) {
-              return currentPlayer;
-            } else {
-              return winPlayer;
-            }
-          }
-        );
+          winningPlayers = addGameplay.players.filter(
+            (player) => player.points === maxScore
+          );
+          winningPlayers.forEach((player) => {
+            player.victory = true;
+          });
+        }
       }
-      if (winningPlayer) {
-        winningPlayer.victory = true;
-      }
-    }
 
-    onSubmit(addGameplay);
-    setAddGameplay({
-      id: Date.now(),
-      date: {
-        day: currentDate.getDate(),
-        month: currentDate.getMonth() + 1,
-        year: currentDate.getFullYear(),
-      },
-      players: [],
-      type: "Rivalry",
-      scoreType: "Points",
-      isChecked: false,
-      duration: { hours: null, min: null },
-    });
-    onClose();
+      onSubmit(addGameplay);
+      setAddGameplay({
+        id: Date.now(),
+        date: {
+          day: currentDate.getDate(),
+          month: currentDate.getMonth() + 1,
+          year: currentDate.getFullYear(),
+        },
+        players: [],
+        type: "Rivalry",
+        scoreType: "Points",
+        isChecked: false,
+        duration: { hours: null, min: null },
+      });
+      onClose();
+    }
   };
 
   const closeModal = () => {
@@ -156,9 +162,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     fetchPlayers();
   };
 
-  const displayDateAlert = (num1, num2) => {
+  const displayDateAlert = (num1, num2, date) => {
     Alert.alert(
-      "Wrong number",
+      `Wrong number for ${date}`,
       `You must enter a number between ${num1} and ${num2}`,
       [{ text: "Ok", onPress: () => null }],
       { cancelable: true }
@@ -188,13 +194,11 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 color="white"
               />
             </View>
-            <View
-              style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
-            >
+            {/* <View style={[styles.centerStyle, { flex: 1, padding: 2 }]}>
               <Text>{index + 1}</Text>
-            </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
-              <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
+            </View> */}
+            <View style={[styles.cellContainer]}>
+              <Text>{item.name}</Text>
             </View>
           </View>
         </View>
@@ -216,7 +220,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                       const updatedPlayers = prevState.players.map((player) => {
                         if (player.name === item.name) {
                           // Update points of existing player
-                          return { ...player, points: text };
+                          return { ...player, points: parseInt(text) };
                         }
                         return player;
                       });
@@ -227,7 +231,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                           (player) => player.name === item.name
                         )
                       ) {
-                        updatedPlayers.push({ name: item.name, points: text });
+                        updatedPlayers.push({
+                          name: item.name,
+                          points: parseInt(text),
+                        });
                       }
                       return { ...prevState, players: updatedPlayers };
                     });
@@ -307,18 +314,20 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          <View style={[{ flex: 1 }]}>
+          <View style={[{}]}>
             <FlatList
               data={players}
               renderItem={renderItem}
               keyExtractor={(item, index) => `${index}`}
+              horizontal
             />
           </View>
-          <View style={[{ flex: 2, backgroundColor: "#00ADB5" }]}>
+          <View style={[{}]}>
             <FlatList
               data={players}
               renderItem={renderActivePlayer}
               keyExtractor={(item, index) => `${index}`}
+              horizontal
             />
           </View>
 
@@ -344,16 +353,16 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 const sanitizedText = text.replace(/[^0-9]/g, "");
 
                 // Check if the sanitized text is a number between 1 and 59
-                if (sanitizedText >= 1 && sanitizedText <= 59) {
+                if (sanitizedText <= 59) {
                   setAddGameplay((prevState) => ({
                     ...prevState,
                     duration: {
                       ...prevState.duration,
-                      min: sanitizedText,
+                      min: parseInt(sanitizedText),
                     },
                   }));
                 } else {
-                  displayDateAlert(1, 59);
+                  displayDateAlert(0, 59);
                 }
               }}
               placeholder="Minutes"
@@ -372,16 +381,19 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
-
+                setAddGameplay((prevState) => ({
+                  ...prevState,
+                  date: { ...prevState.date, day: parseInt(sanitizedText) },
+                }));
                 // Check if the sanitized text is a number between 1 and 31
-                if (sanitizedText >= 1 && sanitizedText <= 31) {
-                  setAddGameplay((prevState) => ({
-                    ...prevState,
-                    date: { ...prevState.date, day: sanitizedText },
-                  }));
-                } else {
-                  displayDateAlert(1, 31);
-                }
+                // if (sanitizedText >= 1 && sanitizedText <= 31) {
+                //   setAddGameplay((prevState) => ({
+                //     ...prevState,
+                //     date: { ...prevState.date, day: sanitizedText },
+                //   }));
+                // } else {
+                //   displayDateAlert(1, 31);
+                // }
               }}
               placeholder="Day"
               style={[styles.inputTextStyle]}
@@ -393,16 +405,19 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
-
+                setAddGameplay((prevState) => ({
+                  ...prevState,
+                  date: { ...prevState.date, month: parseInt(sanitizedText) },
+                }));
                 // Check if the sanitized text is a number between 1 and 12
-                if (sanitizedText >= 1 && sanitizedText <= 12) {
-                  setAddGameplay((prevState) => ({
-                    ...prevState,
-                    date: { ...prevState.date, month: sanitizedText },
-                  }));
-                } else {
-                  displayDateAlert(1, 12);
-                }
+                // if (sanitizedText >= 1 && sanitizedText <= 12) {
+                //   setAddGameplay((prevState) => ({
+                //     ...prevState,
+                //     date: { ...prevState.date, month: sanitizedText },
+                //   }));
+                // } else {
+                //   displayDateAlert(1, 12);
+                // }
               }}
               placeholder="Month"
               style={[styles.inputTextStyle]}
@@ -511,13 +526,13 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     position: "absolute",
-    left: 25,
+    right: 25,
     bottom: 20,
     zIndex: 1,
   },
   closeBtn: {
     position: "absolute",
-    right: 25,
+    left: 25,
     bottom: 20,
     zIndex: 1,
     backgroundColor: "#9D9D9D",
@@ -526,6 +541,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#00ADB5",
     borderRadius: 8,
     margin: 1,
+    padding: 10,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -535,10 +551,7 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 1,
-    borderColor: "#222831",
-    paddingVertical: 4,
+    padding: 5,
   },
 });
 

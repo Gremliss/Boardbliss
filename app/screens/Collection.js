@@ -44,6 +44,18 @@ const Collection = (props) => {
     return () => backHandler.remove();
   }, [props.navigation]);
 
+  collection?.sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+    if (nameA < nameB) {
+      return -1;
+    } else if (nameA > nameB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
   useFocusEffect(
     React.useCallback(() => {
       fetchCollection();
@@ -199,7 +211,8 @@ const Collection = (props) => {
   };
 
   const handleFilter = async (filterItems) => {
-    var filteredCollection = collection;
+    const result = await AsyncStorage.getItem("collection");
+    var filteredCollection = JSON.parse(result);
     if (filterItems.yearpublished) {
       filteredCollection = filteredCollection.filter((item) => {
         if (item.yearpublished) {
@@ -338,6 +351,7 @@ const Collection = (props) => {
         keyExtractor={(item, index) => `${index}`}
         showsVerticalScrollIndicator={true}
         showsHorizontalScrollIndicator={true}
+        keyboardShouldPersistTaps="always"
       />
       {longPressActive ? (
         <View>
