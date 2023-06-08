@@ -23,7 +23,7 @@ const windowHeight = Dimensions.get("window").height;
 const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -55,31 +55,6 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
         setLoading(false);
       });
   };
-  useEffect(() => {
-    axios
-      .get("https://boardgamegeek.com/xmlapi2/hot")
-      .then((response) => {
-        const xmlData = response.data;
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error(error);
-          } else {
-            setData(result);
-          }
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  if (!data) {
-    return (
-      <View style={[styles.loadingView]}>
-        <Text>Loading data...</Text>
-      </View>
-    );
-  }
 
   const renderItem = ({ item, index }) => {
     if (!item?.name || item?.$?.type !== "boardgame") return null;
@@ -164,7 +139,7 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
           </View>
         ) : (
           <FlatList
-            data={data.items.item}
+            data={data.items?.item}
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
             keyboardShouldPersistTaps="always"
