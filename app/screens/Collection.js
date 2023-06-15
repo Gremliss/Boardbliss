@@ -30,13 +30,13 @@ const Collection = (props) => {
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [checkAllItems, setCheckAllItems] = useState(false);
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
   };
   useEffect(() => {
-    console.log(collection);
     fetchCollection();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -121,7 +121,7 @@ const Collection = (props) => {
               <Text style={styles.yearText}>{item.yearpublished}</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text>{item.rating}</Text>
+              <Text>{parseFloat(item.rating).toFixed(2)}</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.maxPlayers}</Text>
@@ -284,6 +284,20 @@ const Collection = (props) => {
     }
   };
 
+  const handleCheckAllItems = async () => {
+    if (checkAllItems) {
+      collection.forEach((item) => {
+        item.isChecked = false;
+      });
+      setCheckAllItems(false);
+    } else {
+      collection.forEach((item) => {
+        item.isChecked = true;
+      });
+      setCheckAllItems(true);
+    }
+  };
+
   return (
     <>
       <StatusBar backgroundColor="green" />
@@ -393,6 +407,19 @@ const Collection = (props) => {
             </TouchableOpacity>
           </View>
         )}
+
+        {longPressActive ? (
+          <TouchableOpacity
+            onPress={() => handleCheckAllItems()}
+            style={styles.checkAllIcon}
+          >
+            <MaterialIcons
+              name={checkAllItems ? "check-box" : "check-box-outline-blank"}
+              size={20}
+              color="white"
+            />
+          </TouchableOpacity>
+        ) : null}
 
         <NewGameModal
           visible={modalVisible}
@@ -519,6 +546,12 @@ const styles = StyleSheet.create({
     right: 70,
     alignSelf: "center",
     color: "#EEEEEE",
+  },
+  checkAllIcon: {
+    position: "absolute",
+    left: 5,
+    top: 30,
+    zIndex: 1,
   },
 });
 
