@@ -93,6 +93,10 @@ const CollectionBoardgameDetail = (props) => {
               <Text style={styles.gameInfoValue}>{gameParams.maxPlaytime}</Text>
             </View>
           </View>
+          <View style={styles.horizontalView}>
+            <Text style={styles.gameInfo}>Rating BGG:</Text>
+            <Text style={styles.gameInfoValue}>{gameParams.rating}</Text>
+          </View>
 
           <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
