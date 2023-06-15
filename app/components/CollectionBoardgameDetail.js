@@ -93,6 +93,10 @@ const CollectionBoardgameDetail = (props) => {
               <Text style={styles.gameInfoValue}>{gameParams.maxPlaytime}</Text>
             </View>
           </View>
+          <View style={styles.horizontalView}>
+            <Text style={styles.gameInfo}>Rating BGG:</Text>
+            <Text style={styles.gameInfoValue}>{gameParams.rating}</Text>
+          </View>
 
           <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
@@ -104,16 +108,6 @@ const CollectionBoardgameDetail = (props) => {
       <View style={[styles.bottomContainer]}>
         <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
           <Text style={[styles.textBtn]}>{gameParams.name}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={() =>
-            props.navigation.navigate("EditBoardGame", {
-              gameParams,
-            })
-          }
-        >
-          <Text style={[styles.textBtn]}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonBottom]}
@@ -134,6 +128,16 @@ const CollectionBoardgameDetail = (props) => {
           }
         >
           <Text style={[styles.textBtn]}>Games played</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonBottom]}
+          onPress={() =>
+            props.navigation.navigate("EditBoardGame", {
+              gameParams,
+            })
+          }
+        >
+          <Text style={[styles.textBtn]}>Edit</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -158,9 +162,10 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: "#00ADB5",
+    color: "#EEEEEE",
     fontWeight: "bold",
     marginVertical: 10,
+    textAlign: "center",
   },
   horizontalContainer: {
     flexDirection: "row",

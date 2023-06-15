@@ -398,16 +398,6 @@ const GamesPlayed = (props) => {
           <TouchableOpacity
             style={[styles.buttonBottom]}
             onPress={() =>
-              props.navigation.navigate("EditBoardGame", {
-                gameParams,
-              })
-            }
-          >
-            <Text style={[styles.textBtn]}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() =>
               props.navigation.navigate("BoardGameStats", {
                 gameParams,
               })
@@ -417,6 +407,16 @@ const GamesPlayed = (props) => {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Games played</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("EditBoardGame", {
+                gameParams,
+              })
+            }
+          >
+            <Text style={[styles.textBtn]}>Edit</Text>
           </TouchableOpacity>
         </View>
       )}

@@ -6,7 +6,7 @@ import BoardGameDetail from "./app/components/BoardGameDetail";
 import CollectionBoardgameDetail from "./app/components/CollectionBoardgameDetail";
 import EditBoardGame from "./app/components/EditBoardGame";
 import Collection from "./app/screens/Collection";
-import MainScreen from "./app/screens/MainScreen";
+import SearchBgg from "./app/screens/SearchBgg";
 import Players from "./app/screens/Players";
 import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
@@ -28,8 +28,8 @@ export default function App() {
     fetchCollection();
   }, []);
 
-  const RenderMainScreen = (props) => (
-    <MainScreen
+  const RenderSearchBgg = (props) => (
+    <SearchBgg
       {...props}
       renderedCollection={collection}
       renderedPlayers={players}
@@ -47,8 +47,8 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          component={RenderMainScreen}
-          name="MainScreen"
+          component={RenderSearchBgg}
+          name="SearchBgg"
           options={{
             title: "Boardbliss",
           }}

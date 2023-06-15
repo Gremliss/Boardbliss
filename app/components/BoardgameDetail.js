@@ -25,7 +25,7 @@ const BoardGameDetail = (props) => {
 
   useEffect(() => {
     axios
-      .get(`https://boardgamegeek.com/xmlapi2/thing?id=${gameId}`)
+      .get(`https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`)
       .then((response) => {
         const xmlData = response.data;
         xml2js.parseString(xmlData, (error, result) => {
@@ -61,19 +61,20 @@ const BoardGameDetail = (props) => {
     if (!collection) {
       collection = [];
     }
-    if (collection.some((obj) => obj.name === game.name[0].$.value)) {
+    if (collection.some((obj) => obj.name === game.name[0]._)) {
       displayExistAlert();
     } else {
       const newGame = {
-        name: game.name[0].$.value,
-        yearpublished: game.yearpublished[0]?.$.value,
-        minPlayers: game.minplayers[0]?.$.value,
-        maxPlayers: game.maxplayers[0]?.$.value,
-        minPlaytime: game.minplaytime[0]?.$.value,
-        maxPlaytime: game.maxplaytime[0]?.$.value,
+        name: game.name[0]._,
+        yearpublished: game.yearpublished[0],
+        minPlayers: game.minplayers[0],
+        maxPlayers: game.maxplayers[0],
+        minPlaytime: game.minplaytime[0],
+        maxPlaytime: game.maxplaytime[0],
         bggImage: game.image,
         id: gameId,
         owner: owner,
+        rating: fixedRating,
         isChecked: false,
         stats: [],
       };
@@ -105,8 +106,11 @@ const BoardGameDetail = (props) => {
     );
   };
 
-  var game = detailData?.items?.item[0];
+  var game = detailData?.boardgames?.boardgame[0];
   var decodedDescription = decode(`${game.description}`);
+  var ratingBgg = game.statistics[0].ratings[0].average;
+  var fixedRating = parseFloat(ratingBgg).toFixed(2);
+
   return (
     <>
       <StatusBar />
@@ -121,40 +125,34 @@ const BoardGameDetail = (props) => {
               }}
             />
           </View>
-          <Text style={styles.gameName}>{game.name[0].$.value}</Text>
+          <Text style={styles.gameName}>{game.name[0]._}</Text>
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Year published:</Text>
-            <Text style={styles.gameInfoValue}>
-              {game.yearpublished[0]?.$.value}
-            </Text>
+            <Text style={styles.gameInfoValue}>{game.yearpublished[0]}</Text>
           </View>
           <View style={styles.horizontalContainer}>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Min players:</Text>
-              <Text style={styles.gameInfoValue}>
-                {game.minplayers[0]?.$.value}
-              </Text>
+              <Text style={styles.gameInfoValue}>{game.minplayers[0]}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Max players:</Text>
-              <Text style={styles.gameInfoValue}>
-                {game.maxplayers[0]?.$.value}
-              </Text>
+              <Text style={styles.gameInfoValue}>{game.maxplayers[0]}</Text>
             </View>
           </View>
           <View style={styles.horizontalContainer}>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Min playtime:</Text>
-              <Text style={styles.gameInfoValue}>
-                {game.minplaytime[0]?.$.value}
-              </Text>
+              <Text style={styles.gameInfoValue}>{game.minplaytime[0]}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Max playtime:</Text>
-              <Text style={styles.gameInfoValue}>
-                {game.maxplaytime[0]?.$.value}
-              </Text>
+              <Text style={styles.gameInfoValue}>{game.maxplaytime[0]}</Text>
             </View>
+          </View>
+          <View style={styles.horizontalView}>
+            <Text style={styles.gameInfo}>Rating BGG:</Text>
+            <Text style={styles.gameInfoValue}>{fixedRating}</Text>
           </View>
           <Text style={styles.description}>{decodedDescription}</Text>
           <TouchableOpacity onPress={() => addToCollection("You")}>
