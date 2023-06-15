@@ -178,9 +178,6 @@ const EditBoardGame = (props) => {
         >
           <Text style={[styles.textBtn]}>{gameParams.name}</Text>
         </TouchableOpacity>
-        <View style={[styles.buttonBottom, { opacity: 1 }]}>
-          <Text style={[styles.textBtn]}>Edit</Text>
-        </View>
         <TouchableOpacity
           style={[styles.buttonBottom]}
           onPress={() =>
@@ -201,6 +198,9 @@ const EditBoardGame = (props) => {
         >
           <Text style={[styles.textBtn]}>Games played</Text>
         </TouchableOpacity>
+        <View style={[styles.buttonBottom, { opacity: 1 }]}>
+          <Text style={[styles.textBtn]}>Edit</Text>
+        </View>
       </View>
     </>
   );

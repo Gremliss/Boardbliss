@@ -11,6 +11,8 @@ import {
   Keyboard,
   TouchableOpacity,
   Modal,
+  BackHandler,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
@@ -20,13 +22,17 @@ import NewPlayerModal from "../components/NewPlayerModal";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
+const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
+  const [userCollection, setUserCollection] = useState([]);
+  const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  var countUserGamesToAdd = 0;
 
   const handleKeyboardClose = () => {
     Keyboard.dismiss();
@@ -56,6 +62,80 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
       });
   };
 
+  const handleSearchUserCollectionButton = async () => {
+    setLoading(true);
+    var searchLink = `https://api.geekdo.com/xmlapi/collection/${searchUserCollectionText}`;
+    axios
+      .get(searchLink)
+      .then((response) => {
+        const xmlData = response.data;
+        xml2js.parseString(xmlData, (error, result) => {
+          if (error) {
+            console.error(error);
+          } else {
+            result.items.item.forEach((item) => {
+              addToCollection(item);
+            });
+            displayAddAlert();
+            countUserGamesToAdd = 0;
+          }
+          setLoading(false);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+    setUserCollection([]);
+  };
+
+  const addToCollection = async (item) => {
+    if (!collection) {
+      collection = [];
+    }
+
+    const isGameAlreadyExists = collection.some(
+      (obj) => obj.name === item.name[0]._
+    );
+    const isNotOwned = item.status[0].$.own !== "1";
+    if (!isGameAlreadyExists && !isNotOwned) {
+      countUserGamesToAdd++;
+      const newGame = {
+        name: item.name[0]._,
+        yearpublished: item.yearpublished[0],
+        minPlayers: item.stats[0].$.minplayers,
+        maxPlayers: item.stats[0].$.maxplayers,
+        minPlaytime: item.stats[0].$.minplaytime,
+        maxPlaytime: item.stats[0].$.maxplaytime,
+        bggImage: item.image[0],
+        id: Date.now(),
+        owner: "You",
+        rating: item.stats[0].rating[0].average[0].$.value,
+        isChecked: false,
+        stats: [],
+      };
+
+      updatedCollection.push(newGame);
+    }
+  };
+
+  const displayAddAlert = () => {
+    Alert.alert(
+      `Are you sure you want to add ${countUserGamesToAdd} games to your collection`,
+      "",
+      [
+        { text: "Yes", onPress: () => addUserCollection() },
+        { text: "Cancel", onPress: () => null },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const addUserCollection = async () => {
+    var newCollection = [...collection, ...updatedCollection];
+    await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
+  };
+
   const renderItem = ({ item, index }) => {
     if (!item?.name || item?.$?.type !== "boardgame") return null;
 
@@ -76,14 +156,30 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
     );
   };
 
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
+  useEffect(() => {
+    fetchCollection();
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackButton
+    );
+    return () => backHandler.remove();
+  }, [navigation]);
+
+  const handleBackButton = () => {
+    fetchCollection();
+    return;
+  };
+
   const openBoardgameDetail = (gameId) => {
     var stringGameId = gameId.toString();
     navigation.navigate("BoardGameDetail", { stringGameId });
   };
 
   const addPlayer = async (text) => {
-    console.log("add player");
-    console.log(text);
     if (!players) {
       players = [];
     }
@@ -95,7 +191,6 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
 
     const updatedPlayers = [...players, newPlayer];
     setPlayers(updatedPlayers);
-    console.log(updatedPlayers);
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
   };
 
@@ -106,13 +201,28 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
   return (
     <>
       <View style={[styles.container]}>
-        <TouchableOpacity onPress={handleKeyboardClose}>
-          {/* <View>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Text style={[styles.addButton]}>Add player</Text>
-            </TouchableOpacity>
-          </View> */}
-        </TouchableOpacity>
+        <View style={styles.searchRow}>
+          <TextInput
+            onChangeText={(text) => setSearchUserCollectionText(text)}
+            placeholder="Add BGG user collection"
+            style={[styles.searchBar]}
+            placeholderTextColor="#EEEEEE70"
+            value={searchUserCollectionText}
+            onSubmitEditing={handleSearchUserCollectionButton}
+          />
+          <AntDesign
+            name="close"
+            size={20}
+            onPress={() => setSearchUserCollectionText("")}
+            style={styles.clearIcon}
+          />
+          <TouchableOpacity
+            style={[styles.icon]}
+            onPress={handleSearchUserCollectionButton}
+          >
+            <AntDesign name={"plus"} size={24} color={"#EEEEEE"} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.searchRow}>
           <TextInput
             onChangeText={(text) => handleSearchText(text)}
@@ -139,7 +249,7 @@ const MainScreen = ({ navigation, renderedCollection, renderedPlayers }) => {
           </View>
         ) : (
           <FlatList
-            data={data.items?.item}
+            data={data?.items?.item}
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
             keyboardShouldPersistTaps="always"
@@ -230,10 +340,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   bottomContainer: {
-    // position: "absolute",
-    // bottom: 0,
-    // zIndex: 1,
-    // height: windowHeight / 6,
     width: windowWidth,
     flexDirection: "row",
     alignItems: "center",
@@ -267,4 +373,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+export default SearchBgg;

@@ -24,7 +24,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
   const [addGame, setAddGame] = useState({
     name: "",
     yearpublished: "",
-    owner: "you",
+    owner: "You",
     rating: "",
     minPlayers: "",
     maxPlayers: "",
@@ -74,7 +74,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     setAddGame({
       name: "",
       yearpublished: "",
-      owner: "you",
+      owner: "You",
       rating: "",
       minPlayers: "",
       maxPlayers: "",

@@ -320,6 +320,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               renderItem={renderItem}
               keyExtractor={(item, index) => `${index}`}
               horizontal
+              keyboardShouldPersistTaps="always"
             />
           </View>
           <View style={[{}]}>
@@ -328,6 +329,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               renderItem={renderActivePlayer}
               keyExtractor={(item, index) => `${index}`}
               horizontal
+              keyboardShouldPersistTaps="always"
             />
           </View>
 
@@ -383,7 +385,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 const sanitizedText = text.replace(/[^0-9]/g, "");
                 setAddGameplay((prevState) => ({
                   ...prevState,
-                  date: { ...prevState.date, day: parseInt(sanitizedText) },
+                  date: { ...prevState.date, day: sanitizedText },
                 }));
                 // Check if the sanitized text is a number between 1 and 31
                 // if (sanitizedText >= 1 && sanitizedText <= 31) {
@@ -407,7 +409,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 const sanitizedText = text.replace(/[^0-9]/g, "");
                 setAddGameplay((prevState) => ({
                   ...prevState,
-                  date: { ...prevState.date, month: parseInt(sanitizedText) },
+                  date: { ...prevState.date, month: sanitizedText },
                 }));
                 // Check if the sanitized text is a number between 1 and 12
                 // if (sanitizedText >= 1 && sanitizedText <= 12) {

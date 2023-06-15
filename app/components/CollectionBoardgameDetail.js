@@ -108,16 +108,6 @@ const CollectionBoardgameDetail = (props) => {
         <TouchableOpacity
           style={[styles.buttonBottom]}
           onPress={() =>
-            props.navigation.navigate("EditBoardGame", {
-              gameParams,
-            })
-          }
-        >
-          <Text style={[styles.textBtn]}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={() =>
             props.navigation.navigate("BoardGameStats", {
               gameParams,
             })
@@ -134,6 +124,16 @@ const CollectionBoardgameDetail = (props) => {
           }
         >
           <Text style={[styles.textBtn]}>Games played</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonBottom]}
+          onPress={() =>
+            props.navigation.navigate("EditBoardGame", {
+              gameParams,
+            })
+          }
+        >
+          <Text style={[styles.textBtn]}>Edit</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -158,9 +158,10 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: "#00ADB5",
+    color: "#EEEEEE",
     fontWeight: "bold",
     marginVertical: 10,
+    textAlign: "center",
   },
   horizontalContainer: {
     flexDirection: "row",

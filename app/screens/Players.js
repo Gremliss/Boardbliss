@@ -149,10 +149,6 @@ const Players = (props) => {
     await AsyncStorage.setItem("players", JSON.stringify(newPlayers));
   };
 
-  const openMainScreen = async () => {
-    props.navigation.navigate("MainScreen");
-  };
-
   const handleSearchText = async (text) => {
     setSearchText(text);
     if (!text.trim()) {
@@ -340,7 +336,7 @@ const Players = (props) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("MainScreen")}
+            onPress={() => props.navigation.navigate("SearchBgg")}
           >
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </TouchableOpacity>

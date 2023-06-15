@@ -8,6 +8,7 @@ import {
   Dimensions,
   FlatList,
   Keyboard,
+  StatusBar,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -45,8 +46,8 @@ const Collection = (props) => {
   }, [props.navigation]);
 
   collection?.sort((a, b) => {
-    const nameA = a.name.toLowerCase();
-    const nameB = b.name.toLowerCase();
+    const nameA = a.name?.toLowerCase();
+    const nameB = b.name?.toLowerCase();
     if (nameA < nameB) {
       return -1;
     } else if (nameA > nameB) {
@@ -90,7 +91,7 @@ const Collection = (props) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? "#a5bec0" : "#c3d4d5";
+    const backgroundColor = index % 2 === 0 ? "#ccdadb" : "#b4c9cb";
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -173,8 +174,8 @@ const Collection = (props) => {
     await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
   };
 
-  const openMainScreen = async () => {
-    props.navigation.navigate("MainScreen");
+  const openSearchBgg = async () => {
+    props.navigation.navigate("SearchBgg");
   };
 
   const handleSearchText = async (text) => {
@@ -284,128 +285,133 @@ const Collection = (props) => {
   };
 
   return (
-    <View style={[styles.container]}>
-      <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-        <View>
-          <TouchableOpacity
-            style={[styles.addButton]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text
-              style={[{ fontSize: 20, textAlign: "center", color: "#EEEEEE" }]}
+    <>
+      <StatusBar backgroundColor="green" />
+      <View style={[styles.container]}>
+        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
+          <View>
+            <TouchableOpacity
+              style={[styles.addButton]}
+              onPress={() => setModalVisible(true)}
             >
-              Add game
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableWithoutFeedback>
-      <View style={styles.searchRow}>
-        <TextInput
-          value={searchText}
-          onChangeText={(text) => handleSearchText(text)}
-          placeholder="Search collection"
-          style={[styles.searchBar, { color: "#EEEEEE" }]}
-          placeholderTextColor="#EEEEEE70"
-        />
-        <AntDesign
-          name="close"
-          size={20}
-          onPress={handleOnClear}
-          style={styles.clearIcon}
-        />
-        <TouchableOpacity
-          style={[styles.icon]}
-          onPress={() => setFilterModalVisible(true)}
-        >
-          <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={[styles.itemContainer, { opacity: 0.4 }]}>
-        <View style={[styles.flexRow]}>
-          <View
-            style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
-          >
-            <Text style={[{ color: "#EEEEEE" }]}>Nr</Text>
+              <Text
+                style={[
+                  { fontSize: 20, textAlign: "center", color: "#EEEEEE" },
+                ]}
+              >
+                Add game
+              </Text>
+            </TouchableOpacity>
           </View>
-          <View style={[styles.cellContainer, { flex: 4 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: "#EEEEEE" }]}>
-              Name
-            </Text>
-          </View>
-          <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Rating</Text>
-          </View>
-          <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Players</Text>
-          </View>
-          <View style={[styles.centerStyle, styles.cellContainer]}>
-            <Text style={[{ color: "#EEEEEE" }]}>Time</Text>
-          </View>
-        </View>
-      </View>
-
-      <FlatList
-        data={collection}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${index}`}
-        showsVerticalScrollIndicator={true}
-        showsHorizontalScrollIndicator={true}
-        keyboardShouldPersistTaps="always"
-      />
-      {longPressActive ? (
-        <View>
-          <RoundIconBtn
-            onPress={displayDeleteAlert}
-            antIconName={"delete"}
-            style={styles.deleteBtn}
+        </TouchableWithoutFeedback>
+        <View style={styles.searchRow}>
+          <TextInput
+            value={searchText}
+            onChangeText={(text) => handleSearchText(text)}
+            placeholder="Search collection"
+            style={[styles.searchBar, { color: "#EEEEEE" }]}
+            placeholderTextColor="#EEEEEE70"
           />
-          <RoundIconBtn
-            onPress={() => handleExitButton()}
-            antIconName={"close"}
-            style={styles.closeBtn}
+          <AntDesign
+            name="close"
+            size={20}
+            onPress={handleOnClear}
+            style={styles.clearIcon}
           />
-        </View>
-      ) : (
-        <View style={[styles.bottomContainer]}>
-          <View style={[styles.buttonBottom, { opacity: 1 }]}>
-            <Text style={[styles.textBtn]}>Collection</Text>
-          </View>
           <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={openMainScreen}
+            style={[styles.icon]}
+            onPress={() => setFilterModalVisible(true)}
           >
-            <Text style={[styles.textBtn]}>Search BGG</Text>
+            <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
           </TouchableOpacity>
-          {/* <TouchableOpacity style={[styles.buttonBottom]}>
+        </View>
+
+        <View style={[styles.itemContainer, { opacity: 0.8 }]}>
+          <View style={[styles.flexRow]}>
+            <View
+              style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
+            >
+              <Text style={[{ color: "#EEEEEE" }]}>Nr</Text>
+            </View>
+            <View style={[styles.cellContainer, { flex: 4 }]}>
+              <Text style={[{ paddingHorizontal: 8, color: "#EEEEEE" }]}>
+                Name
+              </Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text style={[{ color: "#EEEEEE" }]}>Rating</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text style={[{ color: "#EEEEEE" }]}>Players</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text style={[{ color: "#EEEEEE" }]}>Time</Text>
+            </View>
+          </View>
+        </View>
+
+        <FlatList
+          data={collection}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `${index}`}
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={true}
+          keyboardShouldPersistTaps="always"
+        />
+        {longPressActive ? (
+          <View>
+            <RoundIconBtn
+              onPress={displayDeleteAlert}
+              antIconName={"delete"}
+              style={styles.deleteBtn}
+            />
+            <RoundIconBtn
+              onPress={() => handleExitButton()}
+              antIconName={"close"}
+              style={styles.closeBtn}
+            />
+          </View>
+        ) : (
+          <View style={[styles.bottomContainer]}>
+            <View style={[styles.buttonBottom, { opacity: 1 }]}>
+              <Text style={[styles.textBtn]}>Collection</Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.buttonBottom]}
+              onPress={openSearchBgg}
+            >
+              <Text style={[styles.textBtn]}>Search BGG</Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity style={[styles.buttonBottom]}>
             <Text style={[styles.textBtn]}>Game Calendar</Text>
           </TouchableOpacity> */}
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("Players")}
-          >
-            <Text style={[styles.textBtn]}>Players</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+            <TouchableOpacity
+              style={[styles.buttonBottom]}
+              onPress={() => props.navigation.navigate("Players")}
+            >
+              <Text style={[styles.textBtn]}>Players</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
-      <NewGameModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={addNewGame}
-      />
-      <FilterModal
-        visible={filterModalVisible}
-        onClose={() => setFilterModalVisible(false)}
-        onSubmit={handleFilter}
-      />
-    </View>
+        <NewGameModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSubmit={addNewGame}
+        />
+        <FilterModal
+          visible={filterModalVisible}
+          onClose={() => setFilterModalVisible(false)}
+          onSubmit={handleFilter}
+        />
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#222831",
+    backgroundColor: "#EEEEEE",
     flex: 1,
   },
   searchRow: {
@@ -426,12 +432,12 @@ const styles = StyleSheet.create({
   icon: {
     textAlign: "center",
     flex: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: "#007980",
     justifyContent: "center",
     alignItems: "center",
   },
   addButton: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: "#007980",
     color: "#EEEEEE",
     padding: 10,
     paddingBottom: 12,
@@ -441,7 +447,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 120,
   },
   itemContainer: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: "#007980",
     borderRadius: 8,
     margin: 1,
   },
@@ -464,9 +470,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: "#222831",
+    borderColor: "#EEEEEE",
     borderWidth: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: "#007980",
     fontSize: 20,
     height: windowHeight / 8,
     opacity: 0.6,
@@ -500,7 +506,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRightWidth: 1,
     paddingHorizontal: 1,
-    borderColor: "#222831",
+    borderColor: "#EEEEEE",
     paddingVertical: 4,
   },
   centerStyle: {
