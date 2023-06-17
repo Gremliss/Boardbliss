@@ -26,6 +26,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const Collection = (props) => {
   const [collection, setCollection] = useState();
+  // const [displayedCollection, setDisplayedCollection] = useState();
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,6 +36,7 @@ const Collection = (props) => {
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
+    // if (result?.length) setDisplayedCollection(JSON.parse(result));
   };
   useEffect(() => {
     fetchCollection();
@@ -83,11 +85,16 @@ const Collection = (props) => {
   };
 
   const handleCheckButton = async (item) => {
-    item.isChecked == false
-      ? (item.isChecked = true)
-      : (item.isChecked = false);
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-    fetchCollection();
+    const updatedItems = collection.map((collectionItem) => {
+      if (collectionItem.id === item.id) {
+        return {
+          ...collectionItem,
+          isChecked: !collectionItem.isChecked,
+        };
+      }
+      return collectionItem;
+    });
+    setCollection(updatedItems);
   };
 
   const renderItem = ({ item, index }) => {
@@ -121,7 +128,9 @@ const Collection = (props) => {
               <Text style={styles.yearText}>{item.yearpublished}</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text>{parseFloat(item.rating).toFixed(2)}</Text>
+              {!isNaN(parseFloat(item.rating).toFixed(2)) ? (
+                <Text>{parseFloat(item.rating).toFixed(2)}</Text>
+              ) : null}
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.maxPlayers}</Text>
@@ -169,9 +178,14 @@ const Collection = (props) => {
   };
 
   const deleteCheckedGames = async () => {
-    const newCollection = collection.filter((n) => n.isChecked !== true);
-    setCollection(newCollection);
-    await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    const itemsToDelete = collection.filter((n) => n.isChecked === true);
+    const updatedResult = parsedResult.filter((item) => {
+      return !itemsToDelete.some((deleteItem) => deleteItem.id === item.id);
+    });
+    setCollection(updatedResult);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
   };
 
   const openSearchBgg = async () => {

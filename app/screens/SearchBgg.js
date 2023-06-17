@@ -13,6 +13,7 @@ import {
   Modal,
   BackHandler,
   Alert,
+  ToastAndroid,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
@@ -73,11 +74,15 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           if (error) {
             console.error(error);
           } else {
-            result.items.item.forEach((item) => {
-              addToCollection(item);
-            });
-            displayAddAlert();
-            countUserGamesToAdd = 0;
+            if (result.items?.item && result.items?.item.length > 0) {
+              result.items.item.forEach((item) => {
+                addToCollection(item);
+              });
+              displayAddAlert();
+              countUserGamesToAdd = 0;
+            } else {
+              ToastAndroid.show("BGG user not found", 2000);
+            }
           }
           setLoading(false);
         });
@@ -108,7 +113,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         minPlaytime: item.stats[0].$.minplaytime,
         maxPlaytime: item.stats[0].$.maxplaytime,
         bggImage: item.image[0],
-        id: Date.now(),
+        id: item.$.objectid,
         owner: "You",
         rating: item.stats[0].rating[0].average[0].$.value,
         isChecked: false,
