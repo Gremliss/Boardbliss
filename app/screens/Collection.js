@@ -314,7 +314,7 @@ const Collection = (props) => {
 
   return (
     <>
-      <StatusBar backgroundColor="green" />
+      <StatusBar />
       <View style={[styles.container]}>
         <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
           <View>
@@ -332,30 +332,45 @@ const Collection = (props) => {
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
-        <View style={styles.searchRow}>
-          <TextInput
-            value={searchText}
-            onChangeText={(text) => handleSearchText(text)}
-            placeholder="Search collection"
-            style={[styles.searchBar, { color: "#EEEEEE" }]}
-            placeholderTextColor="#EEEEEE70"
-          />
-          <AntDesign
-            name="close"
-            size={20}
-            onPress={handleOnClear}
-            style={styles.clearIcon}
-          />
-          <TouchableOpacity
-            style={[styles.icon]}
-            onPress={() => setFilterModalVisible(true)}
-          >
-            <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
-          </TouchableOpacity>
-        </View>
+
+        {longPressActive ? null : (
+          <View style={styles.searchRow}>
+            <TextInput
+              value={searchText}
+              onChangeText={(text) => handleSearchText(text)}
+              placeholder="Search collection"
+              style={[styles.searchBar, { color: "#EEEEEE" }]}
+              placeholderTextColor="#EEEEEE70"
+            />
+            <AntDesign
+              name="close"
+              size={20}
+              onPress={handleOnClear}
+              style={styles.clearIcon}
+            />
+            <TouchableOpacity
+              style={[styles.icon]}
+              onPress={() => setFilterModalVisible(true)}
+            >
+              <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View style={[styles.itemContainer, { opacity: 0.8 }]}>
           <View style={[styles.flexRow]}>
+            {longPressActive ? (
+              <TouchableOpacity
+                onPress={() => handleCheckAllItems()}
+                style={styles.checkIcon}
+              >
+                <MaterialIcons
+                  name={checkAllItems ? "check-box" : "check-box-outline-blank"}
+                  size={20}
+                  color="white"
+                />
+              </TouchableOpacity>
+            ) : null}
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
             >
@@ -421,19 +436,6 @@ const Collection = (props) => {
             </TouchableOpacity>
           </View>
         )}
-
-        {longPressActive ? (
-          <TouchableOpacity
-            onPress={() => handleCheckAllItems()}
-            style={styles.checkAllIcon}
-          >
-            <MaterialIcons
-              name={checkAllItems ? "check-box" : "check-box-outline-blank"}
-              size={20}
-              color="white"
-            />
-          </TouchableOpacity>
-        ) : null}
 
         <NewGameModal
           visible={modalVisible}
@@ -560,12 +562,6 @@ const styles = StyleSheet.create({
     right: 70,
     alignSelf: "center",
     color: "#EEEEEE",
-  },
-  checkAllIcon: {
-    position: "absolute",
-    left: 5,
-    top: 30,
-    zIndex: 1,
   },
 });
 
