@@ -14,12 +14,20 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import GamesPlayed from "./GamesPlayed";
+import NewGameplayModal from "./NewGameplayModal";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const CollectionBoardgameDetail = (props) => {
   const [gameParams, setGameParams] = useState(props.route.params.item);
+  const [collection, setCollection] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
 
   const fetchGameParams = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -34,6 +42,7 @@ const CollectionBoardgameDetail = (props) => {
 
   useEffect(() => {
     fetchGameParams();
+    fetchCollection();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackButton
@@ -52,10 +61,47 @@ const CollectionBoardgameDetail = (props) => {
     return;
   };
 
+  const addNewGameplay = async (newGameplay) => {
+    if (!gameParams.stats) {
+      gameParams.stats = [];
+    }
+    setGameParams((prevState) => ({
+      ...prevState,
+      stats: [...prevState.stats, newGameplay],
+    }));
+  };
+
+  useEffect(() => {
+    setCollection((prevCollection) =>
+      prevCollection.map((obj) =>
+        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
+      )
+    );
+  }, [gameParams]);
+
+  useEffect(() => {
+    asyncSetCollection();
+  }, [collection]);
+
+  const asyncSetCollection = async () => {
+    await AsyncStorage.setItem("collection", JSON.stringify(collection));
+  };
+
   return (
     <>
       <StatusBar />
+
       <ScrollView style={styles.container}>
+        <View>
+          <TouchableOpacity
+            style={[styles.addButton]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={[{ fontSize: 20, textAlign: "center" }]}>
+              Add gameplay
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View>
           {gameParams.bggImage?.length ? (
             <View style={styles.boargameImgContainer}>
@@ -140,6 +186,11 @@ const CollectionBoardgameDetail = (props) => {
           <Text style={[styles.textBtn]}>Edit</Text>
         </TouchableOpacity>
       </View>
+      <NewGameplayModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={addNewGameplay}
+      />
     </>
   );
 };
@@ -224,6 +275,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#EEEEEE",
+  },
+  addButton: {
+    backgroundColor: "#00ADB5",
+    color: "#EEEEEE",
+    padding: 10,
+    borderRadius: 50,
+    elevation: 5,
+    marginVertical: 20,
+    marginHorizontal: 80,
   },
 });
 
