@@ -19,6 +19,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NewPlayerModal from "../components/NewPlayerModal";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -150,11 +151,13 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     return (
       <TouchableOpacity onPress={() => openBoardgameDetail(itemId)}>
         <View style={styles.itemContainer}>
-          <Text>
+          <Text style={[{ color: colors.LIGHT }]}>
             {index + 1}. {item.name[0].$.value}
           </Text>
           {yearPublished && (
-            <Text style={styles.yearText}>Year published: {yearPublished}</Text>
+            <Text style={[styles.yearText, { color: colors.LIGHT }]}>
+              Year published: {yearPublished}
+            </Text>
           )}
         </View>
       </TouchableOpacity>
@@ -225,7 +228,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             style={[styles.icon]}
             onPress={handleSearchUserCollectionButton}
           >
-            <AntDesign name={"plus"} size={24} color={"#EEEEEE"} />
+            <AntDesign name={"plus"} size={24} color={colors.LIGHT} />
           </TouchableOpacity>
         </View>
         <View style={styles.searchRow}>
@@ -244,7 +247,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             style={styles.clearIcon}
           />
           <TouchableOpacity style={[styles.icon]} onPress={handleSearchButton}>
-            <Fontisto name={"zoom"} size={24} color={"#EEEEEE"} />
+            <Fontisto name={"zoom"} size={24} color={colors.LIGHT} />
           </TouchableOpacity>
         </View>
 
@@ -300,7 +303,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: "#222831",
+    backgroundColor: colors.LIGHT,
     flex: 1,
   },
   searchRow: {
@@ -309,24 +312,24 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   searchBar: {
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     fontSize: 20,
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     flex: 5,
   },
   icon: {
     textAlign: "center",
     flex: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     justifyContent: "center",
     alignItems: "center",
   },
   addButton: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     borderRadius: 50,
     elevation: 5,
@@ -334,7 +337,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   itemContainer: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     borderRadius: 50,
     padding: 12,
     margin: 1,
@@ -357,9 +360,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: "#222831",
+    borderColor: colors.LIGHT,
     borderWidth: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     height: windowHeight / 8,
     opacity: 0.6,
@@ -367,13 +370,13 @@ const styles = StyleSheet.create({
   textBtn: {
     fontSize: 18,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
   },
   clearIcon: {
     position: "absolute",
     right: 80,
     alignSelf: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     zIndex: 1,
   },
 });

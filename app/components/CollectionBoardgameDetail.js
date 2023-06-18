@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import GamesPlayed from "./GamesPlayed";
 import NewGameplayModal from "./NewGameplayModal";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -97,7 +98,11 @@ const CollectionBoardgameDetail = (props) => {
             style={[styles.addButton]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={[{ fontSize: 20, textAlign: "center" }]}>
+            <Text
+              style={[
+                { fontSize: 20, textAlign: "center", color: colors.LIGHT },
+              ]}
+            >
               Add gameplay
             </Text>
           </TouchableOpacity>
@@ -197,10 +202,10 @@ const CollectionBoardgameDetail = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#222831",
+    backgroundColor: colors.LIGHT,
     flex: 1,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     paddingHorizontal: 30,
   },
   boargameImgContainer: {
@@ -213,7 +218,7 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: "#EEEEEE",
+    color: colors.DARK,
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
@@ -226,25 +231,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 10,
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     borderRadius: 20,
     margin: 2,
   },
   gameInfo: {
     fontSize: 16,
     paddingVertical: 5,
-    opacity: 0.7,
-    color: "#00ADB5",
+    opacity: 1,
+    color: colors.PRIMARY,
   },
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
+    color: colors.LIGHT,
   },
   closeButton: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     borderRadius: 50,
     elevation: 5,
@@ -264,9 +270,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: "#222831",
+    borderColor: colors.LIGHT,
     borderWidth: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     height: windowHeight / 8,
     opacity: 0.6,
@@ -274,11 +280,11 @@ const styles = StyleSheet.create({
   textBtn: {
     fontSize: 18,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
   },
   addButton: {
-    backgroundColor: "#00ADB5",
-    color: "#EEEEEE",
+    backgroundColor: colors.PRIMARY,
+    color: colors.LIGHT,
     padding: 10,
     borderRadius: 50,
     elevation: 5,

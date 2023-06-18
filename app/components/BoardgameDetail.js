@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import xml2js from "react-native-xml2js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -184,10 +185,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: "#222831",
+    backgroundColor: colors.DARK,
     flex: 1,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     paddingHorizontal: 30,
   },
   boargameImgContainer: {
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: "#00ADB5",
+    color: colors.PRIMARY,
     fontWeight: "bold",
     marginVertical: 10,
   },
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 10,
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     borderRadius: 20,
     margin: 2,
   },
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     opacity: 0.7,
-    color: "#00ADB5",
+    color: colors.PRIMARY,
   },
   gameInfoValue: {
     fontSize: 16,
@@ -228,17 +229,17 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     borderRadius: 20,
     padding: 15,
     marginTop: 10,
   },
 
   closeButton: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     borderRadius: 50,
     elevation: 5,

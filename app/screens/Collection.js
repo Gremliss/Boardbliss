@@ -20,13 +20,13 @@ import { TextInput } from "react-native-gesture-handler";
 import FilterModal from "../components/FilterModal";
 import NewGameModal from "../components/NewGameModal";
 import RoundIconBtn from "../components/RoundIconButton";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Collection = (props) => {
   const [collection, setCollection] = useState();
-  // const [displayedCollection, setDisplayedCollection] = useState();
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -98,7 +98,8 @@ const Collection = (props) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? "#ccdadb" : "#b4c9cb";
+    const backgroundColor =
+      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -324,7 +325,7 @@ const Collection = (props) => {
             >
               <Text
                 style={[
-                  { fontSize: 20, textAlign: "center", color: "#EEEEEE" },
+                  { fontSize: 20, textAlign: "center", color: colors.LIGHT },
                 ]}
               >
                 Add game
@@ -339,7 +340,7 @@ const Collection = (props) => {
               value={searchText}
               onChangeText={(text) => handleSearchText(text)}
               placeholder="Search collection"
-              style={[styles.searchBar, { color: "#EEEEEE" }]}
+              style={[styles.searchBar, { color: colors.LIGHT }]}
               placeholderTextColor="#EEEEEE70"
             />
             <AntDesign
@@ -352,7 +353,7 @@ const Collection = (props) => {
               style={[styles.icon]}
               onPress={() => setFilterModalVisible(true)}
             >
-              <Fontisto name={"filter"} size={20} color={"#EEEEEE"} />
+              <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
             </TouchableOpacity>
           </View>
         )}
@@ -374,21 +375,21 @@ const Collection = (props) => {
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
             >
-              <Text style={[{ color: "#EEEEEE" }]}>Nr</Text>
+              <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
             </View>
             <View style={[styles.cellContainer, { flex: 4 }]}>
-              <Text style={[{ paddingHorizontal: 8, color: "#EEEEEE" }]}>
+              <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
                 Name
               </Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: "#EEEEEE" }]}>Rating</Text>
+              <Text style={[{ color: colors.LIGHT }]}>Rating</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: "#EEEEEE" }]}>Players</Text>
+              <Text style={[{ color: colors.LIGHT }]}>Players</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: "#EEEEEE" }]}>Time</Text>
+              <Text style={[{ color: colors.LIGHT }]}>Time</Text>
             </View>
           </View>
         </View>
@@ -454,7 +455,7 @@ const Collection = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#EEEEEE",
+    backgroundColor: colors.LIGHT,
     flex: 1,
   },
   searchRow: {
@@ -465,9 +466,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   searchBar: {
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     fontSize: 20,
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     flex: 5,
     paddingRight: 40,
@@ -475,13 +476,13 @@ const styles = StyleSheet.create({
   icon: {
     textAlign: "center",
     flex: 1,
-    backgroundColor: "#007980",
+    backgroundColor: colors.PRIMARY,
     justifyContent: "center",
     alignItems: "center",
   },
   addButton: {
-    backgroundColor: "#007980",
-    color: "#EEEEEE",
+    backgroundColor: colors.PRIMARY,
+    color: colors.LIGHT,
     padding: 10,
     paddingBottom: 12,
     borderRadius: 50,
@@ -490,7 +491,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 120,
   },
   itemContainer: {
-    backgroundColor: "#007980",
+    backgroundColor: colors.PRIMARY,
     borderRadius: 8,
     margin: 1,
   },
@@ -513,9 +514,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: "#EEEEEE",
+    borderColor: colors.LIGHT,
     borderWidth: 1,
-    backgroundColor: "#007980",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     height: windowHeight / 8,
     opacity: 0.6,
@@ -523,21 +524,21 @@ const styles = StyleSheet.create({
   textBtn: {
     fontSize: 18,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
   },
   deleteBtn: {
     position: "absolute",
     left: 25,
     bottom: 60,
     zIndex: 1,
-    backgroundColor: "#943737",
+    backgroundColor: colors.RED,
   },
   closeBtn: {
     position: "absolute",
     right: 25,
     bottom: 60,
     zIndex: 1,
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -549,7 +550,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRightWidth: 1,
     paddingHorizontal: 1,
-    borderColor: "#EEEEEE",
+    borderColor: colors.LIGHT,
     paddingVertical: 4,
   },
   centerStyle: {
@@ -561,7 +562,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 70,
     alignSelf: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
   },
 });
 

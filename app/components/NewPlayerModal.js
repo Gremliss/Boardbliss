@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -99,7 +100,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#222831",
+    backgroundColor: colors.DARK,
   },
   input: (windowHeight) => {
     return {
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     };
   },
   playerStyle: {
-    backgroundColor: "#393E46",
+    backgroundColor: colors.GRAY,
     color: "#EEEEEE",
     padding: 10,
     margin: 4,
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     left: 25,
     bottom: 20,
     zIndex: 1,
-    backgroundColor: "#9D9D9D",
+    backgroundColor: colors.GRAY,
   },
 });
 
