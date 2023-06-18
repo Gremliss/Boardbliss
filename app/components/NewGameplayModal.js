@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import RoundIconBtn from "./RoundIconButton";
+import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -180,7 +181,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? "#00ADB5" : "#0b6c70";
+    const backgroundColor = index % 2 === 0 ? colors.PRIMARY : "#0b6c70";
     return (
       <TouchableOpacity key={index} onPress={() => handleCheckButton(item)}>
         <View
@@ -460,10 +461,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#222831",
+    backgroundColor: colors.DARK,
     flex: 1,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     paddingHorizontal: 30,
   },
   flexRow: {
@@ -476,9 +477,8 @@ const styles = StyleSheet.create({
     margin: 4,
   },
   inputTextStyle: {
-    backgroundColor: "#393E46",
-    // textAlign: "center",
-    color: "#EEEEEE",
+    backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
     padding: 8,
     flex: 5,
     margin: 4,
@@ -496,9 +496,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: "#222831",
+    borderColor: colors.DARK,
     borderWidth: 1,
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     height: windowHeight / 8,
     borderTopLeftRadius: 20,
@@ -508,13 +508,13 @@ const styles = StyleSheet.create({
   textBtn: {
     fontSize: 18,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
   },
   closeButton: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     fontSize: 20,
     textAlign: "center",
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
     borderRadius: 50,
     elevation: 5,
@@ -537,10 +537,10 @@ const styles = StyleSheet.create({
     left: 25,
     bottom: 20,
     zIndex: 1,
-    backgroundColor: "#9D9D9D",
+    backgroundColor: colors.GRAY,
   },
   itemContainer: {
-    backgroundColor: "#00ADB5",
+    backgroundColor: colors.PRIMARY,
     borderRadius: 8,
     margin: 1,
     padding: 10,

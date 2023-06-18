@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import colors from "../misc/colors";
 
 const RoundIconBtn = ({ antIconName, size, color, style, onPress }) => {
   return (
@@ -16,7 +17,7 @@ const RoundIconBtn = ({ antIconName, size, color, style, onPress }) => {
 const styles = StyleSheet.create({
   icon: () => {
     return {
-      backgroundColor: "#00ADB5",
+      backgroundColor: colors.PRIMARY,
       padding: 15,
       borderRadius: 50,
       elevation: 5,
