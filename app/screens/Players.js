@@ -119,7 +119,7 @@ const Players = (props) => {
   };
 
   const openPlayerDetail = (item) => {
-    // props.navigation.navigate("CollectionBoardgameDetail", { item });
+    props.navigation.navigate("PlayerDetail", { item });
   };
 
   const handleExitButton = async () => {

@@ -10,6 +10,7 @@ import SearchBgg from "./app/screens/SearchBgg";
 import Players from "./app/screens/Players";
 import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
+import PlayerDetail from "./app/components/PlayerDetail";
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,13 @@ export default function App() {
           name="Players"
           options={{
             title: "Players",
+          }}
+        />
+        <Stack.Screen
+          component={PlayerDetail}
+          name="PlayerDetail"
+          options={{
+            title: "Player detail",
           }}
         />
         <Stack.Screen
