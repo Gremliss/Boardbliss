@@ -151,7 +151,8 @@ const GamesPlayed = (props) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? colors.PRIMARY : "#0b6c70";
+    const backgroundColor =
+      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
 
     return (
       <TouchableOpacity
@@ -346,7 +347,7 @@ const GamesPlayed = (props) => {
         </View>
       </TouchableWithoutFeedback>
 
-      <View style={[styles.itemContainer, { opacity: 0.4 }]}>
+      <View style={[styles.itemContainer, { opacity: 0.8 }]}>
         <View style={[styles.flexRow]}>
           <View
             style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
