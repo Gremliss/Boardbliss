@@ -144,17 +144,16 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
         const updatedPlayers = [...prevState.players];
 
         // If player doesn't exist, add a new player object
-        if (!updatedPlayers.some((player) => player.name === item.name)) {
-          updatedPlayers.push({ name: item.name });
+        if (!updatedPlayers.some((player) => player.id === item.id)) {
+          updatedPlayers.push({ name: item.name, id: item.id });
         }
-
         return { ...prevState, players: updatedPlayers };
       });
     } else {
       item.isChecked = false;
       setAddGameplay((prevState) => {
         const updatedPlayers = prevState.players.filter(
-          (player) => player.name !== item.name
+          (player) => player.id !== item.id
         );
         return { ...prevState, players: updatedPlayers };
       });
@@ -181,7 +180,8 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? colors.PRIMARY : "#0b6c70";
+    const backgroundColor =
+      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity key={index} onPress={() => handleCheckButton(item)}>
         <View
@@ -192,12 +192,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               <MaterialIcons
                 name={item.isChecked ? "check-box" : "check-box-outline-blank"}
                 size={20}
-                color="white"
+                color={colors.LIGHT}
               />
             </View>
-            {/* <View style={[styles.centerStyle, { flex: 1, padding: 2 }]}>
-              <Text>{index + 1}</Text>
-            </View> */}
             <View style={[styles.cellContainer]}>
               <Text>{item.name}</Text>
             </View>
@@ -228,12 +225,11 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
                       // If player doesn't exist, add a new player object
                       if (
-                        !updatedPlayers.some(
-                          (player) => player.name === item.name
-                        )
+                        !updatedPlayers.some((player) => player.id === item.id)
                       ) {
                         updatedPlayers.push({
                           name: item.name,
+                          id: item.id,
                           points: parseInt(text),
                         });
                       }
@@ -243,6 +239,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   placeholder={addGameplay.scoreType}
                   style={[styles.inputTextStyle]}
                   keyboardType="numeric"
+                  placeholderTextColor="#EEEEEE70"
                 />
               </View>
             ) : (
@@ -269,7 +266,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   style={[styles.inputTextStyle]}
                   onPress={() => changeType()}
                 >
-                  <Text>{addGameplay.type}</Text>
+                  <Text style={[{ color: colors.LIGHT }]}>
+                    {addGameplay.type}
+                  </Text>
                 </TouchableOpacity>
               </View>
               {addGameplay.type === "Rivalry" ? (
@@ -279,7 +278,9 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                     style={[styles.inputTextStyle]}
                     onPress={() => changeScoreType()}
                   >
-                    <Text>{addGameplay.scoreType}</Text>
+                    <Text style={[{ color: colors.LIGHT }]}>
+                      {addGameplay.scoreType}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               ) : (
@@ -305,6 +306,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                       placeholder="Points"
                       style={[styles.inputTextStyle]}
                       keyboardType="numeric"
+                      placeholderTextColor="#EEEEEE70"
                     />
                   </View>
                 </>
@@ -315,7 +317,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          <View style={[{}]}>
+          <View>
             <FlatList
               data={players}
               renderItem={renderItem}
@@ -324,7 +326,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               keyboardShouldPersistTaps="always"
             />
           </View>
-          <View style={[{}]}>
+          <View>
             <FlatList
               data={players}
               renderItem={renderActivePlayer}
@@ -337,26 +339,35 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           <View style={[styles.flexRow]}>
             <Text style={[styles.nameOfInputStyle]}>Time:</Text>
             <TextInput
-              onChangeText={(text) =>
-                setAddGameplay((prevState) => ({
-                  ...prevState,
-                  duration: {
-                    ...prevState.duration,
-                    hours: text,
-                  },
-                }))
-              }
+              onChangeText={(text) => {
+                // Remove any non-digit characters from the input
+                const sanitizedText = text.replace(/[^0-9]/g, "");
+
+                // Check if the sanitized text isn't negative
+                if (sanitizedText >= 0) {
+                  setAddGameplay((prevState) => ({
+                    ...prevState,
+                    duration: {
+                      ...prevState.duration,
+                      hours: parseInt(sanitizedText),
+                    },
+                  }));
+                } else {
+                  displayDateAlert(0, 999);
+                }
+              }}
               placeholder="Hours"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
+              placeholderTextColor="#EEEEEE70"
             />
             <TextInput
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
 
-                // Check if the sanitized text is a number between 1 and 59
-                if (sanitizedText <= 59) {
+                // Check if the sanitized text is a number between 0 and 59
+                if (sanitizedText <= 59 && sanitizedText >= 0) {
                   setAddGameplay((prevState) => ({
                     ...prevState,
                     duration: {
@@ -371,6 +382,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               placeholder="Minutes"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
+              placeholderTextColor="#EEEEEE70"
             />
           </View>
 
@@ -388,20 +400,12 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   ...prevState,
                   date: { ...prevState.date, day: sanitizedText },
                 }));
-                // Check if the sanitized text is a number between 1 and 31
-                // if (sanitizedText >= 1 && sanitizedText <= 31) {
-                //   setAddGameplay((prevState) => ({
-                //     ...prevState,
-                //     date: { ...prevState.date, day: sanitizedText },
-                //   }));
-                // } else {
-                //   displayDateAlert(1, 31);
-                // }
               }}
               placeholder="Day"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.day?.toString()}
+              placeholderTextColor="#EEEEEE70"
             />
 
             <TextInput
@@ -412,20 +416,12 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   ...prevState,
                   date: { ...prevState.date, month: sanitizedText },
                 }));
-                // Check if the sanitized text is a number between 1 and 12
-                // if (sanitizedText >= 1 && sanitizedText <= 12) {
-                //   setAddGameplay((prevState) => ({
-                //     ...prevState,
-                //     date: { ...prevState.date, month: sanitizedText },
-                //   }));
-                // } else {
-                //   displayDateAlert(1, 12);
-                // }
               }}
               placeholder="Month"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.month?.toString()}
+              placeholderTextColor="#EEEEEE70"
             />
             <TextInput
               onChangeText={(text) =>
@@ -438,6 +434,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.year?.toString()}
+              placeholderTextColor="#EEEEEE70"
             />
           </View>
         </View>
@@ -483,45 +480,6 @@ const styles = StyleSheet.create({
     flex: 5,
     margin: 4,
   },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.DARK,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  closeButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
-  },
-
   btnContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -531,6 +489,7 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 20,
     zIndex: 1,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -538,6 +497,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
