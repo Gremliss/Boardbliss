@@ -390,6 +390,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     opacity: 1,
     color: colors.PRIMARY,
+    fontWeight: "bold",
   },
   gameInfoValue: {
     fontSize: 16,
@@ -441,6 +442,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     color: colors.PRIMARY,
     margin: 2,
+    fontWeight: "bold",
   },
   playerInfoValue: {
     margin: 2,

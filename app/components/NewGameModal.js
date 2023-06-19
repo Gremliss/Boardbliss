@@ -112,7 +112,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <TextInput
               onChangeText={(text) => setAddGame({ ...addGame, name: text })}
               placeholder="Name"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               multiline={true}
             />
@@ -124,7 +124,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, yearpublished: text })
               }
               placeholder="Year published"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -135,7 +135,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               onPress={() => changeOwner()}
             >
-              <Text>{addGame.owner}</Text>
+              <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
             </TouchableOpacity>
           </View>
           <View style={[styles.flexRow]}>
@@ -145,7 +145,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, minPlayers: text })
               }
               placeholder="Min players"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -157,7 +157,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, maxPlayers: text })
               }
               placeholder="Max players"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -169,7 +169,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, minPlaytime: text })
               }
               placeholder="Min playtime"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -181,7 +181,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, maxPlaytime: text })
               }
               placeholder="Max playtime"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -191,7 +191,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <TextInput
               onChangeText={(text) => setAddGame({ ...addGame, rating: text })}
               placeholder="Rating"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -203,7 +203,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, bggImage: text })
               }
               placeholder="Img link"
-              textAlignVertical="top"
+              placeholderTextColor="#EEEEEE70"
               style={[styles.inputTextStyle]}
               multiline={true}
             />
@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 20,
     zIndex: 1,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -307,6 +308,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
 });
 
