@@ -214,7 +214,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => setSearchUserCollectionText(text)}
             placeholder="Add BGG user collection"
             style={[styles.searchBar]}
-            placeholderTextColor="#EEEEEE70"
+            placeholderTextColor={colors.PLACEHOLDER}
             value={searchUserCollectionText}
             onSubmitEditing={handleSearchUserCollectionButton}
           />
@@ -236,7 +236,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => handleSearchText(text)}
             placeholder="Search game"
             style={[styles.searchBar]}
-            placeholderTextColor="#EEEEEE70"
+            placeholderTextColor={colors.PLACEHOLDER}
             value={searchText}
             onSubmitEditing={handleSearchButton}
           />

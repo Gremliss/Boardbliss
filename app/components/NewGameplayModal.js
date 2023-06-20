@@ -239,7 +239,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   placeholder={addGameplay.scoreType}
                   style={[styles.inputTextStyle]}
                   keyboardType="numeric"
-                  placeholderTextColor="#EEEEEE70"
+                  placeholderTextColor={colors.PLACEHOLDER}
                 />
               </View>
             ) : (
@@ -306,7 +306,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                       placeholder="Points"
                       style={[styles.inputTextStyle]}
                       keyboardType="numeric"
-                      placeholderTextColor="#EEEEEE70"
+                      placeholderTextColor={colors.PLACEHOLDER}
                     />
                   </View>
                 </>
@@ -359,7 +359,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               placeholder="Hours"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
             <TextInput
               onChangeText={(text) => {
@@ -382,7 +382,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               placeholder="Minutes"
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
           </View>
 
@@ -405,7 +405,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.day?.toString()}
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
 
             <TextInput
@@ -421,7 +421,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.month?.toString()}
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
             <TextInput
               onChangeText={(text) =>
@@ -434,7 +434,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
               defaultValue={addGameplay?.date?.year?.toString()}
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
           </View>
         </View>

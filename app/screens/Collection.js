@@ -341,7 +341,7 @@ const Collection = (props) => {
               onChangeText={(text) => handleSearchText(text)}
               placeholder="Search collection"
               style={[styles.searchBar, { color: colors.LIGHT }]}
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
             <AntDesign
               name="close"

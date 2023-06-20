@@ -112,7 +112,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <TextInput
               onChangeText={(text) => setAddGame({ ...addGame, name: text })}
               placeholder="Name"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               multiline={true}
             />
@@ -124,7 +124,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, yearpublished: text })
               }
               placeholder="Year published"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -145,7 +145,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, minPlayers: text })
               }
               placeholder="Min players"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -157,7 +157,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, maxPlayers: text })
               }
               placeholder="Max players"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -169,7 +169,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, minPlaytime: text })
               }
               placeholder="Min playtime"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -181,7 +181,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, maxPlaytime: text })
               }
               placeholder="Max playtime"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -191,7 +191,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <TextInput
               onChangeText={(text) => setAddGame({ ...addGame, rating: text })}
               placeholder="Rating"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               keyboardType="numeric"
             />
@@ -203,7 +203,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 setAddGame({ ...addGame, bggImage: text })
               }
               placeholder="Img link"
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
               style={[styles.inputTextStyle]}
               multiline={true}
             />
