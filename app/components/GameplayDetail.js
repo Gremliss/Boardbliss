@@ -1,8 +1,9 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
+  BackHandler,
   Dimensions,
   Keyboard,
   Modal,
@@ -17,29 +18,41 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import RoundIconBtn from "./RoundIconButton";
 import colors from "../misc/colors";
+import { useFocusEffect } from "@react-navigation/native";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-
-const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
-  const currentDate = new Date();
+const GameplayDetail = (props) => {
+  const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [addGameplay, setAddGameplay] = useState({
-    id: Date.now(),
-    date: {
-      day: currentDate.getDate(),
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-    },
-    players: [],
-    type: "Rivalry",
-    scoreType: "Points",
-    isChecked: false,
-    duration: { hours: null, min: null },
-  });
-
+  const [addGameplay, setAddGameplay] = useState(
+    props.route.params.gameplayParams
+  );
+  var gameParams = props.route.params.gameParams;
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
+  };
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
+
+  useEffect(() => {
+    fetchCollection();
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackButton
+    );
+    return () => backHandler.remove();
+  }, [props.navigation]);
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchCollection();
+  //   }, [])
+  // );
+
+  const handleBackButton = () => {
+    fetchCollection();
+    return;
   };
 
   const handleSubmit = () => {
@@ -83,26 +96,41 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
         }
       }
 
-      onSubmit(addGameplay);
-      setAddGameplay({
-        id: Date.now(),
-        date: {
-          day: currentDate.getDate(),
-          month: currentDate.getMonth() + 1,
-          year: currentDate.getFullYear(),
-        },
-        players: [],
-        type: "Rivalry",
-        scoreType: "Points",
-        isChecked: false,
-        duration: { hours: null, min: null },
-      });
-      onClose();
+      saveChanges();
     }
   };
 
-  const closeModal = () => {
-    onClose();
+  const saveChanges = async () => {
+    const updatedCollection = collection.map((item) => {
+      if (item.id === gameParams.id) {
+        return {
+          ...item,
+          stats: item.stats.map((obj) =>
+            obj.id === addGameplay.id ? addGameplay : obj
+          ),
+        };
+      } else {
+        return item;
+      }
+    });
+    const updatedGameParams = {
+      ...gameParams,
+      stats: gameParams.stats.map((obj) =>
+        obj.id === addGameplay.id ? addGameplay : obj
+      ),
+    };
+    gameParams = updatedGameParams;
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+
+    props.navigation.navigate("GamesPlayed", {
+      gameParams,
+    });
+  };
+
+  const closeDetail = () => {
+    props.navigation.goBack();
   };
 
   const fetchPlayers = async () => {
@@ -110,8 +138,24 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     if (result?.length) setPlayers(JSON.parse(result));
   };
   useEffect(() => {
-    fetchPlayers();
+    updateIsChecked();
   }, []);
+
+  const updateIsChecked = async () => {
+    const result = await AsyncStorage.getItem("players");
+    const parsedResult = JSON.parse(result);
+    parsedResult?.forEach((player) => {
+      const playerInGameplay = addGameplay.players.find(
+        (p) => p.name === player.name
+      );
+      if (playerInGameplay) {
+        player.isChecked = true;
+      } else {
+        player.isChecked = false;
+      }
+    });
+    if (result?.length) setPlayers(parsedResult);
+  };
 
   const changeType = () => {
     if (addGameplay.type === "Rivalry") {
@@ -214,48 +258,43 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   const renderActivePlayer = ({ item, index }) => {
     return (
       <View key={index}>
-        {item.isChecked ? (
-          <>
-            {addGameplay?.type === "Rivalry" ? (
-              <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
-                <TextInput
-                  onChangeText={(text) => {
-                    setAddGameplay((prevState) => {
-                      const updatedPlayers = prevState.players.map((player) => {
-                        if (player.name === item.name) {
-                          // Update points of existing player
-                          return { ...player, points: parseInt(text) };
-                        }
-                        return player;
-                      });
+        {addGameplay?.type === "Rivalry" ? (
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
+            <TextInput
+              defaultValue={item.points?.toString()}
+              onChangeText={(text) => {
+                setAddGameplay((prevState) => {
+                  const updatedPlayers = prevState.players.map((player) => {
+                    if (player.id === item.id) {
+                      // Update points of existing player
+                      return { ...player, points: parseInt(text) };
+                    }
+                    return player;
+                  });
 
-                      // If player doesn't exist, add a new player object
-                      if (
-                        !updatedPlayers.some((player) => player.id === item.id)
-                      ) {
-                        updatedPlayers.push({
-                          name: item.name,
-                          id: item.id,
-                          points: parseInt(text),
-                        });
-                      }
-                      return { ...prevState, players: updatedPlayers };
+                  // If player doesn't exist, add a new player object
+                  if (!updatedPlayers.some((player) => player.id === item.id)) {
+                    updatedPlayers.push({
+                      name: item.name,
+                      id: item.id,
+                      points: parseInt(text),
                     });
-                  }}
-                  placeholder={addGameplay.scoreType}
-                  style={[styles.inputTextStyle]}
-                  keyboardType="numeric"
-                  placeholderTextColor={colors.PLACEHOLDER}
-                />
-              </View>
-            ) : (
-              <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>{item.name}</Text>
-              </View>
-            )}
-          </>
-        ) : null}
+                  }
+                  return { ...prevState, players: updatedPlayers };
+                });
+              }}
+              placeholder={addGameplay.scoreType}
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+              placeholderTextColor={colors.PLACEHOLDER}
+            />
+          </View>
+        ) : (
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>{item.name}</Text>
+          </View>
+        )}
       </View>
     );
   };
@@ -263,7 +302,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   return (
     <>
       <StatusBar />
-      <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
+      <View style={[{ flex: 1 }]}>
         <View style={[{ flex: 1, paddingBottom: 80 }]}>
           <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View>
@@ -304,6 +343,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   <View style={[styles.flexRow]}>
                     <Text style={[styles.nameOfInputStyle]}>Points:</Text>
                     <TextInput
+                      defaultValue={addGameplay?.coop?.points?.toString()}
                       onChangeText={(text) =>
                         setAddGameplay((prevState) => ({
                           ...prevState,
@@ -335,7 +375,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           </View>
           <View>
             <FlatList
-              data={players}
+              data={addGameplay.players}
               renderItem={renderActivePlayer}
               keyExtractor={(item, index) => `${index}`}
               horizontal
@@ -346,6 +386,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           <View style={[styles.flexRow]}>
             <Text style={[styles.nameOfInputStyle]}>Time:</Text>
             <TextInput
+              defaultValue={addGameplay?.duration?.hours?.toString()}
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
@@ -369,6 +410,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               placeholderTextColor={colors.PLACEHOLDER}
             />
             <TextInput
+              defaultValue={addGameplay?.duration?.min?.toString()}
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
@@ -455,10 +497,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           <RoundIconBtn
             style={styles.closeBtn}
             antIconName="close"
-            onPress={closeModal}
+            onPress={closeDetail}
           />
         </View>
-      </Modal>
+      </View>
     </>
   );
 };
@@ -524,4 +566,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewGameplayModal;
+export default GameplayDetail;
