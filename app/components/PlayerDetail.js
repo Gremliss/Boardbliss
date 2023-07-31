@@ -18,10 +18,11 @@ import colors from "../misc/colors";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
+const PlayerDetail = (props) => {
   const [players, setPlayers] = useState([]);
-  const [name, setName] = useState("");
-
+  const [playerParams, setPlayerParams] = useState(props.route.params.item);
+  const [name, setName] = useState(playerParams.name);
+  console.log(name);
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
@@ -30,7 +31,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     fetchPlayers();
   }, []);
 
-  const handleKeyboardDismiss = () => {
+  const handleModalClose = () => {
     Keyboard.dismiss();
   };
 
@@ -38,34 +39,27 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     if (valueFor === "name") setName(text);
   };
 
-  const handleSubmit = () => {
-    if (players.some((obj) => obj.name === name)) {
-      displayExistAlert();
-    } else {
-      onSubmit(name);
-      setName("");
-      onClose();
-    }
-  };
+  const handleSubmit = async (text) => {
+    const updatedPlayers = players.map((item) => {
+      if (item.id === playerParams.id) {
+        return {
+          ...item,
+          name: name,
+        };
+      } else {
+        return item;
+      }
+    });
 
-  const displayExistAlert = () => {
-    Alert.alert(
-      "Duplicate",
-      "Player with that name already exists",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
-  };
-
-  const closeModal = () => {
-    setName("");
-    onClose();
+    setPlayers(updatedPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+    props.navigation.goBack();
   };
 
   return (
     <>
       <StatusBar />
-      <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
+      <View style={styles.flexBackground}>
         <View style={styles.container}>
           <TextInput
             value={name}
@@ -74,8 +68,10 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
             style={[styles.input(windowHeight), styles.playerStyle]}
             multiline={true}
           />
-          <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-            <View style={[styles.modalBG, StyleSheet.absoluteFillObject]} />
+          <TouchableWithoutFeedback onPress={handleModalClose}>
+            <View
+              style={[styles.flexBackground, StyleSheet.absoluteFillObject]}
+            />
           </TouchableWithoutFeedback>
         </View>
         <View style={styles.btnContainer}>
@@ -89,10 +85,10 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
           <RoundIconBtn
             style={styles.closeBtn}
             antIconName="close"
-            onPress={closeModal}
+            onPress={() => props.navigation.goBack()}
           />
         </View>
-      </Modal>
+      </View>
     </>
   );
 };
@@ -115,7 +111,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 4,
   },
-  modalBG: {
+  flexBackground: {
     flex: 1,
     zIndex: -1,
   },
@@ -138,4 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewPlayerModal;
+export default PlayerDetail;

@@ -72,21 +72,22 @@ const CollectionBoardgameDetail = (props) => {
     }));
   };
 
-  useEffect(() => {
-    setCollection((prevCollection) =>
-      prevCollection.map((obj) =>
-        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
-      )
-    );
-  }, [gameParams]);
+  // useEffect(() => {
+  //   setCollection((prevCollection) =>
+  //     prevCollection.map((obj) =>
+  //       obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
+  //     )
+  //   );
+  // }, [gameParams]);
 
-  useEffect(() => {
-    asyncSetCollection();
-  }, [collection]);
+  // useEffect(() => {
+  //   asyncSetCollection();
+  // }, [collection]);
 
-  const asyncSetCollection = async () => {
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-  };
+  // const asyncSetCollection = async () => {
+  //   console.log(collection);
+  //   await AsyncStorage.setItem("collection", JSON.stringify(collection));
+  // };
 
   return (
     <>

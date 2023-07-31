@@ -36,7 +36,6 @@ const Collection = (props) => {
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
-    // if (result?.length) setDisplayedCollection(JSON.parse(result));
   };
   useEffect(() => {
     fetchCollection();
@@ -120,7 +119,7 @@ const Collection = (props) => {
               </View>
             ) : null}
             <View
-              style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
+              style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
               <Text style={[{ color: "#1b232e" }]}>{index + 1}</Text>
             </View>
@@ -341,7 +340,7 @@ const Collection = (props) => {
               onChangeText={(text) => handleSearchText(text)}
               placeholder="Search collection"
               style={[styles.searchBar, { color: colors.LIGHT }]}
-              placeholderTextColor="#EEEEEE70"
+              placeholderTextColor={colors.PLACEHOLDER}
             />
             <AntDesign
               name="close"
@@ -373,7 +372,7 @@ const Collection = (props) => {
               </TouchableOpacity>
             ) : null}
             <View
-              style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
+              style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
               <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
             </View>

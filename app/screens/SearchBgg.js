@@ -28,7 +28,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
-  const [userCollection, setUserCollection] = useState([]);
+  // const [userCollection, setUserCollection] = useState([]);
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
@@ -92,7 +92,6 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         console.error(error);
         setLoading(false);
       });
-    setUserCollection([]);
   };
 
   const addToCollection = async (item) => {
@@ -149,7 +148,9 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     const yearPublished = item.yearpublished?.[0].$.value;
 
     return (
-      <TouchableOpacity onPress={() => openBoardgameDetail(itemId)}>
+      <TouchableOpacity
+        onPress={() => openBoardgameDetail(itemId, item.name[0].$.value)}
+      >
         <View style={styles.itemContainer}>
           <Text style={[{ color: colors.LIGHT }]}>
             {index + 1}. {item.name[0].$.value}
@@ -182,9 +183,9 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     return;
   };
 
-  const openBoardgameDetail = (gameId) => {
+  const openBoardgameDetail = (gameId, name) => {
     var stringGameId = gameId.toString();
-    navigation.navigate("BoardGameDetail", { stringGameId });
+    navigation.navigate("BoardGameDetail", { stringGameId, name });
   };
 
   const addPlayer = async (text) => {
@@ -214,7 +215,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => setSearchUserCollectionText(text)}
             placeholder="Add BGG user collection"
             style={[styles.searchBar]}
-            placeholderTextColor="#EEEEEE70"
+            placeholderTextColor={colors.PLACEHOLDER}
             value={searchUserCollectionText}
             onSubmitEditing={handleSearchUserCollectionButton}
           />
@@ -236,7 +237,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => handleSearchText(text)}
             placeholder="Search game"
             style={[styles.searchBar]}
-            placeholderTextColor="#EEEEEE70"
+            placeholderTextColor={colors.PLACEHOLDER}
             value={searchText}
             onSubmitEditing={handleSearchButton}
           />

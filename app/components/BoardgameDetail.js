@@ -22,8 +22,8 @@ const windowHeight = Dimensions.get("window").height;
 const BoardGameDetail = (props) => {
   const [detailData, setDetailData] = useState(null);
   const gameId = props.route.params.stringGameId;
+  const gameName = props.route.params.name;
   const [collection, setCollection] = useState([]);
-
   useEffect(() => {
     axios
       .get(`https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`)
@@ -62,11 +62,11 @@ const BoardGameDetail = (props) => {
     if (!collection) {
       collection = [];
     }
-    if (collection.some((obj) => obj.name === game.name[0]._)) {
+    if (collection.some((obj) => obj.name === gameName)) {
       displayExistAlert();
     } else {
       const newGame = {
-        name: game.name[0]._,
+        name: gameName,
         yearpublished: game.yearpublished[0],
         minPlayers: game.minplayers[0],
         maxPlayers: game.maxplayers[0],
@@ -126,7 +126,7 @@ const BoardGameDetail = (props) => {
               }}
             />
           </View>
-          <Text style={styles.gameName}>{game.name[0]._}</Text>
+          <Text style={styles.gameName}>{gameName}</Text>
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Year published:</Text>
             <Text style={styles.gameInfoValue}>{game.yearpublished[0]}</Text>

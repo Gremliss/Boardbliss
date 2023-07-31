@@ -34,7 +34,16 @@ const GamesPlayed = (props) => {
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
-    if (result?.length) setCollection(JSON.parse(result));
+    const parsedResult = JSON.parse(result);
+    if (result?.length) setCollection(parsedResult);
+
+    var newGameParams;
+    parsedResult.map((item) => {
+      if (item.id === gameParams.id) {
+        newGameParams = item;
+      }
+    });
+    if (newGameParams) setGameParams(newGameParams);
   };
   useEffect(() => {
     fetchCollection();
@@ -151,7 +160,8 @@ const GamesPlayed = (props) => {
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = index % 2 === 0 ? colors.PRIMARY : "#0b6c70";
+    const backgroundColor =
+      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
 
     return (
       <TouchableOpacity
@@ -234,11 +244,13 @@ const GamesPlayed = (props) => {
   };
 
   const handleItemPressed = async (item) => {
-    longPressActive ? handleCheckButton(item) : openGameplayDetail(item);
+    longPressActive
+      ? handleCheckButton(item)
+      : openGameplayDetail(item, gameParams);
   };
 
-  const openGameplayDetail = (item) => {
-    // props.navigation.navigate("CollectionBoardgameDetail", { item });
+  const openGameplayDetail = (gameplayParams, gameParams) => {
+    props.navigation.navigate("GameplayDetail", { gameplayParams, gameParams });
   };
 
   const handleExitButton = async () => {
@@ -346,7 +358,7 @@ const GamesPlayed = (props) => {
         </View>
       </TouchableWithoutFeedback>
 
-      <View style={[styles.itemContainer, { opacity: 0.4 }]}>
+      <View style={[styles.itemContainer, { opacity: 0.8 }]}>
         <View style={[styles.flexRow]}>
           <View
             style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}

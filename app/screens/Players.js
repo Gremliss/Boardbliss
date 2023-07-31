@@ -119,7 +119,7 @@ const Players = (props) => {
   };
 
   const openPlayerDetail = (item) => {
-    // props.navigation.navigate("CollectionBoardgameDetail", { item });
+    props.navigation.navigate("PlayerDetail", { item });
   };
 
   const handleExitButton = async () => {
@@ -286,7 +286,7 @@ const Players = (props) => {
           onChangeText={(text) => handleSearchText(text)}
           placeholder="Search player"
           style={[styles.searchBar]}
-          placeholderTextColor="#EEEEEE70"
+          placeholderTextColor={colors.PLACEHOLDER}
         />
         <AntDesign
           name="close"

@@ -6,4 +6,5 @@ export default {
   RED: "#943737",
   LIST_COLOR_ONE: "#ccdadb",
   LIST_COLOR_TWO: "#b4c9cb",
+  PLACEHOLDER: "#EEEEEE70",
 };
