@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
@@ -24,6 +24,7 @@ const windowHeight = Dimensions.get("window").height;
 const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   const currentDate = new Date();
   const [players, setPlayers] = useState([]);
+  const [name, setName] = useState("");
   const [addGameplay, setAddGameplay] = useState({
     id: Date.now(),
     date: {
@@ -186,6 +187,39 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     fetchPlayers();
   };
 
+  const handleNewPlayer = () => {
+    if (players.some((obj) => obj.name === name)) {
+      displayExistAlert();
+    } else {
+      addNewPlayer(name);
+      setName("");
+    }
+  };
+
+  const displayExistAlert = () => {
+    Alert.alert(
+      "Duplicate",
+      "Player with that name already exists",
+      [{ text: "Ok", onPress: () => null }],
+      { cancelable: true }
+    );
+  };
+
+  const addNewPlayer = async (text) => {
+    if (!players) {
+      players = [];
+    }
+    const newPlayer = {
+      name: text,
+      id: Date.now(),
+      isChecked: false,
+    };
+
+    const updatedPlayers = [...players, newPlayer];
+    setPlayers(updatedPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+  };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
@@ -332,6 +366,25 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               horizontal
               keyboardShouldPersistTaps="always"
             />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>New player:</Text>
+            <TextInput
+              value={name}
+              onChangeText={(text) => setName(text)}
+              placeholder="Player name"
+              style={[styles.inputTextStyle]}
+              placeholderTextColor={colors.PLACEHOLDER}
+            />
+            {name !== "" ? (
+              <AntDesign
+                name={"check"}
+                size={24}
+                style={[styles.addNewPlayer]}
+                onPress={() => handleNewPlayer()}
+                backgroundColor={colors.PRIMARY}
+              />
+            ) : null}
           </View>
           <View>
             <FlatList
@@ -521,6 +574,11 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     padding: 5,
+  },
+  addNewPlayer: {
+    padding: 9,
+    color: colors.LIGHT,
+    borderRadius: 5,
   },
 });
 

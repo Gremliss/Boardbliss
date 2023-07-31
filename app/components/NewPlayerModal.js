@@ -30,7 +30,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     fetchPlayers();
   }, []);
 
-  const handleModalClose = () => {
+  const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
@@ -74,7 +74,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
             style={[styles.input(windowHeight), styles.playerStyle]}
             multiline={true}
           />
-          <TouchableWithoutFeedback onPress={handleModalClose}>
+          <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View style={[styles.modalBG, StyleSheet.absoluteFillObject]} />
           </TouchableWithoutFeedback>
         </View>
