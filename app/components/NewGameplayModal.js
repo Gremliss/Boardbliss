@@ -25,6 +25,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   const currentDate = new Date();
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState("");
+  const [chooseWinners, setChooseWinners] = useState(false);
   const [addGameplay, setAddGameplay] = useState({
     id: Date.now(),
     date: {
@@ -55,35 +56,37 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     ) {
       displayDateAlert(1, 12, "month");
     } else {
-      let winningPlayers = [];
-      if (addGameplay.players.length > 0) {
-        if (addGameplay.type === "Rivalry") {
-          var maxScore;
-          if (addGameplay.scoreType === "Points") {
-            maxScore = Math.max(
-              ...addGameplay.players.map((player) => player.points)
+      if (chooseWinners === false) {
+        let winningPlayers = [];
+        if (addGameplay.players.length > 0) {
+          if (addGameplay.type === "Rivalry") {
+            var maxScore;
+            if (addGameplay.scoreType === "Points") {
+              maxScore = Math.max(
+                ...addGameplay.players.map((player) => player.points)
+              );
+            } else {
+              maxScore = Math.min(
+                ...addGameplay.players.map((player) => player.points)
+              );
+            }
+            winningPlayers = addGameplay.players.filter(
+              (player) => player.points === maxScore
             );
-          } else {
-            maxScore = Math.min(
-              ...addGameplay.players.map((player) => player.points)
-            );
-          }
-          winningPlayers = addGameplay.players.filter(
-            (player) => player.points === maxScore
-          );
-          winningPlayers.forEach((player) => {
-            player.victory = true;
-          });
+            winningPlayers.forEach((player) => {
+              player.victory = true;
+            });
 
-          loosingPlayers = addGameplay.players.filter(
-            (player) => player.points != maxScore
-          );
-          loosingPlayers.forEach((player) => {
-            player.victory = false;
-          });
+            loosingPlayers = addGameplay.players.filter(
+              (player) => player.points != maxScore
+            );
+            loosingPlayers.forEach((player) => {
+              player.victory = false;
+            });
+          }
         }
       }
-
+      console.log(addGameplay.players);
       onSubmit(addGameplay);
       setAddGameplay({
         id: Date.now(),
@@ -145,6 +148,10 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     }));
   };
 
+  const changeChooseWinners = () => {
+    setChooseWinners(!chooseWinners);
+  };
+
   const handleCheckButton = async (item) => {
     if (item.isChecked === false) {
       item.isChecked = true;
@@ -153,7 +160,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
         // If player doesn't exist, add a new player object
         if (!updatedPlayers.some((player) => player.id === item.id)) {
-          updatedPlayers.push({ name: item.name, id: item.id });
+          updatedPlayers.push({ name: item.name, id: item.id, victory: false });
         }
         return { ...prevState, players: updatedPlayers };
       });
@@ -168,6 +175,32 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     }
     await AsyncStorage.setItem("players", JSON.stringify(players));
     fetchPlayers();
+  };
+
+  const handleCheckWinner = async (item) => {
+    console.log(item.victory);
+    // item.victory = !item.victory;
+    var victoryValue;
+    setAddGameplay((prevState) => {
+      const updatedPlayers = addGameplay.players.map((player) => {
+        if (player.id === item.id) {
+          if (player.victory !== undefined && player.victory !== null) {
+            victoryValue = !player.victory;
+          } else {
+            victoryValue = true;
+          }
+          return { ...player, victory: victoryValue };
+        } else {
+          return player;
+        }
+      });
+
+      return { ...prevState, players: updatedPlayers };
+    });
+    console.log(addGameplay);
+
+    // await AsyncStorage.setItem("players", JSON.stringify(players));
+    // fetchPlayers();
   };
 
   const displayDateAlert = (num1, num2, date) => {
@@ -251,38 +284,70 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
         {item.isChecked ? (
           <>
             {addGameplay?.type === "Rivalry" ? (
-              <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
-                <TextInput
-                  onChangeText={(text) => {
-                    setAddGameplay((prevState) => {
-                      const updatedPlayers = prevState.players.map((player) => {
-                        if (player.name === item.name) {
-                          // Update points of existing player
-                          return { ...player, points: parseInt(text) };
-                        }
-                        return player;
-                      });
+              <>
+                <View style={[styles.flexRow]}>
+                  <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setAddGameplay((prevState) => {
+                        const updatedPlayers = prevState.players.map(
+                          (player) => {
+                            if (player.name === item.name) {
+                              // Update points of existing player
+                              return { ...player, points: parseInt(text) };
+                            }
+                            return player;
+                          }
+                        );
 
-                      // If player doesn't exist, add a new player object
-                      if (
-                        !updatedPlayers.some((player) => player.id === item.id)
-                      ) {
-                        updatedPlayers.push({
-                          name: item.name,
-                          id: item.id,
-                          points: parseInt(text),
-                        });
-                      }
-                      return { ...prevState, players: updatedPlayers };
-                    });
-                  }}
-                  placeholder={addGameplay.scoreType}
-                  style={[styles.inputTextStyle]}
-                  keyboardType="numeric"
-                  placeholderTextColor={colors.PLACEHOLDER}
-                />
-              </View>
+                        // If player doesn't exist, add a new player object
+                        if (
+                          !updatedPlayers.some(
+                            (player) => player.id === item.id
+                          )
+                        ) {
+                          updatedPlayers.push({
+                            name: item.name,
+                            id: item.id,
+                            points: parseInt(text),
+                            victory: false,
+                          });
+                        }
+                        console.log(updatedPlayers);
+                        return { ...prevState, players: updatedPlayers };
+                      });
+                    }}
+                    placeholder={addGameplay.scoreType}
+                    style={[styles.inputTextStyle]}
+                    keyboardType="numeric"
+                    placeholderTextColor={colors.PLACEHOLDER}
+                  />
+                </View>
+                {chooseWinners === true ? (
+                  <TouchableOpacity onPress={() => handleCheckWinner(item)}>
+                    <View style={[styles.flexRow]}>
+                      <View style={[styles.cellContainer]}>
+                        <Text>Win:</Text>
+                      </View>
+                      <View style={styles.checkIcon}>
+                        <MaterialIcons
+                          name={
+                            addGameplay.players.some(
+                              (player) =>
+                                player.name === item.name &&
+                                player.victory === true
+                            )
+                              ? "check-box"
+                              : "check-box-outline-blank"
+                          }
+                          size={20}
+                          color={colors.LIGHT}
+                        />
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ) : null}
+              </>
             ) : (
               <View style={[styles.flexRow]}>
                 <Text style={[styles.nameOfInputStyle]}>{item.name}</Text>
@@ -313,17 +378,32 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 </TouchableOpacity>
               </View>
               {addGameplay.type === "Rivalry" ? (
-                <View style={[styles.flexRow]}>
-                  <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
-                  <TouchableOpacity
-                    style={[styles.inputTextStyle]}
-                    onPress={() => changeScoreType()}
-                  >
-                    <Text style={[{ color: colors.LIGHT }]}>
-                      {addGameplay.scoreType}
+                <>
+                  <View style={[styles.flexRow]}>
+                    <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
+                    <TouchableOpacity
+                      style={[styles.inputTextStyle]}
+                      onPress={() => changeScoreType()}
+                    >
+                      <Text style={[{ color: colors.LIGHT }]}>
+                        {addGameplay.scoreType}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={[styles.flexRow]}>
+                    <Text style={[styles.nameOfInputStyle]}>
+                      Pick the winners:
                     </Text>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity
+                      style={[styles.inputTextStyle]}
+                      onPress={() => changeChooseWinners()}
+                    >
+                      <Text style={[{ color: colors.LIGHT }]}>
+                        {chooseWinners ? "Yes" : "No"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
               ) : (
                 <>
                   <View style={[styles.flexRow]}>
