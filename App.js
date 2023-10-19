@@ -12,6 +12,7 @@ import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
 import PlayerDetail from "./app/components/PlayerDetail";
 import GameplayDetail from "./app/components/GameplayDetail";
+import GameCalendar from "./app/screens/GameCalendar";
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,13 @@ export default function App() {
           name="Players"
           options={{
             title: "Players",
+          }}
+        />
+        <Stack.Screen
+          component={GameCalendar}
+          name="GameCalendar"
+          options={{
+            title: "GameCalendar",
           }}
         />
         <Stack.Screen
