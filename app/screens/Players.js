@@ -349,9 +349,12 @@ const Players = (props) => {
           >
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={[styles.buttonBottom]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() => props.navigation.navigate("GameCalendar")}
+          >
             <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Players</Text>
           </TouchableOpacity>
@@ -373,7 +376,7 @@ const Players = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   searchRow: {
@@ -432,7 +435,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
@@ -468,7 +471,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRightWidth: 1,
     paddingHorizontal: 1,
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     paddingVertical: 4,
   },
   centerStyle: {

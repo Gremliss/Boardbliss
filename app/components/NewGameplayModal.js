@@ -86,7 +86,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           }
         }
       }
-      console.log(addGameplay.players);
+      // console.log(addGameplay.players);
       onSubmit(addGameplay);
       setAddGameplay({
         id: Date.now(),
@@ -178,7 +178,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleCheckWinner = async (item) => {
-    console.log(item.victory);
+    // console.log(item.victory);
     // item.victory = !item.victory;
     var victoryValue;
     setAddGameplay((prevState) => {
@@ -197,7 +197,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
       return { ...prevState, players: updatedPlayers };
     });
-    console.log(addGameplay);
+    // console.log(addGameplay);
 
     // await AsyncStorage.setItem("players", JSON.stringify(players));
     // fetchPlayers();
@@ -313,7 +313,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                             victory: false,
                           });
                         }
-                        console.log(updatedPlayers);
+                        // console.log(updatedPlayers);
                         return { ...prevState, players: updatedPlayers };
                       });
                     }}

@@ -275,9 +275,12 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           <View style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </View>
-          {/* <TouchableOpacity style={[styles.buttonBottom]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() => navigation.navigate("GameCalendar")}
+          >
             <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBottom]}
             onPress={() => navigation.navigate("Players")}
@@ -304,7 +307,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   searchRow: {
@@ -339,7 +342,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
-    borderRadius: 50,
+    borderRadius: 15,
     padding: 12,
     margin: 1,
   },
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
