@@ -32,7 +32,6 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   var countUserGamesToAdd = 0;
 
@@ -289,12 +288,6 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <NewPlayerModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={addPlayer}
-        players={players}
-      />
     </>
   );
 };
