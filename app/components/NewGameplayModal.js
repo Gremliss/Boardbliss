@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  BackHandler,
   Dimensions,
   Keyboard,
   Modal,
@@ -17,34 +18,95 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import RoundIconBtn from "./RoundIconButton";
 import colors from "../misc/colors";
+import AddPlayersModal from "./AddPlayersModal";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
+const NewGameplayModal = ({
+  visible,
+  onClose,
+  onSubmit,
+  isExisting,
+  gameplayParams,
+  gameParams,
+  navigation,
+}) => {
   const currentDate = new Date();
+  const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [name, setName] = useState("");
   const [chooseWinners, setChooseWinners] = useState(false);
-  const [addGameplay, setAddGameplay] = useState({
-    id: Date.now(),
-    date: {
-      day: currentDate.getDate(),
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-    },
-    players: [],
-    type: "Rivalry",
-    scoreType: "Points",
-    isChecked: false,
-    duration: { hours: null, min: null },
-  });
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addGameplay, setAddGameplay] = isExisting
+    ? useState(gameplayParams)
+    : useState({
+        id: Date.now(),
+        date: {
+          day: currentDate.getDate(),
+          month: currentDate.getMonth() + 1,
+          year: currentDate.getFullYear(),
+          hour: currentDate.getHours(),
+          minutes: currentDate.getMinutes(),
+        },
+        players: [],
+        type: "Rivalry",
+        scoreType: "Points",
+        isChecked: false,
+        duration: { hours: null, min: null },
+      });
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
+
+  const fetchPlayers = async () => {
+    const result = await AsyncStorage.getItem("players");
+    if (result?.length) setPlayers(JSON.parse(result));
+  };
+
+  useEffect(() => {
+    fetchCollection();
+    fetchPlayers();
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   handleBackButton
+    // );
+    // return () => backHandler.remove();
+  }, []);
+
+  // const handleBackButton = () => {
+  //   fetchCollection();
+  //   return;
+  // };
+
+  if (isExisting) {
+    useEffect(() => {
+      updateIsChecked();
+    }, []);
+
+    const updateIsChecked = async () => {
+      const result = await AsyncStorage.getItem("players");
+      const parsedResult = JSON.parse(result);
+      parsedResult?.forEach((player) => {
+        const playerInGameplay = addGameplay.players.find(
+          (p) => p.name === player.name
+        );
+        if (playerInGameplay) {
+          player.isChecked = true;
+        } else {
+          player.isChecked = false;
+        }
+      });
+      if (result?.length) setPlayers(parsedResult);
+    };
+  }
+
   const handleSubmit = () => {
+    addGameplay.id = Date.now();
     if (
       parseInt(addGameplay.date.day) < 1 ||
       parseInt(addGameplay.date.day) > 59
@@ -86,36 +148,64 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           }
         }
       }
-      console.log(addGameplay.players);
-      onSubmit(addGameplay);
-      setAddGameplay({
-        id: Date.now(),
-        date: {
-          day: currentDate.getDate(),
-          month: currentDate.getMonth() + 1,
-          year: currentDate.getFullYear(),
-        },
-        players: [],
-        type: "Rivalry",
-        scoreType: "Points",
-        isChecked: false,
-        duration: { hours: null, min: null },
-      });
+      if (isExisting) {
+        saveChanges();
+      } else {
+        onSubmit(addGameplay);
+        setAddGameplay({
+          id: Date.now(),
+          date: {
+            day: currentDate.getDate(),
+            month: currentDate.getMonth() + 1,
+            year: currentDate.getFullYear(),
+            hour: currentDate.getHours(),
+            minutes: currentDate.getMinutes(),
+          },
+          players: [],
+          type: "Rivalry",
+          scoreType: "Points",
+          isChecked: false,
+          duration: { hours: null, min: null },
+        });
+      }
       onClose();
     }
+    changePlayersIsCheckedToFalse();
+  };
+
+  const saveChanges = async () => {
+    const updatedCollection = collection.map((item) => {
+      if (item.id === gameParams.id) {
+        return {
+          ...item,
+          stats: item.stats.map((obj) =>
+            obj.id === addGameplay.id ? addGameplay : obj
+          ),
+        };
+      } else {
+        return item;
+      }
+    });
+    const updatedGameParams = {
+      ...gameParams,
+      stats: gameParams.stats.map((obj) =>
+        obj.id === addGameplay.id ? addGameplay : obj
+      ),
+    };
+    gameParams = updatedGameParams;
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+
+    navigation.navigate("GamesPlayed", {
+      gameParams,
+    });
   };
 
   const closeModal = () => {
     onClose();
+    changePlayersIsCheckedToFalse();
   };
-
-  const fetchPlayers = async () => {
-    const result = await AsyncStorage.getItem("players");
-    if (result?.length) setPlayers(JSON.parse(result));
-  };
-  useEffect(() => {
-    fetchPlayers();
-  }, []);
 
   const changeType = () => {
     if (addGameplay.type === "Rivalry") {
@@ -178,8 +268,6 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleCheckWinner = async (item) => {
-    console.log(item.victory);
-    // item.victory = !item.victory;
     var victoryValue;
     setAddGameplay((prevState) => {
       const updatedPlayers = addGameplay.players.map((player) => {
@@ -197,10 +285,6 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
 
       return { ...prevState, players: updatedPlayers };
     });
-    console.log(addGameplay);
-
-    // await AsyncStorage.setItem("players", JSON.stringify(players));
-    // fetchPlayers();
   };
 
   const displayDateAlert = (num1, num2, date) => {
@@ -220,38 +304,38 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
     fetchPlayers();
   };
 
-  const handleNewPlayer = () => {
-    if (players.some((obj) => obj.name === name)) {
-      displayExistAlert();
-    } else {
-      addNewPlayer(name);
-      setName("");
-    }
-  };
+  // const handleNewPlayer = () => {
+  //   if (players.some((obj) => obj.name === name)) {
+  //     displayExistAlert();
+  //   } else {
+  //     addNewPlayer(name);
+  //     setName("");
+  //   }
+  // };
 
-  const displayExistAlert = () => {
-    Alert.alert(
-      "Duplicate",
-      "Player with that name already exists",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
-  };
+  // const displayExistAlert = () => {
+  //   Alert.alert(
+  //     "Duplicate",
+  //     "Player with that name already exists",
+  //     [{ text: "Ok", onPress: () => null }],
+  //     { cancelable: true }
+  //   );
+  // };
 
-  const addNewPlayer = async (text) => {
-    if (!players) {
-      players = [];
-    }
-    const newPlayer = {
-      name: text,
-      id: Date.now(),
-      isChecked: false,
-    };
+  // const addNewPlayer = async (text) => {
+  //   if (!players) {
+  //     players = [];
+  //   }
+  //   const newPlayer = {
+  //     name: text,
+  //     id: Date.now(),
+  //     isChecked: false,
+  //   };
 
-    const updatedPlayers = [...players, newPlayer];
-    setPlayers(updatedPlayers);
-    await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
-  };
+  //   const updatedPlayers = [...players, newPlayer];
+  //   setPlayers(updatedPlayers);
+  //   await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+  // };
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
@@ -277,7 +361,6 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
       </TouchableOpacity>
     );
   };
-
   const renderActivePlayer = ({ item, index }) => {
     return (
       <View key={index}>
@@ -288,6 +371,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 <View style={[styles.flexRow]}>
                   <Text style={[styles.nameOfInputStyle]}>{item.name}:</Text>
                   <TextInput
+                    defaultValue={item?.points?.toString()}
                     onChangeText={(text) => {
                       setAddGameplay((prevState) => {
                         const updatedPlayers = prevState.players.map(
@@ -313,7 +397,6 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                             victory: false,
                           });
                         }
-                        console.log(updatedPlayers);
                         return { ...prevState, players: updatedPlayers };
                       });
                     }}
@@ -418,6 +501,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                   <View style={[styles.flexRow]}>
                     <Text style={[styles.nameOfInputStyle]}>Points:</Text>
                     <TextInput
+                      defaultValue={addGameplay?.coop?.points?.toString()}
                       onChangeText={(text) =>
                         setAddGameplay((prevState) => ({
                           ...prevState,
@@ -433,12 +517,26 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 </>
               )}
 
-              <View style={[styles.flexRow]}>
+              <TouchableOpacity
+                style={[styles.addButton]}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text
+                  style={[
+                    { fontSize: 20, textAlign: "center", color: colors.LIGHT },
+                  ]}
+                >
+                  Players
+                </Text>
+              </TouchableOpacity>
+
+              {/*  */}
+              {/* <View style={[styles.flexRow]}>
                 <Text style={[styles.nameOfInputStyle]}>Players:</Text>
-              </View>
+              </View> */}
             </View>
           </TouchableWithoutFeedback>
-          <View>
+          {/* <View>
             <FlatList
               data={players}
               renderItem={renderItem}
@@ -465,7 +563,8 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
                 backgroundColor={colors.PRIMARY}
               />
             ) : null}
-          </View>
+          </View> */}
+          {/*  */}
           <View>
             <FlatList
               data={players}
@@ -473,12 +572,14 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               keyExtractor={(item, index) => `${index}`}
               horizontal
               keyboardShouldPersistTaps="always"
+              initialNumToRender={50}
             />
           </View>
 
           <View style={[styles.flexRow]}>
             <Text style={[styles.nameOfInputStyle]}>Time:</Text>
             <TextInput
+              defaultValue={addGameplay?.duration?.hours?.toString()}
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
@@ -502,6 +603,7 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
               placeholderTextColor={colors.PLACEHOLDER}
             />
             <TextInput
+              defaultValue={addGameplay?.duration?.min?.toString()}
               onChangeText={(text) => {
                 // Remove any non-digit characters from the input
                 const sanitizedText = text.replace(/[^0-9]/g, "");
@@ -579,6 +681,14 @@ const NewGameplayModal = ({ visible, onClose, onSubmit }) => {
           </View>
         </View>
 
+        <AddPlayersModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          players={players}
+          renderItem={renderItem}
+          setPlayers={setPlayers}
+        />
+
         <View style={styles.btnContainer}>
           <RoundIconBtn
             antIconName="check"
@@ -644,6 +754,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 1,
     padding: 10,
+    width: windowWidth / 2,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -659,6 +770,15 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.LIGHT,
     borderRadius: 5,
+  },
+  addButton: {
+    backgroundColor: colors.PRIMARY,
+    color: colors.LIGHT,
+    padding: 10,
+    borderRadius: 50,
+    elevation: 5,
+    marginVertical: 20,
+    marginHorizontal: 50,
   },
 });
 

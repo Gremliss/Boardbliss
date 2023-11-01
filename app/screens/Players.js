@@ -29,7 +29,6 @@ const Players = (props) => {
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
@@ -190,78 +189,6 @@ const Players = (props) => {
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
   };
 
-  // const handleFilter = async (filterItems) => {
-  //   var filteredPlayers = players;
-  //   if (filterItems.yearpublished) {
-  //     filteredPlayers = filteredPlayers.filter((item) => {
-  //       if (item.yearpublished) {
-  //         if (item.yearpublished.includes(filterItems.yearpublished)) {
-  //           return item;
-  //         }
-  //       }
-  //     });
-  //   }
-
-  //   if (filterItems.players) {
-  //     filteredPlayers = filteredPlayers.filter((item) => {
-  //       if (item.maxPlayers) {
-  //         if (
-  //           item.minPlayers <= filterItems.players &&
-  //           filterItems.players <= item.maxPlayers
-  //         ) {
-  //           return item;
-  //         }
-  //       }
-  //     });
-  //   }
-  //   if (filterItems.maxPlaytime) {
-  //     filteredPlayers = filteredPlayers.filter((item) => {
-  //       if (item.maxPlaytime) {
-  //         if (Number(item.maxPlaytime) <= Number(filterItems.maxPlaytime)) {
-  //           return item;
-  //         }
-  //       }
-  //     });
-  //   }
-  //   if (filterItems.minPlaytime) {
-  //     filteredPlayers = filteredPlayers.filter((item) => {
-  //       if (item.minPlaytime) {
-  //         if (Number(item.minPlaytime) >= Number(filterItems.minPlaytime)) {
-  //           return item;
-  //         }
-  //       }
-  //     });
-  //   }
-  //   if (filterItems.rating) {
-  //     filteredPlayers = filteredPlayers.filter((item) => {
-  //       if (item.rating) {
-  //         if (Number(item.rating) >= Number(filterItems.rating)) {
-  //           return item;
-  //         }
-  //       }
-  //     });
-  //   }
-
-  //   if (filterItems.owner) {
-  //     if (filterItems.owner !== "All") {
-  //       filteredPlayers = filteredPlayers.filter((item) => {
-  //         if (item.owner) {
-  //           if (item.owner === filterItems.owner) {
-  //             return item;
-  //           }
-  //         }
-  //       });
-  //     }
-  //   }
-
-  //   if (filteredPlayers.length) {
-  //     setPlayers(filteredPlayers);
-  //   } else {
-  //     fetchPlayers;
-  //     ToastAndroid.show("Games not found", 2000);
-  //   }
-  // };
-
   return (
     <View style={[styles.container]}>
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
@@ -294,12 +221,6 @@ const Players = (props) => {
           onPress={handleOnClear}
           style={styles.clearIcon}
         />
-        {/* <TouchableOpacity
-          style={[styles.icon]}
-          onPress={() => setFilterModalVisible(true)}
-        >
-          <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
-        </TouchableOpacity> */}
       </View>
 
       <View style={[styles.itemContainer, { opacity: 0.8 }]}>
@@ -321,6 +242,7 @@ const Players = (props) => {
         data={players}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${index}`}
+        initialNumToRender={16}
       />
       {longPressActive ? (
         <View>
@@ -349,9 +271,12 @@ const Players = (props) => {
           >
             <Text style={[styles.textBtn]}>Search BGG</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={[styles.buttonBottom]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() => props.navigation.navigate("GameCalendar")}
+          >
             <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
             <Text style={[styles.textBtn]}>Players</Text>
           </TouchableOpacity>
@@ -362,18 +287,13 @@ const Players = (props) => {
         onClose={() => setModalVisible(false)}
         onSubmit={addNewPlayer}
       />
-      {/* <FilterModal
-        visible={filterModalVisible}
-        onClose={() => setFilterModalVisible(false)}
-        onSubmit={handleFilter}
-      /> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   searchRow: {
@@ -432,7 +352,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
@@ -468,7 +388,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRightWidth: 1,
     paddingHorizontal: 1,
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     paddingVertical: 4,
   },
   centerStyle: {

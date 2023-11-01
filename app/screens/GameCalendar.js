@@ -92,18 +92,18 @@ const GameCalendar = (props) => {
     const backgroundColor =
       item.name.slice(-3) === "Sun" || item.name.slice(-3) === "Sat"
         ? isCurrentDate
-          ? "#be8eb3"
+          ? "#cc3e72"
           : colors.RED
         : isCurrentDate
-        ? "#5e5ea1"
-        : colors.GRAY;
+        ? colors.PRIMARY
+        : colors.PRIMARY_OPACITY;
 
     const fontWeight = isCurrentDate ? "bold" : "normal";
 
     return (
-      <View>
-        <View style={[styles.violetBackground, { backgroundColor }]}>
-          <Text style={styles.dayStyle(backgroundColor, fontWeight)}>
+      <View style={[styles.flatListItemContainer, {}]}>
+        <View>
+          <Text style={styles.headingFlatListItem(backgroundColor, fontWeight)}>
             {item.name}
           </Text>
         </View>
@@ -133,7 +133,7 @@ const GameCalendar = (props) => {
       gamesPlayedOnThisDate.length > 0
     ) {
       return (
-        <View style={styles.dailyGames}>
+        <View style={styles.dailyGamesContainer}>
           {gamesPlayedOnThisDate.map((game) => {
             const gameName = game.name;
             const gameSessions = game.stats.filter((session) => {
@@ -142,9 +142,6 @@ const GameCalendar = (props) => {
               }.${session.date.year}`;
               return sessionDate === currentDate;
             });
-            const gamePlayers = gameSessions.flatMap(
-              (session) => session.players
-            );
 
             return (
               <View key={`${game.id}`}>
@@ -156,7 +153,7 @@ const GameCalendar = (props) => {
                     <Text style={styles.gameName}>{gameName}</Text>
 
                     <Text style={styles.players}>
-                      Players:{" "}
+                      👥{" "}
                       {session.players.map((player, playerIndex) => (
                         <Text key={playerIndex}>
                           {playerIndex > 0 && ", "}{" "}
@@ -184,14 +181,14 @@ const GameCalendar = (props) => {
     Keyboard.dismiss();
   };
   const ITEM_WIDTH = windowWidth / 4;
-  const getItemLayout = (_, index) => {
-    return {
-      length: ITEM_WIDTH,
-      offset: ITEM_WIDTH * (index - 1),
-      index,
-    };
-  };
-  const keyExtractor = (item) => item.id;
+  // const getItemLayout = (_, index) => {
+  //   return {
+  //     length: ITEM_WIDTH,
+  //     offset: ITEM_WIDTH * (index - 1),
+  //     index,
+  //   };
+  // };
+
   return (
     <>
       <View style={styles.container}>
@@ -204,11 +201,10 @@ const GameCalendar = (props) => {
         <SafeAreaView style={styles.flatListContainer}>
           <FlatList
             data={numberOfDays}
-            // horizontal={true}
-            initialScrollIndex={date.getDate() - 1}
             renderItem={renderItem}
-            getItemLayout={getItemLayout}
-            keyExtractor={keyExtractor}
+            // getItemLayout={getItemLayout}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
           />
         </SafeAreaView>
         <RoundIconBtn
@@ -251,58 +247,25 @@ const GameCalendar = (props) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   containerTop: {
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     color: "white",
     alignItems: "center",
   },
   textTop: {
     fontWeight: "bold",
     fontSize: 22,
-    color: "white",
+    color: colors.PRIMARY,
     letterSpacing: 1,
   },
   flatListContainer: {
     flex: 1,
     color: "white",
-  },
-  violetBackground: {
-    backgroundColor: "#1c1c30",
-  },
-  lightVioletBackground: {
-    backgroundColor: "#2f2f50",
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    alignItems: "center",
-  },
-  dayStyle: (bcgColor, weight) => {
-    return {
-      borderTopLeftRadius: 50,
-      borderTopRightRadius: 50,
-      textAlign: "center",
-      backgroundColor: bcgColor,
-      borderColor: "#1c1c30",
-      color: "white",
-      fontWeight: weight,
-    };
-  },
-  textInputStyle: (windowWidth) => {
-    return {
-      // flex: 1,
-      width: windowWidth / 4,
-      borderLeftWidth: 1,
-      borderRightWidth: 1,
-      borderColor: "#1c1c30",
-      paddingTop: 5,
-      paddingBottom: 0,
-      paddingLeft: 3,
-      paddingRight: 2,
-    };
   },
   leftBtn: {
     position: "absolute",
@@ -333,7 +296,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
@@ -346,14 +309,43 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.LIGHT,
   },
-  dailyGames: {
+  flatListItemContainer: {
+    // backgroundColor: "green",
+    // borderTopLeftRadius: 50,
+    // borderTopRightRadius: 50,
+    width: windowWidth / 2,
     padding: 2,
+  },
+  headingFlatListItem: (bcgColor, weight) => {
+    return {
+      borderTopLeftRadius: 15,
+      borderTopRightRadius: 15,
+      // textAlign: "center",
+      backgroundColor: bcgColor,
+      borderColor: colors.BACKGROUND,
+      borderTopWidth: 1,
+      color: "white",
+      fontWeight: weight,
+      flex: 1,
+      paddingLeft: 30,
+    };
+  },
+  dailyGamesContainer: {
+    padding: 5,
+    backgroundColor: "#F9F3CC80",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   boldPlayer: {
     fontWeight: "bold",
   },
-  gameItem: { flex: 1 },
-  gameName: {},
+  gameItem: {
+    // backgroundColor: "green",
+  },
+  gameName: {
+    // fontWeight: "bold",
+    fontSize: 14,
+  },
   players: {},
 });
 export default GameCalendar;

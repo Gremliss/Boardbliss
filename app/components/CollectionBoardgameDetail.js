@@ -27,7 +27,16 @@ const CollectionBoardgameDetail = (props) => {
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
-    if (result?.length) setCollection(JSON.parse(result));
+    const parsedResult = JSON.parse(result);
+    if (result?.length) setCollection(parsedResult);
+
+    var newGameParams;
+    parsedResult.map((item) => {
+      if (item.id === gameParams.id) {
+        newGameParams = item;
+      }
+    });
+    if (newGameParams) setGameParams(newGameParams);
   };
 
   const fetchGameParams = async () => {
@@ -41,6 +50,16 @@ const CollectionBoardgameDetail = (props) => {
     }
   };
 
+  const addNewGameplay = async (newGameplay) => {
+    if (!gameParams.stats) {
+      gameParams.stats = [];
+    }
+    setGameParams((prevState) => ({
+      ...prevState,
+      stats: [...prevState.stats, newGameplay],
+    }));
+  };
+
   useEffect(() => {
     fetchGameParams();
     fetchCollection();
@@ -50,6 +69,22 @@ const CollectionBoardgameDetail = (props) => {
     );
     return () => backHandler.remove();
   }, [props.navigation]);
+
+  useEffect(() => {
+    setCollection((prevCollection) =>
+      prevCollection.map((obj) =>
+        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
+      )
+    );
+  }, [gameParams]);
+
+  useEffect(() => {
+    asyncSetCollection();
+  }, [collection]);
+
+  const asyncSetCollection = async () => {
+    await AsyncStorage.setItem("collection", JSON.stringify(collection));
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -61,33 +96,6 @@ const CollectionBoardgameDetail = (props) => {
     fetchGameParams();
     return;
   };
-
-  const addNewGameplay = async (newGameplay) => {
-    if (!gameParams.stats) {
-      gameParams.stats = [];
-    }
-    setGameParams((prevState) => ({
-      ...prevState,
-      stats: [...prevState.stats, newGameplay],
-    }));
-  };
-
-  // useEffect(() => {
-  //   setCollection((prevCollection) =>
-  //     prevCollection.map((obj) =>
-  //       obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
-  //     )
-  //   );
-  // }, [gameParams]);
-
-  // useEffect(() => {
-  //   asyncSetCollection();
-  // }, [collection]);
-
-  // const asyncSetCollection = async () => {
-  //   console.log(collection);
-  //   await AsyncStorage.setItem("collection", JSON.stringify(collection));
-  // };
 
   return (
     <>
@@ -196,6 +204,7 @@ const CollectionBoardgameDetail = (props) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={addNewGameplay}
+        isExisting={false}
       />
     </>
   );
@@ -290,7 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 50,
   },
 });
 

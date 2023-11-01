@@ -34,7 +34,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     Keyboard.dismiss();
   };
 
-  const handleOnChangeTest = (text, valueFor) => {
+  const handleOnChangeText = (text, valueFor) => {
     if (valueFor === "name") setName(text);
   };
 
@@ -69,7 +69,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
         <View style={styles.container}>
           <TextInput
             value={name}
-            onChangeText={(text) => handleOnChangeTest(text, "name")}
+            onChangeText={(text) => handleOnChangeText(text, "name")}
             placeholder="Player name"
             style={[styles.input(windowHeight), styles.playerStyle]}
             multiline={true}
