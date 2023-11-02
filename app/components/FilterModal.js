@@ -25,6 +25,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
   const [filterGames, setFilterGames] = useState({
     yearpublished: null,
     owner: "All",
+    expansion: true,
     rating: null,
     players: null,
     minPlaytime: null,
@@ -40,6 +41,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     setFilterGames({
       yearpublished: null,
       owner: "All",
+      expansion: true,
       rating: null,
       players: null,
       minPlaytime: null,
@@ -52,6 +54,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     setFilterGames({
       yearpublished: null,
       owner: "All",
+      expansion: true,
       rating: null,
       players: null,
       minPlaytime: null,
@@ -79,6 +82,12 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
           : "You",
     });
   };
+  const changeExpansion = () => {
+    setFilterGames({
+      ...filterGames,
+      expansion: filterGames.expansion === false ? true : false,
+    });
+  };
 
   return (
     <>
@@ -104,6 +113,15 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 onPress={() => changeOwner()}
               >
                 <Text>{filterGames.owner}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Expansions:</Text>
+              <TouchableOpacity
+                style={[styles.inputTextStyle]}
+                onPress={() => changeExpansion()}
+              >
+                <Text>{filterGames.expansion ? "Yes" : "No"}</Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.flexRow]}>

@@ -75,6 +75,7 @@ const BoardGameDetail = (props) => {
         bggImage: game.image,
         id: gameId,
         owner: owner,
+        expansion: false,
         rating: fixedRating,
         isChecked: false,
         stats: [],

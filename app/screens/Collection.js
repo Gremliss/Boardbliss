@@ -290,6 +290,15 @@ const Collection = (props) => {
       }
     }
 
+    if (filterItems.expansion !== true) {
+      console.log("inside");
+      filteredCollection = filteredCollection.filter((item) => {
+        if (item.expansion === false) {
+          return item;
+        }
+      });
+    }
+
     if (filteredCollection.length) {
       setCollection(filteredCollection);
     } else {
