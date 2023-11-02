@@ -54,10 +54,22 @@ const CollectionBoardgameDetail = (props) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    setGameParams((prevState) => ({
-      ...prevState,
-      stats: [...prevState.stats, newGameplay],
-    }));
+
+    const newGameParams = {
+      ...gameParams,
+      stats: [...gameParams.stats, newGameplay],
+    };
+    const updatedCollection = collection.map((item) => {
+      if (item.id === newGameParams.id) {
+        return {
+          ...item,
+          stats: newGameParams.stats,
+        };
+      } else {
+        return item;
+      }
+    });
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   useEffect(() => {
@@ -69,22 +81,6 @@ const CollectionBoardgameDetail = (props) => {
     );
     return () => backHandler.remove();
   }, [props.navigation]);
-
-  useEffect(() => {
-    setCollection((prevCollection) =>
-      prevCollection.map((obj) =>
-        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
-      )
-    );
-  }, [gameParams]);
-
-  useEffect(() => {
-    asyncSetCollection();
-  }, [collection]);
-
-  const asyncSetCollection = async () => {
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-  };
 
   useFocusEffect(
     React.useCallback(() => {

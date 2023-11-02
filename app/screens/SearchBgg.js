@@ -116,6 +116,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         owner: "You",
         rating: item.stats[0].rating[0].average[0].$.value,
         isChecked: false,
+        expansion: false,
         stats: [],
       };
 

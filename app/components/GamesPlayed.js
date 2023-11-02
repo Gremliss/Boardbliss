@@ -299,30 +299,44 @@ const GamesPlayed = (props) => {
     setGameParams({ ...gameParams, stats: newGameplay });
   };
 
-  useEffect(() => {
-    setCollection((prevCollection) =>
-      prevCollection.map((obj) =>
-        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
-      )
-    );
-  }, [gameParams]);
+  // useEffect(() => {
+  //   setCollection((prevCollection) =>
+  //     prevCollection.map((obj) =>
+  //       obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
+  //     )
+  //   );
+  // }, [gameParams]);
 
-  useEffect(() => {
-    asyncSetCollection();
-  }, [collection]);
+  // useEffect(() => {
+  //   asyncSetCollection();
+  // }, [collection]);
 
-  const asyncSetCollection = async () => {
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
-  };
+  // const asyncSetCollection = async () => {
+  //   await AsyncStorage.setItem("collection", JSON.stringify(collection));
+  // };
 
   const addNewGameplay = async (newGameplay) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    setGameParams((prevState) => ({
-      ...prevState,
-      stats: [...prevState.stats, newGameplay],
-    }));
+
+    const newGameParams = {
+      ...gameParams,
+      stats: [...gameParams.stats, newGameplay],
+    };
+    const updatedCollection = collection.map((item) => {
+      if (item.id === newGameParams.id) {
+        return {
+          ...item,
+          stats: newGameParams.stats,
+        };
+      } else {
+        return item;
+      }
+    });
+    setGameParams(newGameParams);
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   // Sort the gameParams.stats array by date

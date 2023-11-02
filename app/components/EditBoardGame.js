@@ -23,6 +23,7 @@ const EditBoardGame = (props) => {
   const [name, setName] = useState(gameParams.name);
   const [yearpublished, setYearpublished] = useState(gameParams.yearpublished);
   const [owner, setOwner] = useState(gameParams.owner);
+  const [expansion, setExpansion] = useState(gameParams.expansion);
   const [rating, setRating] = useState(gameParams.rating);
   const [minPlayers, setMinPlayers] = useState(gameParams.minPlayers);
   const [maxPlayers, setMaxPlayers] = useState(gameParams.maxPlayers);
@@ -42,6 +43,13 @@ const EditBoardGame = (props) => {
     owner === "You" ? setOwner("Friend") : setOwner("You");
   };
 
+  const changeExpansion = () => {
+    if (expansion === null) {
+      setExpansion(false);
+    }
+    expansion === false ? setExpansion(true) : setExpansion(false);
+  };
+
   const saveChanges = async () => {
     const updatedCollection = collection.map((item) => {
       if (item.name === gameParams.name) {
@@ -55,6 +63,7 @@ const EditBoardGame = (props) => {
           maxPlaytime: maxPlaytime,
           bggImage: bggImage,
           owner: owner,
+          expansion: expansion,
           rating: rating,
         };
       } else {
@@ -64,7 +73,7 @@ const EditBoardGame = (props) => {
 
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
-    fetchCollection();
+    // fetchCollection();
     props.navigation.goBack();
   };
 
@@ -99,6 +108,17 @@ const EditBoardGame = (props) => {
             onPress={() => changeOwner()}
           >
             <Text style={[{ color: colors.LIGHT }]}>{owner}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.flexRow]}>
+          <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
+          <TouchableOpacity
+            style={[styles.inputTextStyle]}
+            onPress={() => changeExpansion()}
+          >
+            <Text style={[{ color: colors.LIGHT }]}>
+              {expansion ? "Yes" : "No"}
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={[styles.flexRow]}>

@@ -33,6 +33,8 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     maxPlaytime: "",
     bggImage: null,
     id: Date.now(),
+    isChecked: false,
+    expansion: false,
     stats: [],
   });
 
@@ -56,6 +58,8 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
         maxPlaytime: "",
         bggImage: null,
         id: Date.now(),
+        isChecked: false,
+        expansion: false,
         stats: [],
       });
       onClose();
@@ -83,6 +87,8 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
       maxPlaytime: "",
       bggImage: null,
       id: Date.now(),
+      isChecked: false,
+      expansion: false,
       stats: [],
     });
     onClose();
@@ -100,6 +106,12 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     addGame.owner === "You"
       ? setAddGame({ ...addGame, owner: "Friend" })
       : setAddGame({ ...addGame, owner: "You" });
+  };
+
+  const changeExpansion = () => {
+    addGame.expansion === false
+      ? setAddGame({ ...addGame, expansion: true })
+      : setAddGame({ ...addGame, expansion: false });
   };
 
   return (
@@ -136,6 +148,17 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
               onPress={() => changeOwner()}
             >
               <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
+            <TouchableOpacity
+              style={[styles.inputTextStyle]}
+              onPress={() => changeExpansion()}
+            >
+              <Text style={[{ color: colors.LIGHT }]}>
+                {addGame?.expansion ? "Yes" : "No"}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={[styles.flexRow]}>
