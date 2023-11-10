@@ -22,7 +22,6 @@ const PlayerDetail = (props) => {
   const [players, setPlayers] = useState([]);
   const [playerParams, setPlayerParams] = useState(props.route.params.item);
   const [name, setName] = useState(playerParams.name);
-  console.log(name);
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));

@@ -72,7 +72,6 @@ const GameCalendar = (props) => {
     });
     n++;
   }
-
   setMonth = (month) => {
     let monthNo = months.indexOf(month); // get month number
     let dateObject = Object.assign({}, this.state.dateObject);
@@ -82,7 +81,6 @@ const GameCalendar = (props) => {
     var newDateMs = date.setMonth(date.getMonth() + n);
     const newDate = new Date(newDateMs);
     setDate(newDate);
-    console.log(collection[0].stats[0].players);
   };
   const renderItem = ({ item, index }) => {
     const isCurrentDate =
@@ -158,7 +156,7 @@ const GameCalendar = (props) => {
                         <Text key={playerIndex}>
                           {playerIndex > 0 && ", "}{" "}
                           {player.victory ? (
-                            <Text style={styles.boldPlayer}>{player.name}</Text>
+                            <Text style={styles.winPlayer}>{player.name}</Text>
                           ) : (
                             player.name
                           )}
@@ -176,6 +174,34 @@ const GameCalendar = (props) => {
       return null;
     }
   };
+
+  let totalHours = 0;
+  let totalMinutes = 0;
+  let numOfGames = 0;
+  // Iterate through games
+  for (const game of collection) {
+    // Check if the game has stats
+    if (game.stats && game.stats.length > 0) {
+      // Filter stats for the target month
+      const targetMonthStats = game.stats.filter(
+        (stat) => stat.date.month === date.getMonth() + 1
+      );
+
+      // Iterate through stats for the target month
+      targetMonthStats.forEach((stat) => {
+        // Extract hours and minutes
+        const hours = stat.duration.hours || 0;
+        const minutes = stat.duration.min || 0;
+
+        // Update totals
+        totalHours += parseInt(hours);
+        totalMinutes += parseInt(minutes);
+        numOfGames += 1;
+      });
+    }
+  }
+  totalHours += Math.floor(totalMinutes / 60);
+  totalMinutes = totalMinutes % 60;
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -196,6 +222,10 @@ const GameCalendar = (props) => {
           <View style={styles.containerTop}>
             <Text style={styles.textTop}>{date.getFullYear()}</Text>
             <Text style={styles.textTop}>{months[date.getMonth()]}</Text>
+            <Text style={styles.statsTop}>Games: {numOfGames}</Text>
+            <Text style={styles.statsTop}>
+              Time: {totalHours} h {totalMinutes} min
+            </Text>
           </View>
         </TouchableWithoutFeedback>
         <SafeAreaView style={styles.flatListContainer}>
@@ -262,6 +292,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: colors.PRIMARY,
     letterSpacing: 1,
+  },
+  statsTop: {
+    fontWeight: "bold",
+    fontSize: 14,
+    color: colors.PRIMARY,
   },
   flatListContainer: {
     flex: 1,
@@ -336,15 +371,18 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
-  boldPlayer: {
-    fontWeight: "bold",
+  winPlayer: {
+    textDecorationLine: "underline",
   },
   gameItem: {
+    paddingBottom: 4,
     // backgroundColor: "green",
+    // borderWidth: 1,
+    // borderColor: colors.PRIMARY_OPACITY,
   },
   gameName: {
-    // fontWeight: "bold",
     fontSize: 14,
+    fontWeight: "bold",
   },
   players: {},
 });

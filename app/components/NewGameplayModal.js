@@ -68,7 +68,6 @@ const NewGameplayModal = ({
 
   if (isExisting) {
     useEffect(() => {
-      console.log("isExisting true");
       fetchCollection();
       updateIsChecked();
     }, [addGameplay]);
@@ -90,7 +89,6 @@ const NewGameplayModal = ({
     };
   } else {
     useEffect(() => {
-      console.log("isExisting FALSE");
       fetchCollection();
       fetchPlayers();
       // const backHandler = BackHandler.addEventListener(
@@ -309,12 +307,10 @@ const NewGameplayModal = ({
       if (player.id === item.id) {
         // Update points of existing player
         if (player?.points) {
-          console.log(player?.points);
           playerScore = player.points;
         }
       }
     });
-    console.log("playerScore " + playerScore.toString());
     return (
       <View key={index}>
         {item.isChecked ? (
