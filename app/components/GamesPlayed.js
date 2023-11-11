@@ -259,10 +259,10 @@ const GamesPlayed = (props) => {
     );
   };
   const handleItemPressed = async (item) => {
-    setGameplayParams(item);
     longPressActive ? handleCheckButton(item) : openGameplayDetail(item);
   };
   const openGameplayDetail = (item) => {
+    setGameplayParams(item);
     setEditGameplaymodalVisible(true);
   };
   const handleExitButton = async () => {
