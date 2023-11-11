@@ -400,7 +400,7 @@ const NewGameplayModal = ({
         onRequestClose={closeModal}
         onShow={isExisting ? () => setAddGameplay(gameplayParams) : null}
       >
-        <View style={[{ flex: 1, paddingBottom: 80 }]}>
+        <View style={[styles.container]}>
           <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View>
               <View style={[styles.flexRow]}>
@@ -628,11 +628,9 @@ const NewGameplayModal = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
-    textAlign: "center",
-    color: colors.LIGHT,
-    paddingHorizontal: 30,
+    paddingBottom: 80,
   },
   flexRow: {
     flexDirection: "row",

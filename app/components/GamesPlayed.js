@@ -474,7 +474,7 @@ const GamesPlayed = (props) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   searchRow: {
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
@@ -549,6 +549,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.RED,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -556,6 +557,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -576,7 +578,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRightWidth: 1,
     paddingBottom: 1,
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
   },
   clearIcon: {
     position: "absolute",

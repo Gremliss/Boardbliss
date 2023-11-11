@@ -95,7 +95,7 @@ const Players = (props) => {
                     item.isChecked ? "check-box" : "check-box-outline-blank"
                   }
                   size={20}
-                  color="white"
+                  color={colors.LIGHT}
                 />
               </View>
             ) : null}
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 15,
-    marginHorizontal: 120,
+    marginHorizontal: 80,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
@@ -370,6 +370,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.RED,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -377,6 +378,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
   checkIcon: {
     justiftyContent: "center",

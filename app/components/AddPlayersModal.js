@@ -117,10 +117,15 @@ const AddPlayersModal = ({
         </View>
 
         <View style={styles.btnContainer}>
-          <RoundIconBtn
+          {/* <RoundIconBtn
             style={styles.closeBtn}
             antIconName="close"
             onPress={closeModal}
+          /> */}
+          <RoundIconBtn
+            antIconName="check"
+            onPress={closeModal}
+            style={styles.addBtn}
           />
         </View>
       </Modal>
@@ -165,6 +170,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
   },
+  addBtn: {
+    position: "absolute",
+    right: 25,
+    bottom: 20,
+    zIndex: 1,
+    color: colors.LIGHT,
+  },
 
   flexRow: {
     flexDirection: "row",
@@ -174,6 +186,7 @@ const styles = StyleSheet.create({
     padding: 8,
     flex: 2,
     margin: 4,
+    color: colors.LIGHT,
   },
   inputTextStyle: {
     backgroundColor: colors.GRAY,

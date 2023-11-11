@@ -104,6 +104,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Year published"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -112,7 +113,9 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 style={[styles.inputTextStyle]}
                 onPress={() => changeOwner()}
               >
-                <Text>{filterGames.owner}</Text>
+                <Text style={[styles.changeOnClickText]}>
+                  {filterGames.owner}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.flexRow]}>
@@ -121,7 +124,9 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 style={[styles.inputTextStyle]}
                 onPress={() => changeExpansion()}
               >
-                <Text>{filterGames.expansion ? "Yes" : "No"}</Text>
+                <Text style={[styles.changeOnClickText]}>
+                  {filterGames.expansion ? "Yes" : "No"}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.flexRow]}>
@@ -133,6 +138,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Players"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -144,6 +150,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Min playtime"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -155,6 +162,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Max playtime"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -166,6 +174,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Rating"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
               />
             </View>
           </View>
@@ -202,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 2,
     margin: 4,
+    color: colors.LIGHT,
   },
   inputTextStyle: {
     backgroundColor: colors.GRAY,
@@ -209,6 +219,9 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     margin: 4,
+  },
+  changeOnClickText: {
+    color: colors.LIGHT,
   },
   bottomContainer: {
     width: windowWidth,
@@ -258,6 +271,7 @@ const styles = StyleSheet.create({
     left: 25,
     bottom: 20,
     zIndex: 1,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -265,6 +279,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
 });
 

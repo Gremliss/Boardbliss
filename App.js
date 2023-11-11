@@ -12,6 +12,7 @@ import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
 import PlayerDetail from "./app/components/PlayerDetail";
 import GameCalendar from "./app/screens/GameCalendar";
+import colors from "./app/misc/colors";
 
 const Stack = createStackNavigator();
 
@@ -40,7 +41,17 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.PRIMARY,
+          },
+          headerTintColor: colors.LIGHT,
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      >
         <Stack.Screen
           component={Collection}
           name="Collection"
@@ -52,7 +63,7 @@ export default function App() {
           component={RenderSearchBgg}
           name="SearchBgg"
           options={{
-            title: "Boardbliss",
+            title: "Search BGG",
           }}
         />
         <Stack.Screen
@@ -66,7 +77,7 @@ export default function App() {
           component={GameCalendar}
           name="GameCalendar"
           options={{
-            title: "GameCalendar",
+            title: "Game Calendar",
           }}
         />
         <Stack.Screen

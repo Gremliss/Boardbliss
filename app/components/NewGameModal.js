@@ -118,134 +118,138 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     <>
       <StatusBar />
       <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
-        <ScrollView>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Name:</Text>
-            <TextInput
-              onChangeText={(text) => setAddGame({ ...addGame, name: text })}
-              placeholder="Name"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              multiline={true}
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Year published:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, yearpublished: text })
-              }
-              placeholder="Year published"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
-            <TouchableOpacity
-              style={[styles.inputTextStyle]}
-              onPress={() => changeOwner()}
-            >
-              <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
-            <TouchableOpacity
-              style={[styles.inputTextStyle]}
-              onPress={() => changeExpansion()}
-            >
-              <Text style={[{ color: colors.LIGHT }]}>
-                {addGame?.expansion ? "Yes" : "No"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Min players:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, minPlayers: text })
-              }
-              placeholder="Min players"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Max players:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, maxPlayers: text })
-              }
-              placeholder="Max players"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Min playtime:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, minPlaytime: text })
-              }
-              placeholder="Min playtime"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Max playtime:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, maxPlaytime: text })
-              }
-              placeholder="Max playtime"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
-            <TextInput
-              onChangeText={(text) => setAddGame({ ...addGame, rating: text })}
-              placeholder="Rating"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Img link:</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setAddGame({ ...addGame, bggImage: text })
-              }
-              placeholder="Img link"
-              placeholderTextColor={colors.PLACEHOLDER}
-              style={[styles.inputTextStyle]}
-              multiline={true}
-            />
-          </View>
-        </ScrollView>
+        <View style={[styles.container]}>
+          <ScrollView>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Name:</Text>
+              <TextInput
+                onChangeText={(text) => setAddGame({ ...addGame, name: text })}
+                placeholder="Name"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                multiline={true}
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Year published:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, yearpublished: text })
+                }
+                placeholder="Year published"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
+              <TouchableOpacity
+                style={[styles.inputTextStyle]}
+                onPress={() => changeOwner()}
+              >
+                <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
+              <TouchableOpacity
+                style={[styles.inputTextStyle]}
+                onPress={() => changeExpansion()}
+              >
+                <Text style={[{ color: colors.LIGHT }]}>
+                  {addGame?.expansion ? "Yes" : "No"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Min players:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, minPlayers: text })
+                }
+                placeholder="Min players"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Max players:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, maxPlayers: text })
+                }
+                placeholder="Max players"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Min playtime:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, minPlaytime: text })
+                }
+                placeholder="Min playtime"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Max playtime:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, maxPlaytime: text })
+                }
+                placeholder="Max playtime"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, rating: text })
+                }
+                placeholder="Rating"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Img link:</Text>
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGame({ ...addGame, bggImage: text })
+                }
+                placeholder="Img link"
+                placeholderTextColor={colors.PLACEHOLDER}
+                style={[styles.inputTextStyle]}
+                multiline={true}
+              />
+            </View>
+          </ScrollView>
 
-        <View style={styles.btnContainer}>
-          {addGame.name.trim() ? (
+          <View style={styles.btnContainer}>
+            {addGame.name.trim() ? (
+              <RoundIconBtn
+                antIconName="check"
+                onPress={handleSubmit}
+                style={styles.addBtn}
+              />
+            ) : null}
             <RoundIconBtn
-              antIconName="check"
-              onPress={handleSubmit}
-              style={styles.addBtn}
+              style={styles.closeBtn}
+              antIconName="close"
+              onPress={closeModal}
             />
-          ) : null}
-          <RoundIconBtn
-            style={styles.closeBtn}
-            antIconName="close"
-            onPress={closeModal}
-          />
+          </View>
         </View>
       </Modal>
     </>
@@ -254,11 +258,8 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
-    textAlign: "center",
-    color: colors.LIGHT,
-    paddingHorizontal: 30,
   },
   flexRow: {
     flexDirection: "row",
