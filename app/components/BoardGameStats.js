@@ -353,7 +353,7 @@ const BoardGameStats = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
     textAlign: "center",
     color: colors.LIGHT,
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,

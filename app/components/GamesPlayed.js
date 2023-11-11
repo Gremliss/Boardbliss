@@ -1,4 +1,4 @@
-import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -10,33 +10,44 @@ import {
   Keyboard,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import FilterModal from "./FilterModal";
-import RoundIconBtn from "./RoundIconButton";
-import NewGameplayModal from "./NewGameplayModal";
 import colors from "../misc/colors";
-
+import NewGameplayModal from "./NewGameplayModal";
+import RoundIconBtn from "./RoundIconButton";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-
 const GamesPlayed = (props) => {
   const [gameParams, setGameParams] = useState(props.route.params.gameParams);
   const [collection, setCollection] = useState([]);
+  const currentDate = new Date();
+  const [gameplayParams, setGameplayParams] = useState({
+    id: Date.now(),
+    date: {
+      day: currentDate.getDate(),
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear(),
+      hour: currentDate.getHours(),
+      minutes: currentDate.getMinutes(),
+    },
+    players: [],
+    type: "Rivalry",
+    scoreType: "Points",
+    isChecked: false,
+    duration: { hours: 69, min: null },
+  });
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [editGameplaymodalVisible, setEditGameplaymodalVisible] =
+    useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     const parsedResult = JSON.parse(result);
     if (result?.length) setCollection(parsedResult);
-
     var newGameParams;
     parsedResult.map((item) => {
       if (item.id === gameParams.id) {
@@ -53,22 +64,18 @@ const GamesPlayed = (props) => {
     );
     return () => backHandler.remove();
   }, [props.navigation]);
-
   useFocusEffect(
     React.useCallback(() => {
       fetchCollection();
     }, [])
   );
-
   const handleBackButton = () => {
     fetchCollection();
     return;
   };
-
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
-
   const handleLongPress = async (item) => {
     if (!longPressActive) {
       gameParams.stats.forEach((item) => {
@@ -78,7 +85,6 @@ const GamesPlayed = (props) => {
       setLongPressActive(true);
     }
   };
-
   const handleCheckButton = async (item) => {
     item.isChecked == false
       ? (item.isChecked = true)
@@ -86,11 +92,9 @@ const GamesPlayed = (props) => {
     await AsyncStorage.setItem("collection", JSON.stringify(collection));
     fetchCollection();
   };
-
   const renderPlayers = (players, type, scoreType) => {
     // Convert the players object into an array of [name, value] pairs
     var sortedPlayers;
-
     if (type == "Rivalry") {
       if (scoreType == "Points") {
         // Sort the player array based on the values in descending order
@@ -99,7 +103,6 @@ const GamesPlayed = (props) => {
         // Sort the player array based on the values in asscending order
         sortedPlayers = players.sort((a, b) => a.points - b.points);
       }
-
       return sortedPlayers.map((item) => (
         <View key={item.name} style={[styles.flexRow]}>
           <View
@@ -159,14 +162,12 @@ const GamesPlayed = (props) => {
       ));
     }
   };
-
   const formatDate = (enteredDay, enteredMonth, enteredYear) => {
     const day = checkFormat(enteredDay);
     const month = checkFormat(enteredMonth);
     const year = checkFormat(enteredYear);
     return `${day}/${month}/${year}`;
   };
-
   const checkFormat = (value) => {
     if (value > 9) {
       var newValue = value;
@@ -175,11 +176,9 @@ const GamesPlayed = (props) => {
     }
     return newValue;
   };
-
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
-
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -259,24 +258,19 @@ const GamesPlayed = (props) => {
       </TouchableOpacity>
     );
   };
-
   const handleItemPressed = async (item) => {
-    longPressActive
-      ? handleCheckButton(item)
-      : openGameplayDetail(item, gameParams);
+    setGameplayParams(item);
+    longPressActive ? handleCheckButton(item) : openGameplayDetail(item);
   };
-
-  const openGameplayDetail = (gameplayParams, gameParams) => {
-    props.navigation.navigate("GameplayDetail", { gameplayParams, gameParams });
+  const openGameplayDetail = (item) => {
+    setEditGameplaymodalVisible(true);
   };
-
   const handleExitButton = async () => {
     gameParams.stats.forEach((item) => {
       item.isChecked = false;
     });
     setLongPressActive(false);
   };
-
   const displayDeleteAlert = () => {
     var count = 0;
     gameParams.stats.forEach((item) => {
@@ -292,57 +286,59 @@ const GamesPlayed = (props) => {
       { cancelable: true }
     );
   };
-
   const deleteCheckedGameplays = async () => {
     const newGameplay = gameParams.stats.filter((n) => n.isChecked !== true);
-
     setGameParams({ ...gameParams, stats: newGameplay });
-  };
-
-  useEffect(() => {
-    setCollection((prevCollection) =>
-      prevCollection.map((obj) =>
-        obj.id === gameParams.id ? { ...obj, stats: gameParams.stats } : obj
-      )
-    );
-  }, [gameParams]);
-
-  useEffect(() => {
-    asyncSetCollection();
-  }, [collection]);
-
-  const asyncSetCollection = async () => {
-    await AsyncStorage.setItem("collection", JSON.stringify(collection));
   };
 
   const addNewGameplay = async (newGameplay) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    setGameParams((prevState) => ({
-      ...prevState,
-      stats: [...prevState.stats, newGameplay],
-    }));
-  };
+    var newGameParams = { ...gameParams };
+    const isExists = gameParams.stats.some(
+      (item) => item.id === newGameplay.id
+    );
 
-  // Sort the gameParams.stats array by date
-  // const sortedStats = gameParams.stats.sort((a, b) => {
-  //   const dateA = new Date(a.date.year, a.date.month - 1, a.date.day);
-  //   const dateB = new Date(b.date.year, b.date.month - 1, b.date.day);
-  //   return dateA - dateB;
-  // });
+    if (isExists) {
+      newGameParams = {
+        ...gameParams,
+        stats: gameParams.stats.map((obj) =>
+          obj.id === newGameplay.id ? newGameplay : obj
+        ),
+      };
+    } else {
+      newGameParams = {
+        ...gameParams,
+        stats: [...gameParams.stats, newGameplay],
+      };
+    }
+
+    const updatedCollection = collection.map((item) => {
+      if (item.id === newGameParams.id) {
+        return {
+          ...item,
+          stats: newGameParams.stats,
+        };
+      } else {
+        return item;
+      }
+    });
+    setGameParams(newGameParams);
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+  };
 
   const sortedStats = gameParams.stats.sort((a, b) => {
     // Compare the dates
     const dateComparison = compareDates(a.date, b.date);
     if (dateComparison !== 0) {
       return dateComparison; // Sort by date
+    } else {
+      // Dates are the same, compare IDs
+      return a.id - b.id;
     }
-
-    // Dates are the same, compare IDs
-    return a.id - b.id;
   });
-
   function compareDates(date1, date2) {
     // Compare years
     if (date1.year !== date2.year) {
@@ -374,7 +370,6 @@ const GamesPlayed = (props) => {
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
-
       <View style={[styles.itemContainer, { opacity: 0.8 }]}>
         <View style={[styles.flexRow]}>
           <View
@@ -409,7 +404,6 @@ const GamesPlayed = (props) => {
           />
         ) : null}
       </View>
-
       {longPressActive ? (
         <View>
           <RoundIconBtn
@@ -464,14 +458,23 @@ const GamesPlayed = (props) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={addNewGameplay}
+        gameplayParams={gameplayParams}
+        isExisting={false}
+      />
+      <NewGameplayModal
+        visible={editGameplaymodalVisible}
+        onClose={() => setEditGameplaymodalVisible(false)}
+        onSubmit={addNewGameplay}
+        gameplayParams={gameplayParams}
+        gameParams={gameParams}
+        isExisting={true}
       />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
   },
   searchRow: {
@@ -528,7 +531,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
@@ -546,6 +549,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.RED,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -553,6 +557,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
   checkIcon: {
     justiftyContent: "center",
@@ -573,7 +578,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRightWidth: 1,
     paddingBottom: 1,
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
   },
   clearIcon: {
     position: "absolute",
@@ -581,5 +586,4 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-
 export default GamesPlayed;

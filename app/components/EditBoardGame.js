@@ -23,6 +23,7 @@ const EditBoardGame = (props) => {
   const [name, setName] = useState(gameParams.name);
   const [yearpublished, setYearpublished] = useState(gameParams.yearpublished);
   const [owner, setOwner] = useState(gameParams.owner);
+  const [expansion, setExpansion] = useState(gameParams.expansion);
   const [rating, setRating] = useState(gameParams.rating);
   const [minPlayers, setMinPlayers] = useState(gameParams.minPlayers);
   const [maxPlayers, setMaxPlayers] = useState(gameParams.maxPlayers);
@@ -42,6 +43,13 @@ const EditBoardGame = (props) => {
     owner === "You" ? setOwner("Friend") : setOwner("You");
   };
 
+  const changeExpansion = () => {
+    if (expansion === null) {
+      setExpansion(false);
+    }
+    expansion === false ? setExpansion(true) : setExpansion(false);
+  };
+
   const saveChanges = async () => {
     const updatedCollection = collection.map((item) => {
       if (item.name === gameParams.name) {
@@ -55,6 +63,7 @@ const EditBoardGame = (props) => {
           maxPlaytime: maxPlaytime,
           bggImage: bggImage,
           owner: owner,
+          expansion: expansion,
           rating: rating,
         };
       } else {
@@ -64,143 +73,156 @@ const EditBoardGame = (props) => {
 
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
-    fetchCollection();
+    // fetchCollection();
     props.navigation.goBack();
   };
 
   return (
     <>
       <StatusBar />
-      <ScrollView>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Name:</Text>
-          <TextInput
-            onChangeText={(text) => setName(text)}
-            defaultValue={gameParams.name}
-            placeholder="Name"
-            style={[styles.inputTextStyle]}
-            multiline={true}
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Year published:</Text>
-          <TextInput
-            onChangeText={(text) => setYearpublished(text)}
-            defaultValue={gameParams.yearpublished}
-            placeholder="Year published"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
-          <TouchableOpacity
-            style={[styles.inputTextStyle]}
-            onPress={() => changeOwner()}
-          >
-            <Text style={[{ color: colors.LIGHT }]}>{owner}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Min players:</Text>
-          <TextInput
-            onChangeText={(text) => setMinPlayers(text)}
-            defaultValue={gameParams.minPlayers}
-            placeholder="Min players"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Max players:</Text>
-          <TextInput
-            onChangeText={(text) => setMaxPlayers(text)}
-            defaultValue={gameParams.maxPlayers}
-            placeholder="Max players"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Min playtime:</Text>
-          <TextInput
-            onChangeText={(text) => setMinPlaytime(text)}
-            defaultValue={gameParams.minPlaytime}
-            placeholder="Min playtime"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Max playtime:</Text>
-          <TextInput
-            onChangeText={(text) => setMaxPlaytime(text)}
-            defaultValue={gameParams.maxPlaytime}
-            placeholder="Max playtime"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
-          <TextInput
-            onChangeText={(text) => setRating(text)}
-            defaultValue={gameParams.rating}
-            placeholder="Rating"
-            style={[styles.inputTextStyle]}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={[styles.flexRow]}>
-          <Text style={[styles.nameOfInputStyle]}>Img link:</Text>
-          <TextInput
-            onChangeText={(text) => setBggImage(text)}
-            defaultValue={`${gameParams.bggImage}`}
-            placeholder="Img link"
-            style={[styles.inputTextStyle]}
-            multiline={true}
-          />
-        </View>
-      </ScrollView>
-      <TouchableOpacity onPress={() => saveChanges()}>
-        <View>
-          <Text style={styles.submitButton}>Submit</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={[styles.container]}>
+        <ScrollView>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Name:</Text>
+            <TextInput
+              onChangeText={(text) => setName(text)}
+              defaultValue={gameParams.name}
+              placeholder="Name"
+              style={[styles.inputTextStyle]}
+              multiline={true}
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Year published:</Text>
+            <TextInput
+              onChangeText={(text) => setYearpublished(text)}
+              defaultValue={gameParams.yearpublished}
+              placeholder="Year published"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
+            <TouchableOpacity
+              style={[styles.inputTextStyle]}
+              onPress={() => changeOwner()}
+            >
+              <Text style={[{ color: colors.LIGHT }]}>{owner}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
+            <TouchableOpacity
+              style={[styles.inputTextStyle]}
+              onPress={() => changeExpansion()}
+            >
+              <Text style={[{ color: colors.LIGHT }]}>
+                {expansion ? "Yes" : "No"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Min players:</Text>
+            <TextInput
+              onChangeText={(text) => setMinPlayers(text)}
+              defaultValue={gameParams.minPlayers}
+              placeholder="Min players"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Max players:</Text>
+            <TextInput
+              onChangeText={(text) => setMaxPlayers(text)}
+              defaultValue={gameParams.maxPlayers}
+              placeholder="Max players"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Min playtime:</Text>
+            <TextInput
+              onChangeText={(text) => setMinPlaytime(text)}
+              defaultValue={gameParams.minPlaytime}
+              placeholder="Min playtime"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Max playtime:</Text>
+            <TextInput
+              onChangeText={(text) => setMaxPlaytime(text)}
+              defaultValue={gameParams.maxPlaytime}
+              placeholder="Max playtime"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
+            <TextInput
+              onChangeText={(text) => setRating(text)}
+              defaultValue={gameParams.rating}
+              placeholder="Rating"
+              style={[styles.inputTextStyle]}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={[styles.flexRow]}>
+            <Text style={[styles.nameOfInputStyle]}>Img link:</Text>
+            <TextInput
+              onChangeText={(text) => setBggImage(text)}
+              defaultValue={`${gameParams.bggImage}`}
+              placeholder="Img link"
+              style={[styles.inputTextStyle]}
+              multiline={true}
+            />
+          </View>
+        </ScrollView>
+        <TouchableOpacity onPress={() => saveChanges()}>
+          <View>
+            <Text style={styles.submitButton}>Submit</Text>
+          </View>
+        </TouchableOpacity>
 
-      <View style={[styles.bottomContainer]}>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={() =>
-            props.navigation.navigate("CollectionBoardgameDetail", {
-              gameParams,
-            })
-          }
-        >
-          <Text style={[styles.textBtn]}>{gameParams.name}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={() =>
-            props.navigation.navigate("BoardGameStats", {
-              gameParams,
-            })
-          }
-        >
-          <Text style={[styles.textBtn]}>Stats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonBottom]}
-          onPress={() =>
-            props.navigation.navigate("GamesPlayed", {
-              gameParams,
-            })
-          }
-        >
-          <Text style={[styles.textBtn]}>Games played</Text>
-        </TouchableOpacity>
-        <View style={[styles.buttonBottom, { opacity: 1 }]}>
-          <Text style={[styles.textBtn]}>Edit</Text>
+        <View style={[styles.bottomContainer]}>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("CollectionBoardgameDetail", {
+                gameParams,
+              })
+            }
+          >
+            <Text style={[styles.textBtn]}>{gameParams.name}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("BoardGameStats", {
+                gameParams,
+              })
+            }
+          >
+            <Text style={[styles.textBtn]}>Stats</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonBottom]}
+            onPress={() =>
+              props.navigation.navigate("GamesPlayed", {
+                gameParams,
+              })
+            }
+          >
+            <Text style={[styles.textBtn]}>Games played</Text>
+          </TouchableOpacity>
+          <View style={[styles.buttonBottom, { opacity: 1 }]}>
+            <Text style={[styles.textBtn]}>Edit</Text>
+          </View>
         </View>
       </View>
     </>
@@ -209,11 +231,8 @@ const EditBoardGame = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
-    textAlign: "center",
-    color: colors.LIGHT,
-    paddingHorizontal: 30,
   },
   flexRow: {
     flexDirection: "row",
@@ -243,7 +262,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
     textAlign: "center",
-    borderColor: colors.LIGHT,
+    borderColor: colors.BACKGROUND,
     borderWidth: 1,
     backgroundColor: colors.PRIMARY,
     fontSize: 20,

@@ -73,6 +73,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
             placeholder="Player name"
             style={[styles.input(windowHeight), styles.playerStyle]}
             multiline={true}
+            placeholderTextColor={colors.PLACEHOLDER}
           />
           <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View style={[styles.modalBG, StyleSheet.absoluteFillObject]} />
@@ -100,7 +101,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
   },
   input: (windowHeight) => {
     return {
@@ -128,6 +129,7 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 20,
     zIndex: 1,
+    color: colors.LIGHT,
   },
   closeBtn: {
     position: "absolute",
@@ -135,6 +137,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
 });
 

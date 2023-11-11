@@ -75,6 +75,7 @@ const BoardGameDetail = (props) => {
         bggImage: game.image,
         id: gameId,
         owner: owner,
+        expansion: false,
         rating: fixedRating,
         isChecked: false,
         stats: [],
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
     textAlign: "center",
     color: colors.LIGHT,
