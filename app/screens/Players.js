@@ -25,17 +25,23 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Players = (props) => {
+  const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
   };
   useEffect(() => {
     fetchPlayers();
+    fetchCollection();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackButton
@@ -118,7 +124,7 @@ const Players = (props) => {
   };
 
   const openPlayerDetail = (item) => {
-    props.navigation.navigate("PlayerDetail", { item });
+    props.navigation.navigate("PlayerDetail", { item, collection });
   };
 
   const handleExitButton = async () => {
