@@ -7,6 +7,7 @@ import {
   Modal,
   StatusBar,
   StyleSheet,
+  Text,
   TextInput,
   TouchableWithoutFeedback,
   View,
@@ -19,6 +20,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const PlayerDetail = (props) => {
+  const [collection, setCollection] = useState(props.route.params.collection);
   const [players, setPlayers] = useState([]);
   const [playerParams, setPlayerParams] = useState(props.route.params.item);
   const [name, setName] = useState(playerParams.name);
@@ -26,11 +28,16 @@ const PlayerDetail = (props) => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
   };
+  const fetchCollection = async () => {
+    const result = await AsyncStorage.getItem("collection");
+    if (result?.length) setCollection(JSON.parse(result));
+  };
   useEffect(() => {
     fetchPlayers();
+    fetchCollection();
   }, []);
 
-  const handleModalClose = () => {
+  const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
@@ -54,6 +61,35 @@ const PlayerDetail = (props) => {
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
     props.navigation.goBack();
   };
+  let victories = 0;
+  let gamesPlayed = 0;
+  let coopGames = 0;
+  let coopVictories = 0;
+  collection.forEach((gameParams) => {
+    // Count the number of games and victories for player
+    gameParams.stats.map((game) => {
+      if (game.type !== "Co-Op") {
+        game.players
+          .filter((player) => player.name === name)
+          .forEach((player) => {
+            gamesPlayed++;
+            if (player.victory) {
+              victories++;
+            }
+          });
+      } else {
+        console.log(game);
+        game.players
+          .filter((player) => player.name === name)
+          .forEach((player) => {
+            coopGames++;
+            if (game?.coop?.victory === "Yes") {
+              coopVictories++;
+            }
+          });
+      }
+    });
+  });
 
   return (
     <>
@@ -68,7 +104,61 @@ const PlayerDetail = (props) => {
             multiline={true}
             placeholderTextColor={colors.PLACEHOLDER}
           />
-          <TouchableWithoutFeedback onPress={handleModalClose}>
+          {gamesPlayed ? (
+            <View>
+              <Text style={[styles.horizontalContainer, styles.gameInfo]}>
+                Rivalry
+              </Text>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Games played:</Text>
+                  <Text style={styles.gameInfoValue}>{gamesPlayed}</Text>
+                </View>
+              </View>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Victories:</Text>
+                  <Text style={styles.gameInfoValue}>{victories}</Text>
+                </View>
+              </View>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Winning percentage:</Text>
+                  <Text style={styles.gameInfoValue}>
+                    {((victories / gamesPlayed) * 100).toFixed(2)}%
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ) : null}
+          {coopGames ? (
+            <View>
+              <Text style={[styles.horizontalContainer, styles.gameInfo]}>
+                Co-Op
+              </Text>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Games played:</Text>
+                  <Text style={styles.gameInfoValue}>{coopGames}</Text>
+                </View>
+              </View>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Victories:</Text>
+                  <Text style={styles.gameInfoValue}>{coopVictories}</Text>
+                </View>
+              </View>
+              <View style={styles.horizontalContainer}>
+                <View style={styles.horizontalView}>
+                  <Text style={styles.gameInfo}>Winning percentage:</Text>
+                  <Text style={styles.gameInfoValue}>
+                    {((coopVictories / coopGames) * 100).toFixed(2)}%
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ) : null}
+          <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View
               style={[styles.flexBackground, StyleSheet.absoluteFillObject]}
             />
@@ -101,15 +191,15 @@ const styles = StyleSheet.create({
   input: (windowHeight) => {
     return {
       fontSize: 20,
-      marginTop: windowHeight / 3,
+      marginTop: windowHeight / 6,
       marginHorizontal: 20,
     };
   },
   playerStyle: {
     backgroundColor: colors.GRAY,
-    color: "#EEEEEE",
+    color: colors.LIGHT,
     padding: 10,
-    margin: 4,
+    margin: 8,
   },
   flexBackground: {
     flex: 1,
@@ -132,6 +222,31 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 1,
     backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+  },
+  horizontalView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    padding: 10,
+    backgroundColor: colors.GRAY,
+    borderRadius: 20,
+    margin: 2,
+  },
+  gameInfo: {
+    fontSize: 16,
+    paddingVertical: 5,
+    opacity: 1,
+    color: colors.PRIMARY,
+    fontWeight: "bold",
+  },
+  gameInfoValue: {
+    fontSize: 16,
+    paddingVertical: 5,
     color: colors.LIGHT,
   },
 });

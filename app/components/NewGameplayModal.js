@@ -217,14 +217,14 @@ const NewGameplayModal = ({
         const updatedPlayers = [...prevState.players];
 
         // If player doesn't exist, add a new player object
-        // if (!updatedPlayers.some((player) => player.id === item.id)) {
-        //   updatedPlayers.push({
-        //     name: item.name,
-        //     id: item.id,
-        //     victory: false,
-        //     points: 0,
-        //   });
-        // }
+        if (!updatedPlayers.some((player) => player.id === item.id)) {
+          updatedPlayers.push({
+            name: item.name,
+            id: item.id,
+            victory: false,
+            points: 0,
+          });
+        }
         return { ...prevState, players: updatedPlayers };
       });
     } else {
@@ -449,7 +449,9 @@ const NewGameplayModal = ({
                       style={[styles.inputTextStyle]}
                       onPress={() => changeVictory()}
                     >
-                      <Text>{addGameplay.coop?.victory}</Text>
+                      <Text style={[{ color: colors.LIGHT }]}>
+                        {addGameplay.coop?.victory}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                   <View style={[styles.flexRow]}>

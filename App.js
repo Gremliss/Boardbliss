@@ -98,7 +98,7 @@ export default function App() {
           component={CollectionBoardgameDetail}
           name="CollectionBoardgameDetail"
           options={{
-            title: "Board game statistics",
+            title: "Board game detail",
           }}
         />
         <Stack.Screen
