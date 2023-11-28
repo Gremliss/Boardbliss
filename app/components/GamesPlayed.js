@@ -289,6 +289,20 @@ const GamesPlayed = (props) => {
   const deleteCheckedGameplays = async () => {
     const newGameplay = gameParams.stats.filter((n) => n.isChecked !== true);
     setGameParams({ ...gameParams, stats: newGameplay });
+
+    const updatedCollection = collection.map((item) => {
+      if (item.id === gameParams.id) {
+        return {
+          ...item,
+          stats: newGameplay,
+        };
+      } else {
+        return item;
+      }
+    });
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   const addNewGameplay = async (newGameplay) => {

@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PRIMARY,
     borderRadius: 8,
     margin: 1,
+    padding: 3,
   },
   yearText: {
     fontSize: 12,

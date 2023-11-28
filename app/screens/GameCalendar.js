@@ -148,7 +148,11 @@ const GameCalendar = (props) => {
                     key={`${game.id}-${sessionIndex}`}
                     style={styles.gameItem}
                   >
-                    <Text style={styles.gameName}>{gameName}</Text>
+                    {session.coop?.victory == "Yes" ? (
+                      <Text style={styles.coopVictory}>{gameName}</Text>
+                    ) : (
+                      <Text style={styles.gameName}>{gameName}</Text>
+                    )}
 
                     <Text style={styles.players}>
                       👥{" "}
@@ -321,7 +325,6 @@ const styles = StyleSheet.create({
   bottomContainer: {
     width: windowWidth,
     flexDirection: "row",
-    // alignItems: "center",
     justifyContent: "center",
   },
   buttonBottom: {
@@ -345,9 +348,6 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
   },
   flatListItemContainer: {
-    // backgroundColor: "green",
-    // borderTopLeftRadius: 50,
-    // borderTopRightRadius: 50,
     width: windowWidth / 2,
     padding: 2,
   },
@@ -355,7 +355,6 @@ const styles = StyleSheet.create({
     return {
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
-      // textAlign: "center",
       backgroundColor: bcgColor,
       borderColor: colors.BACKGROUND,
       borderTopWidth: 1,
@@ -374,11 +373,13 @@ const styles = StyleSheet.create({
   winPlayer: {
     textDecorationLine: "underline",
   },
+  coopVictory: {
+    fontSize: 14,
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+  },
   gameItem: {
     paddingBottom: 4,
-    // backgroundColor: "green",
-    // borderWidth: 1,
-    // borderColor: colors.PRIMARY_OPACITY,
   },
   gameName: {
     fontSize: 14,
