@@ -165,7 +165,10 @@ const EditBoardGame = (props) => {
           <View style={[styles.flexRow]}>
             <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
             <TextInput
-              onChangeText={(text) => setRating(text)}
+              onChangeText={(text) => {
+                const changeCommaText = text.replace(",", ".");
+                setRating(changeCommaText);
+              }}
               defaultValue={gameParams.rating}
               placeholder="Rating"
               style={[styles.inputTextStyle]}
