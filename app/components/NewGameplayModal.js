@@ -172,7 +172,6 @@ const NewGameplayModal = ({
 
   const closeModal = () => {
     onClose();
-    changePlayersIsCheckedToFalse();
   };
 
   const changeType = () => {
