@@ -251,30 +251,6 @@ const GameCalendar = (props) => {
           antIconName={"right"}
           style={styles.rightBtn}
         />
-
-        <View style={[styles.bottomContainer]}>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("Collection")}
-          >
-            <Text style={[styles.textBtn]}>Collection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("SearchBgg")}
-          >
-            <Text style={[styles.textBtn]}>Search BGG</Text>
-          </TouchableOpacity>
-          <View style={[styles.buttonBottom, { opacity: 1 }]}>
-            <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </View>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("Players")}
-          >
-            <Text style={[styles.textBtn]}>Players</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );
@@ -321,31 +297,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     backgroundColor: colors.PRIMARY,
     color: "white",
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    width: windowWidth / 4,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
   },
   flatListItemContainer: {
     width: windowWidth / 2,

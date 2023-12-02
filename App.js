@@ -6,12 +6,14 @@ import BoardGameDetail from "./app/components/BoardGameDetail";
 import CollectionBoardgameDetail from "./app/components/CollectionBoardgameDetail";
 import EditBoardGame from "./app/components/EditBoardGame";
 import Collection from "./app/screens/Collection";
+import MainScreen from "./app/screens/MainScreen";
 import SearchBgg from "./app/screens/SearchBgg";
 import Players from "./app/screens/Players";
 import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
 import PlayerDetail from "./app/components/PlayerDetail";
 import GameCalendar from "./app/screens/GameCalendar";
+import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
 
 const Stack = createStackNavigator();
@@ -52,6 +54,20 @@ export default function App() {
           },
         }}
       >
+        <Stack.Screen
+          component={MainScreen}
+          name="Boardbliss"
+          options={{
+            title: "Boardbliss",
+          }}
+        />
+        <Stack.Screen
+          component={AddGameplay}
+          name="AddGameplay"
+          options={{
+            title: "Add Gameplay",
+          }}
+        />
         <Stack.Screen
           component={Collection}
           name="Collection"

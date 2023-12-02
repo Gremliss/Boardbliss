@@ -263,31 +263,7 @@ const Players = (props) => {
             style={styles.closeBtn}
           />
         </View>
-      ) : (
-        <View style={[styles.bottomContainer]}>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("Collection")}
-          >
-            <Text style={[styles.textBtn]}>Collection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("SearchBgg")}
-          >
-            <Text style={[styles.textBtn]}>Search BGG</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => props.navigation.navigate("GameCalendar")}
-          >
-            <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBottom, { opacity: 1 }]}>
-            <Text style={[styles.textBtn]}>Players</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      ) : null}
       <NewPlayerModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -345,31 +321,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     paddingLeft: 8,
     fontStyle: "italic",
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
   },
   deleteBtn: {
     position: "absolute",
