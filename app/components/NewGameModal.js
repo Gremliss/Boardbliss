@@ -213,9 +213,10 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
               <TextInput
-                onChangeText={(text) =>
-                  setAddGame({ ...addGame, rating: text })
-                }
+                onChangeText={(text) => {
+                  const changeCommaText = text.replace(",", ".");
+                  setAddGame({ ...addGame, rating: changeCommaText });
+                }}
                 placeholder="Rating"
                 placeholderTextColor={colors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}

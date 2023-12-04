@@ -110,6 +110,7 @@ const BoardGameDetail = (props) => {
 
   var game = detailData?.boardgames?.boardgame[0];
   var decodedDescription = decode(`${game.description}`);
+  var descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
   var ratingBgg = game.statistics[0].ratings[0].average;
   var fixedRating = parseFloat(ratingBgg).toFixed(2);
 
@@ -156,7 +157,7 @@ const BoardGameDetail = (props) => {
             <Text style={styles.gameInfo}>Rating BGG:</Text>
             <Text style={styles.gameInfoValue}>{fixedRating}</Text>
           </View>
-          <Text style={styles.description}>{decodedDescription}</Text>
+          <Text style={styles.description}>{descriptionWithoutTags}</Text>
           <TouchableOpacity onPress={() => addToCollection("You")}>
             <View>
               <Text style={styles.closeButton}>Add to your collection</Text>
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
+    color: colors.LIGHT,
   },
   description: {
     fontSize: 14,
@@ -234,6 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 15,
     marginTop: 10,
+    color: colors.LIGHT,
   },
 
   closeButton: {

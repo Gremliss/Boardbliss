@@ -84,7 +84,12 @@ const BoardGameStats = (props) => {
   const avgMinRest = Math.floor(avgTotalMin % 60);
 
   const playerScores = gameParams.stats
-    .filter((item) => item.players && typeof item.players === "object")
+    .filter(
+      (item) =>
+        item.players &&
+        typeof item.players === "object" &&
+        item.scoreType == "Points"
+    )
     .map((item) => item.players)
     .flat()
     .map((player) => parseInt(player.points))

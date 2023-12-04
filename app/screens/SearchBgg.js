@@ -28,7 +28,6 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
-  // const [userCollection, setUserCollection] = useState([]);
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
@@ -262,32 +261,9 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
             keyboardShouldPersistTaps="always"
+            initialNumToRender={15}
           />
         )}
-
-        <View style={[styles.bottomContainer]}>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => navigation.navigate("Collection")}
-          >
-            <Text style={[styles.textBtn]}>Collection</Text>
-          </TouchableOpacity>
-          <View style={[styles.buttonBottom, { opacity: 1 }]}>
-            <Text style={[styles.textBtn]}>Search BGG</Text>
-          </View>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => navigation.navigate("GameCalendar")}
-          >
-            <Text style={[styles.textBtn]}>Game Calendar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBottom]}
-            onPress={() => navigation.navigate("Players")}
-          >
-            <Text style={[styles.textBtn]}>Players</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );
@@ -344,31 +320,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.6,
     paddingLeft: 15,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
   },
   clearIcon: {
     position: "absolute",

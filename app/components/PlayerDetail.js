@@ -46,21 +46,29 @@ const PlayerDetail = (props) => {
   };
 
   const handleSubmit = async (text) => {
-    const updatedPlayers = players.map((item) => {
-      if (item.id === playerParams.id) {
-        return {
-          ...item,
-          name: name,
-        };
-      } else {
-        return item;
-      }
-    });
+    const updatedPlayers = players.map((item) =>
+      item.id === playerParams.id ? { ...item, name: name } : item
+    );
+
+    const updatedCollection = collection.map((gameParams) => ({
+      ...gameParams,
+      stats: gameParams.stats.map((game) => ({
+        ...game,
+        players: game.players.map((player) =>
+          player.id === playerParams.id ? { ...player, name: name } : player
+        ),
+      })),
+    }));
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
 
     setPlayers(updatedPlayers);
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
+
     props.navigation.goBack();
   };
+
   let victories = 0;
   let gamesPlayed = 0;
   let coopGames = 0;
@@ -78,7 +86,6 @@ const PlayerDetail = (props) => {
             }
           });
       } else {
-        console.log(game);
         game.players
           .filter((player) => player.name === name)
           .forEach((player) => {

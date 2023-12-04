@@ -1,9 +1,8 @@
-import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   BackHandler,
   Dimensions,
   FlatList,
@@ -13,25 +12,27 @@ import {
   Text,
   ToastAndroid,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import {
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import FilterModal from "../components/FilterModal";
+import NewGameplayModal from "../components/NewGameplayModal";
 import NewGameModal from "../components/NewGameModal";
-import RoundIconBtn from "../components/RoundIconButton";
 import colors from "../misc/colors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Collection = (props) => {
+const AddGameplay = (props) => {
   const [collection, setCollection] = useState();
+  const [gameParams, setGameParams] = useState();
   const [searchText, setSearchText] = useState("");
-  const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [checkAllItems, setCheckAllItems] = useState(false);
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -73,52 +74,26 @@ const Collection = (props) => {
     Keyboard.dismiss();
   };
 
-  const handleLongPress = async (item) => {
-    if (!longPressActive) {
-      collection.forEach((item) => {
-        item.isChecked = false;
-      });
-      handleCheckButton(item);
-      setLongPressActive(true);
+  const addNewGame = async (newGame) => {
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    if (!parsedResult) {
+      parsedResult = [];
     }
-  };
-
-  const handleCheckButton = async (item) => {
-    const updatedItems = collection.map((collectionItem) => {
-      if (collectionItem.id === item.id) {
-        return {
-          ...collectionItem,
-          isChecked: !collectionItem.isChecked,
-        };
-      }
-      return collectionItem;
-    });
-    setCollection(updatedItems);
+    const updatedCollection = [...parsedResult, newGame];
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
     return (
-      <TouchableOpacity
-        onPress={() => handleItemPressed(item)}
-        onLongPress={() => handleLongPress(item)}
-      >
+      <TouchableOpacity onPress={() => handleItemPressed(item)}>
         <View
           style={[styles.itemContainer, { backgroundColor: backgroundColor }]}
         >
           <View style={[styles.flexRow]}>
-            {longPressActive ? (
-              <View style={styles.checkIcon}>
-                <MaterialIcons
-                  name={
-                    item.isChecked ? "check-box" : "check-box-outline-blank"
-                  }
-                  size={20}
-                  color={colors.LIGHT}
-                />
-              </View>
-            ) : null}
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
@@ -146,51 +121,51 @@ const Collection = (props) => {
   };
 
   const handleItemPressed = async (item) => {
-    longPressActive
-      ? handleCheckButton(item)
-      : openCollectionBoardgameDetail(item);
+    setGameParams(item);
+    setModalVisible(true);
   };
 
-  const openCollectionBoardgameDetail = (item) => {
-    props.navigation.navigate("CollectionBoardgameDetail", { item });
-  };
-
-  const handleExitButton = async () => {
-    collection.forEach((item) => {
-      item.isChecked = false;
-    });
-    setLongPressActive(false);
-  };
-
-  const displayDeleteAlert = () => {
-    var count = 0;
-    collection.forEach((item) => {
-      item.isChecked ? count++ : null;
-    });
-    Alert.alert(
-      "Are you sure?",
-      `This will delete ${count} checked games from collection with all their stats`,
-      [
-        { text: "Delete", onPress: () => deleteCheckedGames() },
-        { text: "Cancel", onPress: () => null },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const deleteCheckedGames = async () => {
+  const addNewGameplay = async (newGameplay) => {
     const result = await AsyncStorage.getItem("collection");
     const parsedResult = JSON.parse(result);
-    const itemsToDelete = collection.filter((n) => n.isChecked === true);
-    const updatedResult = parsedResult.filter((item) => {
-      return !itemsToDelete.some((deleteItem) => deleteItem.id === item.id);
-    });
-    setCollection(updatedResult);
-    await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
-  };
+    if (!parsedResult) {
+      parsedResult = [];
+    }
 
-  const openSearchBgg = async () => {
-    props.navigation.navigate("SearchBgg");
+    if (!gameParams.stats) {
+      gameParams.stats = [];
+    }
+    var newGameParams = { ...gameParams };
+    const isExists = gameParams.stats.some(
+      (item) => item.id === newGameplay.id
+    );
+
+    if (isExists) {
+      newGameParams = {
+        ...gameParams,
+        stats: gameParams.stats.map((obj) =>
+          obj.id === newGameplay.id ? newGameplay : obj
+        ),
+      };
+    } else {
+      newGameParams = {
+        ...gameParams,
+        stats: [...gameParams.stats, newGameplay],
+      };
+    }
+
+    const updatedCollection = parsedResult.map((item) => {
+      if (item.id === newGameParams.id) {
+        return {
+          ...item,
+          stats: newGameParams.stats,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   const handleSearchText = async (text) => {
@@ -215,15 +190,6 @@ const Collection = (props) => {
   const handleOnClear = async () => {
     setSearchText("");
     await fetchCollection();
-  };
-
-  const addNewGame = async (newGame) => {
-    if (!collection) {
-      collection = [];
-    }
-    const updatedCollection = [...collection, newGame];
-    setCollection(updatedCollection);
-    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
   const handleFilter = async (filterItems) => {
@@ -307,20 +273,6 @@ const Collection = (props) => {
     }
   };
 
-  const handleCheckAllItems = async () => {
-    if (checkAllItems) {
-      collection.forEach((item) => {
-        item.isChecked = false;
-      });
-      setCheckAllItems(false);
-    } else {
-      collection.forEach((item) => {
-        item.isChecked = true;
-      });
-      setCheckAllItems(true);
-    }
-  };
-
   return (
     <>
       <StatusBar />
@@ -329,7 +281,7 @@ const Collection = (props) => {
           <View>
             <TouchableOpacity
               style={[styles.addButton]}
-              onPress={() => setModalVisible(true)}
+              onPress={() => setNewGameModalVisible(true)}
             >
               <Text
                 style={[
@@ -341,45 +293,31 @@ const Collection = (props) => {
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
-
-        {longPressActive ? null : (
-          <View style={styles.searchRow}>
-            <TextInput
-              value={searchText}
-              onChangeText={(text) => handleSearchText(text)}
-              placeholder="Search collection"
-              style={[styles.searchBar, { color: colors.LIGHT }]}
-              placeholderTextColor={colors.PLACEHOLDER}
-            />
-            <AntDesign
-              name="close"
-              size={20}
-              onPress={handleOnClear}
-              style={styles.clearIcon}
-            />
-            <TouchableOpacity
-              style={[styles.icon]}
-              onPress={() => setFilterModalVisible(true)}
-            >
-              <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
-            </TouchableOpacity>
-          </View>
-        )}
+        <Text style={styles.blueText}>Choose game:</Text>
+        <View style={styles.searchRow}>
+          <TextInput
+            value={searchText}
+            onChangeText={(text) => handleSearchText(text)}
+            placeholder="Search game"
+            style={[styles.searchBar, { color: colors.LIGHT }]}
+            placeholderTextColor={colors.PLACEHOLDER}
+          />
+          <AntDesign
+            name="close"
+            size={20}
+            onPress={handleOnClear}
+            style={styles.clearIcon}
+          />
+          <TouchableOpacity
+            style={[styles.icon]}
+            onPress={() => setFilterModalVisible(true)}
+          >
+            <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
+          </TouchableOpacity>
+        </View>
 
         <View style={[styles.itemContainer, { opacity: 0.8 }]}>
           <View style={[styles.flexRow]}>
-            {longPressActive ? (
-              <TouchableOpacity
-                onPress={() => handleCheckAllItems()}
-                style={styles.checkIcon}
-              >
-                <MaterialIcons
-                  name={checkAllItems ? "check-box" : "check-box-outline-blank"}
-                  size={20}
-                  color={colors.LIGHT}
-                />
-              </TouchableOpacity>
-            ) : null}
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
@@ -408,33 +346,26 @@ const Collection = (props) => {
           keyExtractor={(item, index) => `${index}`}
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
-          keyboardShouldPersistTaps="always"
           initialNumToRender={15}
         />
-        {longPressActive ? (
-          <View>
-            <RoundIconBtn
-              onPress={displayDeleteAlert}
-              antIconName={"delete"}
-              style={styles.deleteBtn}
-            />
-            <RoundIconBtn
-              onPress={() => handleExitButton()}
-              antIconName={"close"}
-              style={styles.closeBtn}
-            />
-          </View>
-        ) : null}
 
-        <NewGameModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          onSubmit={addNewGame}
-        />
         <FilterModal
           visible={filterModalVisible}
           onClose={() => setFilterModalVisible(false)}
           onSubmit={handleFilter}
+        />
+
+        <NewGameplayModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSubmit={addNewGameplay}
+          isExisting={false}
+        />
+
+        <NewGameModal
+          visible={newGameModalVisible}
+          onClose={() => setNewGameModalVisible(false)}
+          onSubmit={addNewGame}
         />
       </View>
     </>
@@ -468,16 +399,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    paddingBottom: 12,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 15,
-    marginHorizontal: 80,
-  },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
     borderRadius: 8,
@@ -488,29 +409,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     paddingLeft: 8,
     fontStyle: "italic",
-  },
-  deleteBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.RED,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  checkIcon: {
-    justiftyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 20,
-    margin: 2,
   },
   cellContainer: {
     borderRightWidth: 1,
@@ -529,6 +427,22 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.LIGHT,
   },
+  addButton: {
+    backgroundColor: colors.PRIMARY,
+    color: colors.LIGHT,
+    padding: 10,
+    paddingBottom: 12,
+    borderRadius: 50,
+    elevation: 5,
+    marginVertical: 15,
+    marginHorizontal: 80,
+  },
+  blueText: {
+    fontSize: 20,
+    padding: 10,
+    color: colors.PRIMARY,
+    fontWeight: "bold",
+  },
 });
 
-export default Collection;
+export default AddGameplay;
