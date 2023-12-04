@@ -28,7 +28,6 @@ const NewGameplayModal = ({
   onSubmit,
   isExisting,
   gameplayParams,
-  gameParams,
   navigation,
 }) => {
   const currentDate = new Date();

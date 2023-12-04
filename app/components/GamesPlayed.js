@@ -480,7 +480,6 @@ const GamesPlayed = (props) => {
         onClose={() => setEditGameplaymodalVisible(false)}
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
-        gameParams={gameParams}
         isExisting={true}
       />
     </View>
