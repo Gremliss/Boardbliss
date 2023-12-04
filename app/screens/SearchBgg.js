@@ -28,7 +28,6 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
-  // const [userCollection, setUserCollection] = useState([]);
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
@@ -262,6 +261,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             renderItem={renderItem}
             keyExtractor={(item, index) => `${index}`}
             keyboardShouldPersistTaps="always"
+            initialNumToRender={15}
           />
         )}
       </View>

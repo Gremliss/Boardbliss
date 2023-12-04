@@ -409,6 +409,7 @@ const Collection = (props) => {
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
           keyboardShouldPersistTaps="always"
+          initialNumToRender={15}
         />
         {longPressActive ? (
           <View>

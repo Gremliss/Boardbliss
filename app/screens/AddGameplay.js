@@ -75,10 +75,12 @@ const AddGameplay = (props) => {
   };
 
   const addNewGame = async (newGame) => {
-    if (!collection) {
-      collection = [];
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    if (!parsedResult) {
+      parsedResult = [];
     }
-    const updatedCollection = [...collection, newGame];
+    const updatedCollection = [...parsedResult, newGame];
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -124,6 +126,12 @@ const AddGameplay = (props) => {
   };
 
   const addNewGameplay = async (newGameplay) => {
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    if (!parsedResult) {
+      parsedResult = [];
+    }
+
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
@@ -146,7 +154,7 @@ const AddGameplay = (props) => {
       };
     }
 
-    const updatedCollection = collection.map((item) => {
+    const updatedCollection = parsedResult.map((item) => {
       if (item.id === newGameParams.id) {
         return {
           ...item,
@@ -285,12 +293,12 @@ const AddGameplay = (props) => {
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
-
+        <Text style={styles.blueText}>Choose game:</Text>
         <View style={styles.searchRow}>
           <TextInput
             value={searchText}
             onChangeText={(text) => handleSearchText(text)}
-            placeholder="Search collection"
+            placeholder="Search game"
             style={[styles.searchBar, { color: colors.LIGHT }]}
             placeholderTextColor={colors.PLACEHOLDER}
           />
@@ -338,6 +346,7 @@ const AddGameplay = (props) => {
           keyExtractor={(item, index) => `${index}`}
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
+          initialNumToRender={15}
         />
 
         <FilterModal
@@ -427,6 +436,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginVertical: 15,
     marginHorizontal: 80,
+  },
+  blueText: {
+    fontSize: 20,
+    padding: 10,
+    color: colors.PRIMARY,
+    fontWeight: "bold",
   },
 });
 

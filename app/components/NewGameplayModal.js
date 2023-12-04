@@ -14,7 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import colors from "../misc/colors";
 import AddPlayersModal from "./AddPlayersModal";
 import RoundIconBtn from "./RoundIconButton";
@@ -400,206 +400,226 @@ const NewGameplayModal = ({
         onShow={isExisting ? () => setAddGameplay(gameplayParams) : null}
       >
         <View style={[styles.container]}>
-          <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-            <View>
-              <View style={[styles.flexRow]}>
-                <Text style={[styles.nameOfInputStyle]}>Type:</Text>
+          <ScrollView style={styles.keyboardContainer}>
+            <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
+              <View>
+                <View style={[styles.flexRow]}>
+                  <Text style={[styles.nameOfInputStyle]}>Type:</Text>
+                  <TouchableOpacity
+                    style={[styles.inputTextStyle]}
+                    onPress={() => changeType()}
+                  >
+                    <Text style={[{ color: colors.LIGHT }]}>
+                      {addGameplay.type}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {addGameplay.type === "Rivalry" ? (
+                  <>
+                    <View style={[styles.flexRow]}>
+                      <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
+                      <TouchableOpacity
+                        style={[styles.inputTextStyle]}
+                        onPress={() => changeScoreType()}
+                      >
+                        <Text style={[{ color: colors.LIGHT }]}>
+                          {addGameplay.scoreType}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.flexRow]}>
+                      <Text style={[styles.nameOfInputStyle]}>
+                        Pick the winners:
+                      </Text>
+                      <TouchableOpacity
+                        style={[styles.inputTextStyle]}
+                        onPress={() => changeChooseWinners()}
+                      >
+                        <Text style={[{ color: colors.LIGHT }]}>
+                          {chooseWinners ? "Yes" : "No"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View style={[styles.flexRow]}>
+                      <Text style={[styles.nameOfInputStyle]}>Victory:</Text>
+                      <TouchableOpacity
+                        style={[styles.inputTextStyle]}
+                        onPress={() => changeVictory()}
+                      >
+                        <Text style={[{ color: colors.LIGHT }]}>
+                          {addGameplay.coop?.victory}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.flexRow]}>
+                      <Text style={[styles.nameOfInputStyle]}>Points:</Text>
+                      <TextInput
+                        defaultValue={addGameplay?.coop?.points?.toString()}
+                        onChangeText={(text) =>
+                          setAddGameplay((prevState) => ({
+                            ...prevState,
+                            coop: { ...prevState.coop, points: text },
+                          }))
+                        }
+                        placeholder="Points"
+                        style={[styles.inputTextStyle]}
+                        keyboardType="numeric"
+                        placeholderTextColor={colors.PLACEHOLDER}
+                      />
+                    </View>
+                  </>
+                )}
+
                 <TouchableOpacity
-                  style={[styles.inputTextStyle]}
-                  onPress={() => changeType()}
+                  style={[styles.addButton]}
+                  onPress={() => setModalVisible(true)}
                 >
-                  <Text style={[{ color: colors.LIGHT }]}>
-                    {addGameplay.type}
+                  <Text
+                    style={[
+                      {
+                        fontSize: 20,
+                        textAlign: "center",
+                        color: colors.LIGHT,
+                      },
+                    ]}
+                  >
+                    Players
                   </Text>
                 </TouchableOpacity>
               </View>
-              {addGameplay.type === "Rivalry" ? (
-                <>
-                  <View style={[styles.flexRow]}>
-                    <Text style={[styles.nameOfInputStyle]}>Score type:</Text>
-                    <TouchableOpacity
-                      style={[styles.inputTextStyle]}
-                      onPress={() => changeScoreType()}
-                    >
-                      <Text style={[{ color: colors.LIGHT }]}>
-                        {addGameplay.scoreType}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[styles.flexRow]}>
-                    <Text style={[styles.nameOfInputStyle]}>
-                      Pick the winners:
-                    </Text>
-                    <TouchableOpacity
-                      style={[styles.inputTextStyle]}
-                      onPress={() => changeChooseWinners()}
-                    >
-                      <Text style={[{ color: colors.LIGHT }]}>
-                        {chooseWinners ? "Yes" : "No"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                <>
-                  <View style={[styles.flexRow]}>
-                    <Text style={[styles.nameOfInputStyle]}>Victory:</Text>
-                    <TouchableOpacity
-                      style={[styles.inputTextStyle]}
-                      onPress={() => changeVictory()}
-                    >
-                      <Text style={[{ color: colors.LIGHT }]}>
-                        {addGameplay.coop?.victory}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[styles.flexRow]}>
-                    <Text style={[styles.nameOfInputStyle]}>Points:</Text>
-                    <TextInput
-                      defaultValue={addGameplay?.coop?.points?.toString()}
-                      onChangeText={(text) =>
-                        setAddGameplay((prevState) => ({
-                          ...prevState,
-                          coop: { ...prevState.coop, points: text },
-                        }))
-                      }
-                      placeholder="Points"
-                      style={[styles.inputTextStyle]}
-                      keyboardType="numeric"
-                      placeholderTextColor={colors.PLACEHOLDER}
-                    />
-                  </View>
-                </>
-              )}
-
-              <TouchableOpacity
-                style={[styles.addButton]}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text
-                  style={[
-                    { fontSize: 20, textAlign: "center", color: colors.LIGHT },
-                  ]}
-                >
-                  Players
-                </Text>
-              </TouchableOpacity>
+            </TouchableWithoutFeedback>
+            <View>
+              <FlatList
+                data={players}
+                renderItem={renderActivePlayer}
+                keyExtractor={(item, index) => `${index}`}
+                horizontal
+                keyboardShouldPersistTaps="always"
+                initialNumToRender={50}
+              />
             </View>
-          </TouchableWithoutFeedback>
-          <View>
-            <FlatList
-              data={players}
-              renderItem={renderActivePlayer}
-              keyExtractor={(item, index) => `${index}`}
-              horizontal
-              keyboardShouldPersistTaps="always"
-              initialNumToRender={50}
-            />
-          </View>
 
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Time:</Text>
-            <TextInput
-              defaultValue={addGameplay?.duration?.hours?.toString()}
-              onChangeText={(text) => {
-                // Remove any non-digit characters from the input
-                const sanitizedText = text.replace(/[^0-9]/g, "");
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Time:</Text>
+              <TextInput
+                defaultValue={addGameplay?.duration?.hours?.toString()}
+                onChangeText={(text) => {
+                  // Remove any non-digit characters from the input
+                  const sanitizedText = text.replace(/[^0-9]/g, "");
 
-                // Check if the sanitized text isn't negative
-                if (sanitizedText >= 0) {
+                  // Check if the sanitized text isn't negative
+                  if (sanitizedText >= 0) {
+                    setAddGameplay((prevState) => ({
+                      ...prevState,
+                      duration: {
+                        ...prevState.duration,
+                        hours: sanitizedText,
+                      },
+                    }));
+                  } else {
+                    displayDateAlert(0, 999);
+                  }
+                }}
+                placeholder="Hours"
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
+              />
+              <TextInput
+                defaultValue={addGameplay?.duration?.min?.toString()}
+                onChangeText={(text) => {
+                  // Remove any non-digit characters from the input
+                  const sanitizedText = text.replace(/[^0-9]/g, "");
+
+                  // Check if the sanitized text is a number between 0 and 59
+                  if (sanitizedText <= 59 && sanitizedText >= 0) {
+                    setAddGameplay((prevState) => ({
+                      ...prevState,
+                      duration: {
+                        ...prevState.duration,
+                        min: sanitizedText,
+                      },
+                    }));
+                  } else {
+                    displayDateAlert(0, 59);
+                  }
+                }}
+                placeholder="Minutes"
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+                placeholderTextColor={colors.PLACEHOLDER}
+              />
+            </View>
+
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Day:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Month:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Year:</Text>
+            </View>
+            <View style={[styles.flexRow]}>
+              <TextInput
+                onChangeText={(text) => {
+                  // Remove any non-digit characters from the input
+                  const sanitizedText = text.replace(/[^0-9]/g, "");
                   setAddGameplay((prevState) => ({
                     ...prevState,
-                    duration: {
-                      ...prevState.duration,
-                      hours: sanitizedText,
-                    },
+                    date: { ...prevState.date, day: sanitizedText },
                   }));
-                } else {
-                  displayDateAlert(0, 999);
-                }
-              }}
-              placeholder="Hours"
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-              placeholderTextColor={colors.PLACEHOLDER}
-            />
-            <TextInput
-              defaultValue={addGameplay?.duration?.min?.toString()}
-              onChangeText={(text) => {
-                // Remove any non-digit characters from the input
-                const sanitizedText = text.replace(/[^0-9]/g, "");
+                }}
+                placeholder="Day"
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+                defaultValue={addGameplay?.date?.day?.toString()}
+                placeholderTextColor={colors.PLACEHOLDER}
+              />
 
-                // Check if the sanitized text is a number between 0 and 59
-                if (sanitizedText <= 59 && sanitizedText >= 0) {
+              <TextInput
+                onChangeText={(text) => {
+                  // Remove any non-digit characters from the input
+                  const sanitizedText = text.replace(/[^0-9]/g, "");
                   setAddGameplay((prevState) => ({
                     ...prevState,
-                    duration: {
-                      ...prevState.duration,
-                      min: sanitizedText,
-                    },
+                    date: { ...prevState.date, month: sanitizedText },
                   }));
-                } else {
-                  displayDateAlert(0, 59);
+                }}
+                placeholder="Month"
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+                defaultValue={addGameplay?.date?.month?.toString()}
+                placeholderTextColor={colors.PLACEHOLDER}
+              />
+              <TextInput
+                onChangeText={(text) =>
+                  setAddGameplay((prevState) => ({
+                    ...prevState,
+                    date: { ...prevState.date, year: text },
+                  }))
                 }
-              }}
-              placeholder="Minutes"
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-              placeholderTextColor={colors.PLACEHOLDER}
-            />
-          </View>
-
-          <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Day:</Text>
-            <Text style={[styles.nameOfInputStyle]}>Month:</Text>
-            <Text style={[styles.nameOfInputStyle]}>Year:</Text>
-          </View>
-          <View style={[styles.flexRow]}>
+                placeholder="Year"
+                style={[styles.inputTextStyle]}
+                keyboardType="numeric"
+                defaultValue={addGameplay?.date?.year?.toString()}
+                placeholderTextColor={colors.PLACEHOLDER}
+              />
+            </View>
             <TextInput
-              onChangeText={(text) => {
-                // Remove any non-digit characters from the input
-                const sanitizedText = text.replace(/[^0-9]/g, "");
-                setAddGameplay((prevState) => ({
-                  ...prevState,
-                  date: { ...prevState.date, day: sanitizedText },
-                }));
-              }}
-              placeholder="Day"
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-              defaultValue={addGameplay?.date?.day?.toString()}
-              placeholderTextColor={colors.PLACEHOLDER}
-            />
-
-            <TextInput
-              onChangeText={(text) => {
-                // Remove any non-digit characters from the input
-                const sanitizedText = text.replace(/[^0-9]/g, "");
-                setAddGameplay((prevState) => ({
-                  ...prevState,
-                  date: { ...prevState.date, month: sanitizedText },
-                }));
-              }}
-              placeholder="Month"
-              style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-              defaultValue={addGameplay?.date?.month?.toString()}
-              placeholderTextColor={colors.PLACEHOLDER}
-            />
-            <TextInput
+              defaultValue={addGameplay?.notes?.toString()}
               onChangeText={(text) =>
                 setAddGameplay((prevState) => ({
                   ...prevState,
-                  date: { ...prevState.date, year: text },
+                  notes: text,
                 }))
               }
-              placeholder="Year"
+              placeholder="Notes"
               style={[styles.inputTextStyle]}
-              keyboardType="numeric"
-              defaultValue={addGameplay?.date?.year?.toString()}
               placeholderTextColor={colors.PLACEHOLDER}
+              textAlignVertical="top"
+              multiline
             />
-          </View>
+          </ScrollView>
         </View>
 
         <AddPlayersModal
@@ -628,6 +648,9 @@ const NewGameplayModal = ({
 };
 
 const styles = StyleSheet.create({
+  keyboardContainer: {
+    flex: 1,
+  },
   container: {
     backgroundColor: colors.BACKGROUND,
     flex: 1,

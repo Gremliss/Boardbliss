@@ -36,7 +36,7 @@ const GamesPlayed = (props) => {
     type: "Rivalry",
     scoreType: "Points",
     isChecked: false,
-    duration: { hours: 69, min: null },
+    duration: { hours: null, min: null },
   });
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
