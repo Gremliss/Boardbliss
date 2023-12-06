@@ -310,11 +310,11 @@ const BoardGameStats = (props) => {
             </View>
           ) : null}
 
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
               <Text style={styles.closeButton}>Close</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 30,
+    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,

@@ -328,16 +328,17 @@ const Collection = (props) => {
         <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
           <View>
             <TouchableOpacity
-              style={[styles.addButton]}
+              style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setModalVisible(true)}
             >
-              <Text
-                style={[
-                  { fontSize: 20, textAlign: "center", color: colors.LIGHT },
-                ]}
-              >
-                Add game
-              </Text>
+              <Text style={[styles.textBtn]}>Add game</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonBottomRadius]}
+              onPress={() => props.navigation.navigate("SearchBgg")}
+            >
+              <Text style={[styles.textBtn]}>Search BGG</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -473,10 +474,25 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
     padding: 10,
     paddingBottom: 12,
-    borderRadius: 50,
     elevation: 5,
-    marginVertical: 15,
     marginHorizontal: 80,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_OPACITY,
+  },
+  addButtonTopRadius: {
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    marginTop: 10,
+  },
+  addButtonBottomRadius: {
+    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 50,
+    marginBottom: 10,
+  },
+  textBtn: {
+    fontSize: 20,
+    textAlign: "center",
+    color: colors.LIGHT,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,

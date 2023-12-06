@@ -156,7 +156,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           </Text>
           {yearPublished && (
             <Text style={[styles.yearText, { color: colors.LIGHT }]}>
-              Year published: {yearPublished}
+              {yearPublished}
             </Text>
           )}
         </View>

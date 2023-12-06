@@ -151,14 +151,16 @@ const CollectionBoardgameDetail = (props) => {
           </View>
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Rating BGG:</Text>
-            <Text style={styles.gameInfoValue}>{gameParams.rating}</Text>
+            <Text style={styles.gameInfoValue}>
+              {parseFloat(gameParams?.rating).toFixed(2)}
+            </Text>
           </View>
 
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
               <Text style={styles.closeButton}>Close</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 30,
+    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,
