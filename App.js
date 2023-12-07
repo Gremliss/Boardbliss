@@ -15,6 +15,7 @@ import PlayerDetail from "./app/components/PlayerDetail";
 import GameCalendar from "./app/screens/GameCalendar";
 import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
+import { StatusBar } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -42,103 +43,106 @@ export default function App() {
   );
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: colors.PRIMARY,
-          },
-          headerTintColor: colors.LIGHT,
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      >
-        <Stack.Screen
-          component={MainScreen}
-          name="Boardbliss"
-          options={{
-            title: "Boardbliss",
+    <>
+      <StatusBar backgroundColor={colors.PRIMARY} />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: colors.PRIMARY,
+            },
+            headerTintColor: colors.LIGHT,
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
           }}
-        />
-        <Stack.Screen
-          component={AddGameplay}
-          name="AddGameplay"
-          options={{
-            title: "Add Gameplay",
-          }}
-        />
-        <Stack.Screen
-          component={Collection}
-          name="Collection"
-          options={{
-            title: "Collection",
-          }}
-        />
-        <Stack.Screen
-          component={RenderSearchBgg}
-          name="SearchBgg"
-          options={{
-            title: "Search BGG",
-          }}
-        />
-        <Stack.Screen
-          component={Players}
-          name="Players"
-          options={{
-            title: "Players",
-          }}
-        />
-        <Stack.Screen
-          component={GameCalendar}
-          name="GameCalendar"
-          options={{
-            title: "Game Calendar",
-          }}
-        />
-        <Stack.Screen
-          component={PlayerDetail}
-          name="PlayerDetail"
-          options={{
-            title: "Player detail",
-          }}
-        />
-        <Stack.Screen
-          component={BoardGameDetail}
-          name="BoardGameDetail"
-          options={{
-            title: "Board game detail",
-          }}
-        />
-        <Stack.Screen
-          component={CollectionBoardgameDetail}
-          name="CollectionBoardgameDetail"
-          options={{
-            title: "Board game detail",
-          }}
-        />
-        <Stack.Screen
-          component={EditBoardGame}
-          name="EditBoardGame"
-          options={{
-            title: "Edit board game",
-          }}
-        />
-        <Stack.Screen
-          component={BoardGameStats}
-          name="BoardGameStats"
-          options={{
-            title: "Board game stats",
-          }}
-        />
-        <Stack.Screen
-          component={GamesPlayed}
-          name="GamesPlayed"
-          options={{
-            title: "Games played",
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        >
+          <Stack.Screen
+            component={MainScreen}
+            name="Boardbliss"
+            options={{
+              title: "Boardbliss",
+            }}
+          />
+          <Stack.Screen
+            component={AddGameplay}
+            name="AddGameplay"
+            options={{
+              title: "Add Gameplay",
+            }}
+          />
+          <Stack.Screen
+            component={Collection}
+            name="Collection"
+            options={{
+              title: "Collection",
+            }}
+          />
+          <Stack.Screen
+            component={RenderSearchBgg}
+            name="SearchBgg"
+            options={{
+              title: "Search BGG",
+            }}
+          />
+          <Stack.Screen
+            component={Players}
+            name="Players"
+            options={{
+              title: "Players",
+            }}
+          />
+          <Stack.Screen
+            component={GameCalendar}
+            name="GameCalendar"
+            options={{
+              title: "Game Calendar",
+            }}
+          />
+          <Stack.Screen
+            component={PlayerDetail}
+            name="PlayerDetail"
+            options={{
+              title: "Player detail",
+            }}
+          />
+          <Stack.Screen
+            component={BoardGameDetail}
+            name="BoardGameDetail"
+            options={{
+              title: "Board game detail",
+            }}
+          />
+          <Stack.Screen
+            component={CollectionBoardgameDetail}
+            name="CollectionBoardgameDetail"
+            options={{
+              title: "Board game detail",
+            }}
+          />
+          <Stack.Screen
+            component={EditBoardGame}
+            name="EditBoardGame"
+            options={{
+              title: "Edit board game",
+            }}
+          />
+          <Stack.Screen
+            component={BoardGameStats}
+            name="BoardGameStats"
+            options={{
+              title: "Board game stats",
+            }}
+          />
+          <Stack.Screen
+            component={GamesPlayed}
+            name="GamesPlayed"
+            options={{
+              title: "Games played",
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
