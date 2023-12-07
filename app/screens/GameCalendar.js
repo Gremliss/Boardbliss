@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -102,6 +103,36 @@ const GameCalendar = (props) => {
     const newDate = new Date(newDateMs);
     setDate(newDate);
   };
+
+  const displayDeleteAlert = (game, session) => {
+    Alert.alert(
+      "Do you want to delete this gameplay?",
+      "Gameplay will be deleted permanently",
+      [
+        { text: "Delete", onPress: () => deleteCheckedGameplay(game, session) },
+        { text: "Cancel", onPress: () => null },
+      ],
+      { cancelable: true }
+    );
+  };
+  const deleteCheckedGameplay = async (game, session) => {
+    const newGameplay = game.stats.filter((n) => n.id !== session.id);
+
+    const updatedCollection = collection.map((item) => {
+      if (item.id === game.id) {
+        return {
+          ...item,
+          stats: newGameplay,
+        };
+      } else {
+        return item;
+      }
+    });
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+  };
+
   const renderItem = ({ item, index }) => {
     const isCurrentDate =
       item.id ===
@@ -170,6 +201,7 @@ const GameCalendar = (props) => {
                   >
                     <TouchableOpacity
                       onPress={() => handleItemPressed(game, session)}
+                      onLongPress={() => displayDeleteAlert(game, session)}
                     >
                       {session.coop?.victory == "Yes" ? (
                         <Text style={styles.coopVictory}>{gameName}</Text>

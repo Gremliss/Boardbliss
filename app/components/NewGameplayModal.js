@@ -531,7 +531,12 @@ const NewGameplayModal = ({
                             </>
                           ) : (
                             <View style={[styles.flexRow]}>
-                              <Text style={[styles.nameOfInputStyle]}>
+                              <Text
+                                style={[
+                                  styles.nameOfInputStyle,
+                                  { fontWeight: "bold" },
+                                ]}
+                              >
                                 {item.name}
                               </Text>
                             </View>

@@ -16,12 +16,15 @@ import GameCalendar from "./app/screens/GameCalendar";
 import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
 import { StatusBar } from "react-native";
+import * as NavigationBar from "expo-navigation-bar";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
+
+  NavigationBar.setBackgroundColorAsync(colors.PRIMARY);
 
   useEffect(() => {
     const fetchCollection = async () => {
@@ -44,7 +47,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar backgroundColor={colors.PRIMARY} />
+      <StatusBar backgroundColor={colors.PRIMARY_OPACITY} />
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
