@@ -7,6 +7,7 @@ export default {
   LIST_COLOR_ONE: "#ccdadb",
   LIST_COLOR_TWO: "#accbcd",
   PLACEHOLDER: "#EEEEEE70",
-  BACKGROUND: "#b4bdcb",
+  BACKGROUND: "#00798070",
   PRIMARY_OPACITY: "#00798070",
+  LIGHT_YELLOW: "#F9F3CC80",
 };

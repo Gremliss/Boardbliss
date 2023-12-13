@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     padding: 8,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   addNewPlayer: {
     padding: 9,

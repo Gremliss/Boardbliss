@@ -47,7 +47,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar backgroundColor={colors.PRIMARY_OPACITY} />
+      <StatusBar backgroundColor={colors.PRIMARY} />
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{

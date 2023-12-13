@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
     padding: 10,
     margin: 8,
+    borderRadius: 5,
   },
   flexBackground: {
     flex: 1,

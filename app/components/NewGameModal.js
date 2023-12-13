@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   bottomContainer: {
     width: windowWidth,

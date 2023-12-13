@@ -307,8 +307,7 @@ const NewGameplayModal = ({
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor =
-      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+    const backgroundColor = colors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity key={index} onPress={() => handleCheckButton(item)}>
         <View
@@ -717,6 +716,7 @@ const styles = StyleSheet.create({
     padding: 8,
     flex: 2,
     margin: 4,
+    borderRadius: 5,
   },
   btnContainer: {
     flexDirection: "row",

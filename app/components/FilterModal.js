@@ -199,7 +199,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
     color: colors.LIGHT,
     paddingVertical: 80,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 2,
     margin: 4,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   inputTextStyle: {
     backgroundColor: colors.GRAY,
@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   changeOnClickText: {
     color: colors.LIGHT,
