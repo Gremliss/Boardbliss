@@ -208,6 +208,7 @@ const Collection = (props) => {
     if (filteredCollection.length) {
       setCollection([...filteredCollection]);
     } else {
+      fetchCollection();
       ToastAndroid.show("Games not found", 2000);
     }
   };
@@ -302,7 +303,7 @@ const Collection = (props) => {
     if (filteredCollection.length) {
       setCollection(filteredCollection);
     } else {
-      fetchCollection;
+      fetchCollection();
       ToastAndroid.show("Games not found", 2000);
     }
   };
