@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: colors.DARK,
+    color: colors.PRIMARY,
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 10,
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.BACKGROUND,
     borderRadius: 20,
     margin: 2,
   },
@@ -247,12 +247,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     opacity: 1,
-    color: colors.PRIMARY,
+    color: colors.DARK,
+    fontWeight: "bold",
   },
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   closeButton: {
     backgroundColor: colors.PRIMARY,
