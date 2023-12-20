@@ -116,21 +116,9 @@ const GamesPlayed = (props) => {
             ]}
           >
             {item.victory ? (
-              <View style={[styles.flexRow, { justifyContent: "center" }]}>
-                <View
-                  style={[
-                    styles.centerStyle,
-                    {
-                      flex: 0.3,
-                      borderBottomWidth: 0,
-                      borderRightWidth: 0,
-                    },
-                  ]}
-                >
-                  <Text>🏆 </Text>
-                </View>
-                <Text style={[{ flex: 1 }]}>{item.name} </Text>
-              </View>
+              <Text style={[{ textDecorationLine: "underline" }]}>
+                {item.name}
+              </Text>
             ) : (
               <Text>{item.name}</Text>
             )}
