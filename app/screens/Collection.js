@@ -32,7 +32,7 @@ const Collection = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [checkAllItems, setCheckAllItems] = useState(false);
-
+  var todayDate = new Date();
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
@@ -99,6 +99,24 @@ const Collection = (props) => {
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+
+    const allDates = item.stats.map((stat) => stat.date);
+
+    const newestDate = allDates.reduce((maxDate, currentDate) => {
+      const current = new Date(
+        currentDate.year,
+        currentDate.month - 1,
+        currentDate.day,
+        currentDate.hour,
+        currentDate.minutes
+      );
+      return current > maxDate ? current : maxDate;
+    }, null);
+
+    const daysDifference = newestDate
+      ? Math.floor((todayDate - newestDate) / (1000 * 60 * 60 * 24))
+      : null;
+
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -124,7 +142,7 @@ const Collection = (props) => {
             >
               <Text style={[{ color: "#1b232e" }]}>{index + 1}</Text>
             </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
+            <View style={[styles.cellContainer, { flex: 3 }]}>
               <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
               <Text style={styles.yearText}>{item.yearpublished}</Text>
             </View>
@@ -138,6 +156,9 @@ const Collection = (props) => {
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.maxPlaytime}</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text>{daysDifference != null ? daysDifference : "-"}</Text>
             </View>
           </View>
         </View>
@@ -387,7 +408,12 @@ const Collection = (props) => {
             >
               <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
             </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
+            <View
+              style={[
+                styles.cellContainer,
+                { flex: 3, justifyContent: "center" },
+              ]}
+            >
               <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
                 Name
               </Text>
@@ -400,6 +426,11 @@ const Collection = (props) => {
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text style={[{ color: colors.LIGHT }]}>Time</Text>
+            </View>
+            <View
+              style={[styles.centerStyle, styles.cellContainer, { flex: 1 }]}
+            >
+              <Text style={[{ color: colors.LIGHT }]}>Days ago</Text>
             </View>
           </View>
         </View>
