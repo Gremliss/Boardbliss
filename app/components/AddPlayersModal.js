@@ -84,6 +84,7 @@ const AddPlayersModal = ({
               placeholder="Player name"
               style={[styles.inputTextStyle]}
               placeholderTextColor={colors.PLACEHOLDER}
+              onSubmitEditing={handleNewPlayer}
             />
             {name !== "" ? (
               <AntDesign

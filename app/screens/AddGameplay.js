@@ -284,7 +284,7 @@ const AddGameplay = (props) => {
               style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setNewGameModalVisible(true)}
             >
-              <Text style={[styles.textBtn]}>Add game</Text>
+              <Text style={[styles.textBtn]}>Add to collection</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

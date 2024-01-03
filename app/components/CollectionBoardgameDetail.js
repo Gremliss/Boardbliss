@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import GamesPlayed from "./GamesPlayed";
 import NewGameplayModal from "./NewGameplayModal";
 import colors from "../misc/colors";
 

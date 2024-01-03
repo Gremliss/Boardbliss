@@ -93,6 +93,7 @@ const Collection = (props) => {
       }
       return collectionItem;
     });
+    setCheckAllItems(false);
     setCollection(updatedItems);
   };
 
@@ -210,10 +211,6 @@ const Collection = (props) => {
     await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
   };
 
-  const openSearchBgg = async () => {
-    props.navigation.navigate("SearchBgg");
-  };
-
   const handleSearchText = async (text) => {
     setSearchText(text);
     if (!text.trim()) {
@@ -315,7 +312,7 @@ const Collection = (props) => {
 
     if (filterItems.expansion !== true) {
       filteredCollection = filteredCollection.filter((item) => {
-        if (item.expansion === false) {
+        if (item.expansion !== true) {
           return item;
         }
       });
@@ -353,7 +350,7 @@ const Collection = (props) => {
               style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={[styles.textBtn]}>Add game</Text>
+              <Text style={[styles.textBtn]}>Add to collection</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -406,7 +403,7 @@ const Collection = (props) => {
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
-              <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
+              <Text style={[styles.textStyle]}>Nr</Text>
             </View>
             <View
               style={[
@@ -414,23 +411,21 @@ const Collection = (props) => {
                 { flex: 3, justifyContent: "center" },
               ]}
             >
-              <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
-                Name
-              </Text>
+              <Text style={[styles.textStyle]}>Name</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Rating</Text>
+              <Text style={[styles.textStyle]}>Rating</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Players</Text>
+              <Text style={[styles.textStyle]}>Players</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Time</Text>
+              <Text style={[styles.textStyle]}>Time</Text>
             </View>
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 1 }]}
             >
-              <Text style={[{ color: colors.LIGHT }]}>Days ago</Text>
+              <Text style={[styles.textStyle]}>Days ago</Text>
             </View>
           </View>
         </View>
@@ -562,9 +557,14 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     borderRightWidth: 1,
-    paddingHorizontal: 1,
+    paddingHorizontal: 0.3,
     borderColor: colors.BACKGROUND,
     paddingVertical: 4,
+  },
+  textStyle: {
+    color: colors.LIGHT,
+    fontSize: 12,
+    flexWrap: "wrap",
   },
   centerStyle: {
     justifyContent: "center",
