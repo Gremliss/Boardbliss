@@ -151,6 +151,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         ];
 
     await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
+    setCollection(newCollection);
   };
 
   const renderItem = ({ item, index }) => {

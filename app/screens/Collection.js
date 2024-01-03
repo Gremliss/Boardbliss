@@ -209,6 +209,7 @@ const Collection = (props) => {
     });
     setCollection(updatedResult);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
+    setCheckAllItems(false);
   };
 
   const handleSearchText = async (text) => {
