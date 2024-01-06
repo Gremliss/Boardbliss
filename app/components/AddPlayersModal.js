@@ -84,6 +84,7 @@ const AddPlayersModal = ({
               placeholder="Player name"
               style={[styles.inputTextStyle]}
               placeholderTextColor={colors.PLACEHOLDER}
+              onSubmitEditing={handleNewPlayer}
             />
             {name !== "" ? (
               <AntDesign
@@ -122,11 +123,13 @@ const AddPlayersModal = ({
             antIconName="close"
             onPress={closeModal}
           /> */}
-          <RoundIconBtn
-            antIconName="check"
-            onPress={closeModal}
-            style={styles.addBtn}
-          />
+          {name === "" ? (
+            <RoundIconBtn
+              antIconName="check"
+              onPress={closeModal}
+              style={styles.addBtn}
+            />
+          ) : null}
         </View>
       </Modal>
     </>
@@ -136,7 +139,7 @@ const AddPlayersModal = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
   },
   flatListContainer: {
     marginBottom: 200,
@@ -147,16 +150,6 @@ const styles = StyleSheet.create({
       marginTop: windowHeight / 3,
       marginHorizontal: 20,
     };
-  },
-  playerStyle: {
-    backgroundColor: colors.GRAY,
-    color: "#EEEEEE",
-    padding: 10,
-    margin: 4,
-  },
-  modalBG: {
-    flex: 1,
-    zIndex: -1,
   },
   btnContainer: {
     flexDirection: "row",
@@ -177,7 +170,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     color: colors.LIGHT,
   },
-
   flexRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -186,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 8,
     flex: 2,
     margin: 4,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   inputTextStyle: {
     backgroundColor: colors.GRAY,
@@ -194,6 +186,7 @@ const styles = StyleSheet.create({
     padding: 8,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   addNewPlayer: {
     padding: 9,

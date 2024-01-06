@@ -15,22 +15,33 @@ const MainScreen = (props) => {
   return (
     <View style={[styles.container]}>
       <TouchableOpacity
+        style={[styles.btnContainer, styles.addButtonTopRadius]}
         onPress={() => props.navigation.navigate("AddGameplay")}
       >
         <Text style={[styles.textBtn]}>Add Gameplay</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.navigate("Collection")}>
+      <TouchableOpacity
+        style={[styles.btnContainer]}
+        onPress={() => props.navigation.navigate("Collection")}
+      >
         <Text style={[styles.textBtn]}>Collection</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.navigate("SearchBgg")}>
+      <TouchableOpacity
+        style={[styles.btnContainer]}
+        onPress={() => props.navigation.navigate("SearchBgg")}
+      >
         <Text style={[styles.textBtn]}>Search BGG</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("GameCalendar")}
       >
         <Text style={[styles.textBtn]}>Game Calendar</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.navigate("Players")}>
+      <TouchableOpacity
+        style={[styles.btnContainer, styles.addButtonBottomRadius]}
+        onPress={() => props.navigation.navigate("Players")}
+      >
         <Text style={[styles.textBtn]}>Players</Text>
       </TouchableOpacity>
     </View>
@@ -44,17 +55,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  textBtn: {
+  btnContainer: {
     backgroundColor: colors.PRIMARY,
+    padding: 25,
+    paddingBottom: 27,
+    elevation: 5,
+    marginHorizontal: 30,
+    width: windowWidth / 1.5,
+    borderWidth: 1,
+    borderRadius: 1,
+    borderColor: colors.PRIMARY_OPACITY,
+  },
+  textBtn: {
     fontSize: 20,
     textAlign: "center",
     color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 10,
-    marginHorizontal: 30,
-    width: windowWidth / 1.5,
+  },
+  addButtonTopRadius: {
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    marginTop: 10,
+  },
+  addButtonBottomRadius: {
+    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 50,
+    marginBottom: 5,
   },
 });
 

@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import GamesPlayed from "./GamesPlayed";
 import NewGameplayModal from "./NewGameplayModal";
 import colors from "../misc/colors";
 
@@ -151,14 +150,16 @@ const CollectionBoardgameDetail = (props) => {
           </View>
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Rating BGG:</Text>
-            <Text style={styles.gameInfoValue}>{gameParams.rating}</Text>
+            <Text style={styles.gameInfoValue}>
+              {parseFloat(gameParams?.rating).toFixed(2)}
+            </Text>
           </View>
 
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
               <Text style={styles.closeButton}>Close</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: colors.DARK,
+    color: colors.PRIMARY,
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 10,
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.BACKGROUND,
     borderRadius: 20,
     margin: 2,
   },
@@ -245,12 +246,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     opacity: 1,
-    color: colors.PRIMARY,
+    color: colors.DARK,
+    fontWeight: "bold",
   },
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   closeButton: {
     backgroundColor: colors.PRIMARY,
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 30,
+    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,

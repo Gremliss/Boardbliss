@@ -125,19 +125,33 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
 
   const displayAddAlert = () => {
     Alert.alert(
-      `Are you sure you want to add ${countUserGamesToAdd} games to your collection`,
+      `Are you sure you want to add ${countUserGamesToAdd} games to collection?`,
       "",
       [
-        { text: "Yes", onPress: () => addUserCollection() },
         { text: "Cancel", onPress: () => null },
+        {
+          text: "Add to friends collection",
+          onPress: () => addUserCollection(false),
+        },
+        {
+          text: "Add to your collection",
+          onPress: () => addUserCollection(true),
+        },
       ],
       { cancelable: true }
     );
   };
 
-  const addUserCollection = async () => {
-    var newCollection = [...collection, ...updatedCollection];
+  const addUserCollection = async (isYourCollection) => {
+    const newCollection = isYourCollection
+      ? [...collection, ...updatedCollection]
+      : [
+          ...collection,
+          ...updatedCollection.map((item) => ({ ...item, owner: "Friend" })),
+        ];
+
     await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
+    setCollection(newCollection);
   };
 
   const renderItem = ({ item, index }) => {
@@ -156,7 +170,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           </Text>
           {yearPublished && (
             <Text style={[styles.yearText, { color: colors.LIGHT }]}>
-              Year published: {yearPublished}
+              {yearPublished}
             </Text>
           )}
         </View>

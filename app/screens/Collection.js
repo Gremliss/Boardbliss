@@ -32,7 +32,7 @@ const Collection = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [checkAllItems, setCheckAllItems] = useState(false);
-
+  var todayDate = new Date();
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
@@ -93,12 +93,31 @@ const Collection = (props) => {
       }
       return collectionItem;
     });
+    setCheckAllItems(false);
     setCollection(updatedItems);
   };
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+
+    const allDates = item.stats.map((stat) => stat.date);
+
+    const newestDate = allDates.reduce((maxDate, currentDate) => {
+      const current = new Date(
+        currentDate.year,
+        currentDate.month - 1,
+        currentDate.day,
+        currentDate.hour,
+        currentDate.minutes
+      );
+      return current > maxDate ? current : maxDate;
+    }, null);
+
+    const daysDifference = newestDate
+      ? Math.floor((todayDate - newestDate) / (1000 * 60 * 60 * 24))
+      : null;
+
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -124,7 +143,7 @@ const Collection = (props) => {
             >
               <Text style={[{ color: "#1b232e" }]}>{index + 1}</Text>
             </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
+            <View style={[styles.cellContainer, { flex: 3 }]}>
               <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
               <Text style={styles.yearText}>{item.yearpublished}</Text>
             </View>
@@ -138,6 +157,9 @@ const Collection = (props) => {
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               <Text>{item.maxPlaytime}</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text>{daysDifference != null ? daysDifference : "-"}</Text>
             </View>
           </View>
         </View>
@@ -187,10 +209,7 @@ const Collection = (props) => {
     });
     setCollection(updatedResult);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
-  };
-
-  const openSearchBgg = async () => {
-    props.navigation.navigate("SearchBgg");
+    setCheckAllItems(false);
   };
 
   const handleSearchText = async (text) => {
@@ -208,6 +227,7 @@ const Collection = (props) => {
     if (filteredCollection.length) {
       setCollection([...filteredCollection]);
     } else {
+      fetchCollection();
       ToastAndroid.show("Games not found", 2000);
     }
   };
@@ -293,7 +313,7 @@ const Collection = (props) => {
 
     if (filterItems.expansion !== true) {
       filteredCollection = filteredCollection.filter((item) => {
-        if (item.expansion === false) {
+        if (item.expansion !== true) {
           return item;
         }
       });
@@ -302,7 +322,7 @@ const Collection = (props) => {
     if (filteredCollection.length) {
       setCollection(filteredCollection);
     } else {
-      fetchCollection;
+      fetchCollection();
       ToastAndroid.show("Games not found", 2000);
     }
   };
@@ -328,16 +348,17 @@ const Collection = (props) => {
         <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
           <View>
             <TouchableOpacity
-              style={[styles.addButton]}
+              style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setModalVisible(true)}
             >
-              <Text
-                style={[
-                  { fontSize: 20, textAlign: "center", color: colors.LIGHT },
-                ]}
-              >
-                Add game
-              </Text>
+              <Text style={[styles.textBtn]}>Add to collection</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonBottomRadius]}
+              onPress={() => props.navigation.navigate("SearchBgg")}
+            >
+              <Text style={[styles.textBtn]}>Search BGG</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -383,21 +404,29 @@ const Collection = (props) => {
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
-              <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
+              <Text style={[styles.textStyle]}>Nr</Text>
             </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
-              <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
-                Name
-              </Text>
-            </View>
-            <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Rating</Text>
-            </View>
-            <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Players</Text>
+            <View
+              style={[
+                styles.cellContainer,
+                { flex: 3, justifyContent: "center" },
+              ]}
+            >
+              <Text style={[styles.textStyle]}>Name</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Time</Text>
+              <Text style={[styles.textStyle]}>Rating</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text style={[styles.textStyle]}>Players</Text>
+            </View>
+            <View style={[styles.centerStyle, styles.cellContainer]}>
+              <Text style={[styles.textStyle]}>Time</Text>
+            </View>
+            <View
+              style={[styles.centerStyle, styles.cellContainer, { flex: 1 }]}
+            >
+              <Text style={[styles.textStyle]}>Days ago</Text>
             </View>
           </View>
         </View>
@@ -473,10 +502,25 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
     padding: 10,
     paddingBottom: 12,
-    borderRadius: 50,
     elevation: 5,
-    marginVertical: 15,
     marginHorizontal: 80,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_OPACITY,
+  },
+  addButtonTopRadius: {
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    marginTop: 10,
+  },
+  addButtonBottomRadius: {
+    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 50,
+    marginBottom: 10,
+  },
+  textBtn: {
+    fontSize: 20,
+    textAlign: "center",
+    color: colors.LIGHT,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
@@ -514,9 +558,14 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     borderRightWidth: 1,
-    paddingHorizontal: 1,
+    paddingHorizontal: 0.3,
     borderColor: colors.BACKGROUND,
     paddingVertical: 4,
+  },
+  textStyle: {
+    color: colors.LIGHT,
+    fontSize: 12,
+    flexWrap: "wrap",
   },
   centerStyle: {
     justifyContent: "center",

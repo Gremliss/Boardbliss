@@ -38,15 +38,6 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
 
   const handleSubmit = () => {
     onSubmit(filterGames);
-    setFilterGames({
-      yearpublished: null,
-      owner: "All",
-      expansion: true,
-      rating: null,
-      players: null,
-      minPlaytime: null,
-      maxPlaytime: null,
-    });
     onClose();
   };
 
@@ -92,12 +83,13 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
   return (
     <>
       <StatusBar />
-      <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
+      <Modal visible={visible} animationType="fade">
         <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
           <View style={[styles.container]}>
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Year published:</Text>
               <TextInput
+                defaultValue={filterGames?.yearpublished}
                 onChangeText={(text) =>
                   setFilterGames({ ...filterGames, yearpublished: text })
                 }
@@ -132,6 +124,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Players:</Text>
               <TextInput
+                defaultValue={filterGames?.players}
                 onChangeText={(text) =>
                   setFilterGames({ ...filterGames, players: text })
                 }
@@ -144,6 +137,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Min playtime:</Text>
               <TextInput
+                defaultValue={filterGames?.minPlaytime}
                 onChangeText={(text) =>
                   setFilterGames({ ...filterGames, minPlaytime: text })
                 }
@@ -156,6 +150,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Max playtime:</Text>
               <TextInput
+                defaultValue={filterGames?.maxPlaytime}
                 onChangeText={(text) =>
                   setFilterGames({ ...filterGames, maxPlaytime: text })
                 }
@@ -168,6 +163,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Rating:</Text>
               <TextInput
+                defaultValue={filterGames?.rating}
                 onChangeText={(text) =>
                   setFilterGames({ ...filterGames, rating: text })
                 }
@@ -199,7 +195,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.DARK,
+    backgroundColor: colors.BACKGROUND,
     flex: 1,
     color: colors.LIGHT,
     paddingVertical: 80,
@@ -211,7 +207,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 2,
     margin: 4,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   inputTextStyle: {
     backgroundColor: colors.GRAY,
@@ -219,6 +215,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   changeOnClickText: {
     color: colors.LIGHT,

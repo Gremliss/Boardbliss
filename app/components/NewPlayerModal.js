@@ -72,8 +72,8 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
             onChangeText={(text) => handleOnChangeText(text, "name")}
             placeholder="Player name"
             style={[styles.input(windowHeight), styles.playerStyle]}
-            multiline={true}
             placeholderTextColor={colors.PLACEHOLDER}
+            onSubmitEditing={handleSubmit}
           />
           <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
             <View style={[styles.modalBG, StyleSheet.absoluteFillObject]} />

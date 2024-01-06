@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     margin: 4,
+    borderRadius: 5,
   },
   bottomContainer: {
     width: windowWidth,
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 30,
+    marginHorizontal: 80,
   },
 });
 

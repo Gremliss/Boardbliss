@@ -10,12 +10,14 @@ import {
   TouchableWithoutFeedback,
   View,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RoundIconBtn from "../components/RoundIconButton";
 import colors from "../misc/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import NewGameplayModal from "../components/NewGameplayModal";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -23,6 +25,25 @@ const windowHeight = Dimensions.get("window").height;
 const GameCalendar = (props) => {
   const [collection, setCollection] = useState([]);
   const [date, setDate] = useState(new Date());
+  const currentDate = new Date();
+  const [gameParams, setGameParams] = useState();
+  const [gameplayParams, setGameplayParams] = useState({
+    id: Date.now(),
+    date: {
+      day: currentDate.getDate(),
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear(),
+      hour: currentDate.getHours(),
+      minutes: currentDate.getMinutes(),
+    },
+    players: [],
+    type: "Rivalry",
+    scoreType: "Points",
+    isChecked: false,
+    duration: { hours: null, min: null },
+  });
+  const [editGameplaymodalVisible, setEditGameplaymodalVisible] =
+    useState(false);
   const dayNow = new Date();
   const months = [
     "January",
@@ -82,6 +103,36 @@ const GameCalendar = (props) => {
     const newDate = new Date(newDateMs);
     setDate(newDate);
   };
+
+  const displayDeleteAlert = (game, session) => {
+    Alert.alert(
+      "Do you want to delete this gameplay?",
+      "Gameplay will be deleted permanently",
+      [
+        { text: "Delete", onPress: () => deleteCheckedGameplay(game, session) },
+        { text: "Cancel", onPress: () => null },
+      ],
+      { cancelable: true }
+    );
+  };
+  const deleteCheckedGameplay = async (game, session) => {
+    const newGameplay = game.stats.filter((n) => n.id !== session.id);
+
+    const updatedCollection = collection.map((item) => {
+      if (item.id === game.id) {
+        return {
+          ...item,
+          stats: newGameplay,
+        };
+      } else {
+        return item;
+      }
+    });
+
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+  };
+
   const renderItem = ({ item, index }) => {
     const isCurrentDate =
       item.id ===
@@ -148,25 +199,32 @@ const GameCalendar = (props) => {
                     key={`${game.id}-${sessionIndex}`}
                     style={styles.gameItem}
                   >
-                    {session.coop?.victory == "Yes" ? (
-                      <Text style={styles.coopVictory}>{gameName}</Text>
-                    ) : (
-                      <Text style={styles.gameName}>{gameName}</Text>
-                    )}
+                    <TouchableOpacity
+                      onPress={() => handleItemPressed(game, session)}
+                      onLongPress={() => displayDeleteAlert(game, session)}
+                    >
+                      {session.coop?.victory == "Yes" ? (
+                        <Text style={styles.coopVictory}>{gameName}</Text>
+                      ) : (
+                        <Text style={styles.gameName}>{gameName}</Text>
+                      )}
 
-                    <Text style={styles.players}>
-                      👥{" "}
-                      {session.players.map((player, playerIndex) => (
-                        <Text key={playerIndex}>
-                          {playerIndex > 0 && ", "}{" "}
-                          {player.victory ? (
-                            <Text style={styles.winPlayer}>{player.name}</Text>
-                          ) : (
-                            player.name
-                          )}
-                        </Text>
-                      ))}
-                    </Text>
+                      <Text style={styles.players}>
+                        👥{" "}
+                        {session.players.map((player, playerIndex) => (
+                          <Text key={playerIndex}>
+                            {playerIndex > 0 && ", "}{" "}
+                            {player.victory ? (
+                              <Text style={styles.winPlayer}>
+                                {player.name}
+                              </Text>
+                            ) : (
+                              player.name
+                            )}
+                          </Text>
+                        ))}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 ))}
               </View>
@@ -219,6 +277,55 @@ const GameCalendar = (props) => {
   //   };
   // };
 
+  const addNewGameplay = async (newGameplay) => {
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    if (!parsedResult) {
+      parsedResult = [];
+    }
+
+    if (!gameParams.stats) {
+      gameParams.stats = [];
+    }
+    var newGameParams = { ...gameParams };
+    const isExists = gameParams.stats.some(
+      (item) => item.id === newGameplay.id
+    );
+
+    if (isExists) {
+      newGameParams = {
+        ...gameParams,
+        stats: gameParams.stats.map((obj) =>
+          obj.id === newGameplay.id ? newGameplay : obj
+        ),
+      };
+    } else {
+      newGameParams = {
+        ...gameParams,
+        stats: [...gameParams.stats, newGameplay],
+      };
+    }
+
+    const updatedCollection = parsedResult.map((item) => {
+      if (item.id === newGameParams.id) {
+        return {
+          ...item,
+          stats: newGameParams.stats,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCollection(updatedCollection);
+    await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
+  };
+
+  const handleItemPressed = async (game, session) => {
+    setGameplayParams(session);
+    setGameParams(game);
+    setEditGameplaymodalVisible(true);
+  };
+
   return (
     <>
       <View style={styles.container}>
@@ -251,6 +358,14 @@ const GameCalendar = (props) => {
           antIconName={"right"}
           style={styles.rightBtn}
         />
+
+        <NewGameplayModal
+          visible={editGameplaymodalVisible}
+          onClose={() => setEditGameplaymodalVisible(false)}
+          onSubmit={addNewGameplay}
+          gameplayParams={gameplayParams}
+          isExisting={true}
+        />
       </View>
     </>
   );
@@ -263,7 +378,6 @@ const styles = StyleSheet.create({
   containerTop: {
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor: colors.BACKGROUND,
     color: "white",
     alignItems: "center",
   },
@@ -331,6 +445,12 @@ const styles = StyleSheet.create({
   },
   gameItem: {
     paddingBottom: 4,
+    borderWidth: 1,
+    backgroundColor: colors.PRIMARY_OPACITY,
+    padding: 2,
+    borderRadius: 8,
+    margin: 1,
+    borderColor: colors.PRIMARY,
   },
   gameName: {
     fontSize: 14,

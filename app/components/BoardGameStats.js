@@ -178,7 +178,7 @@ const BoardGameStats = (props) => {
           { alignItems: "center", justifyContent: "center" },
         ]}
       >
-        <Text style={[styles.gameInfo, { opacity: 1, color: colors.LIGHT }]}>
+        <Text style={[styles.gameInfo, { opacity: 1, color: colors.DARK }]}>
           {item.name}
         </Text>
       </View>
@@ -310,11 +310,11 @@ const BoardGameStats = (props) => {
             </View>
           ) : null}
 
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View>
               <Text style={styles.closeButton}>Close</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -374,9 +374,10 @@ const styles = StyleSheet.create({
   gameName: {
     fontSize: 26,
     paddingVertical: 5,
-    color: colors.DARK,
+    color: colors.PRIMARY,
     fontWeight: "bold",
     marginVertical: 10,
+    textAlign: "center",
   },
   horizontalContainer: {
     flexDirection: "row",
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 10,
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.BACKGROUND,
     borderRadius: 20,
     margin: 2,
   },
@@ -394,13 +395,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     opacity: 1,
-    color: colors.PRIMARY,
+    color: colors.DARK,
     fontWeight: "bold",
   },
   gameInfoValue: {
     fontSize: 16,
     paddingVertical: 5,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   closeButton: {
     backgroundColor: colors.PRIMARY,
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 30,
+    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,
@@ -439,25 +440,23 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
   },
   playerContainer: {
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.BACKGROUND,
     margin: 3,
     borderRadius: 8,
   },
   playerInfo: {
-    opacity: 0.7,
-    color: colors.PRIMARY,
+    color: colors.DARK,
     margin: 2,
     fontWeight: "bold",
   },
   playerInfoValue: {
     margin: 2,
-    color: colors.LIGHT,
+    color: colors.DARK,
   },
   horizontalViewPlayers: {
     flexDirection: "row",
     justifyContent: "space-between",
     flex: 1,
-    backgroundColor: colors.GRAY,
     borderRadius: 20,
     margin: 2,
   },

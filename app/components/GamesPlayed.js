@@ -116,21 +116,9 @@ const GamesPlayed = (props) => {
             ]}
           >
             {item.victory ? (
-              <View style={[styles.flexRow, { justifyContent: "center" }]}>
-                <Text style={[{ flex: 1 }]}>{item.name} </Text>
-                <View
-                  style={[
-                    styles.centerStyle,
-                    {
-                      flex: 0.2,
-                      borderBottomWidth: 0,
-                      borderRightWidth: 0,
-                    },
-                  ]}
-                >
-                  <Text>🏆</Text>
-                </View>
-              </View>
+              <Text style={[{ textDecorationLine: "underline" }]}>
+                {item.name}
+              </Text>
             ) : (
               <Text>{item.name}</Text>
             )}
@@ -480,7 +468,6 @@ const GamesPlayed = (props) => {
         onClose={() => setEditGameplaymodalVisible(false)}
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
-        gameParams={gameParams}
         isExisting={true}
       />
     </View>

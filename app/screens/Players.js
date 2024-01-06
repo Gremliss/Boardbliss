@@ -171,6 +171,7 @@ const Players = (props) => {
     if (filteredPlayers.length) {
       setPlayers([...filteredPlayers]);
     } else {
+      fetchPlayers();
       ToastAndroid.show("Players not found", 2000);
     }
   };
