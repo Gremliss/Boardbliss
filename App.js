@@ -22,6 +22,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [collection, setCollection] = useState([]);
+  // const [backupCollection, setBackupCollection] = useState([]);
   const [players, setPlayers] = useState([]);
 
   NavigationBar.setBackgroundColorAsync(colors.PRIMARY);
@@ -31,6 +32,13 @@ export default function App() {
       // await AsyncStorage.setItem("collection", JSON.stringify(collection));
       const asyncCollection = await AsyncStorage.getItem("collection");
       if (asyncCollection?.length) setCollection(JSON.parse(asyncCollection));
+      // const asyncBackupCollection = await AsyncStorage.getItem(
+      //   "backupCollection"
+      // );
+      // if (asyncBackupCollection?.length)
+      //   setBackupCollection(JSON.parse(asyncBackupCollection));
+      // console.log("Backup:");
+      // console.log(asyncBackupCollection);
       const asyncPlayers = await AsyncStorage.getItem("players");
       if (asyncPlayers?.length) setPlayers(JSON.parse(asyncPlayers));
     };

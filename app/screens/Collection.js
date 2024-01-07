@@ -207,6 +207,7 @@ const Collection = (props) => {
     const updatedResult = parsedResult.filter((item) => {
       return !itemsToDelete.some((deleteItem) => deleteItem.id === item.id);
     });
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedResult);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
     setCheckAllItems(false);
@@ -242,6 +243,7 @@ const Collection = (props) => {
       collection = [];
     }
     const updatedCollection = [...collection, newGame];
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };

@@ -50,15 +50,22 @@ const CollectionBoardgameDetail = (props) => {
   };
 
   const addNewGameplay = async (newGameplay) => {
+    const result = await AsyncStorage.getItem("collection");
+    const parsedResult = JSON.parse(result);
+    if (!parsedResult) {
+      parsedResult = [];
+    }
+
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
 
-    const newGameParams = {
+    var newGameParams = {
       ...gameParams,
       stats: [...gameParams.stats, newGameplay],
     };
-    const updatedCollection = collection.map((item) => {
+    setGameParams(newGameParams);
+    const updatedCollection = parsedResult.map((item) => {
       if (item.id === newGameParams.id) {
         return {
           ...item,
@@ -68,6 +75,8 @@ const CollectionBoardgameDetail = (props) => {
         return item;
       }
     });
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
+    setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 

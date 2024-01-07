@@ -59,7 +59,7 @@ const PlayerDetail = (props) => {
         ),
       })),
     }));
-
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
 

@@ -46,7 +46,7 @@ const NewGameplayModal = ({
           hour: currentDate.getHours(),
           minutes: currentDate.getMinutes(),
         },
-        players: [],
+        players: players.filter((player) => player.isChecked),
         type: "Rivalry",
         scoreType: "Points",
         isChecked: false,
@@ -59,7 +59,6 @@ const NewGameplayModal = ({
   //   const result = await AsyncStorage.getItem("collection");
   //   if (result?.length) setCollection(JSON.parse(result));
   // };
-
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
@@ -69,10 +68,8 @@ const NewGameplayModal = ({
   //   const matchingPlayer = addGameplay.players.find(
   //     (player) => player.id === item.id
   //   );
-  //   // console.log(matchingPlayer);
   //   if (matchingPlayer) {
   //     item = { ...item, points: matchingPlayer.points };
-  //     // console.log(item);
   //   }
   // });
 
@@ -251,7 +248,7 @@ const NewGameplayModal = ({
             name: item.name,
             id: item.id,
             victory: false,
-            points: 0,
+            points: null,
           });
         }
         return { ...prevState, players: updatedPlayers };
@@ -306,6 +303,14 @@ const NewGameplayModal = ({
     fetchPlayers();
   };
 
+  const addCheckedPlayers = () => {
+    setAddGameplay((prevState) => {
+      const updatedPlayers = players.filter((player) => player.isChecked);
+
+      return { ...prevState, players: updatedPlayers };
+    });
+  };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor = colors.LIST_COLOR_TWO;
     return (
@@ -337,7 +342,9 @@ const NewGameplayModal = ({
         visible={visible}
         animationType="fade"
         onRequestClose={closeModal}
-        onShow={isExisting ? () => setAddGameplay(gameplayParams) : null}
+        onShow={
+          isExisting ? () => setAddGameplay(gameplayParams) : addCheckedPlayers
+        }
       >
         <View style={[styles.container]}>
           <ScrollView style={styles.keyboardContainer}>
@@ -435,7 +442,6 @@ const NewGameplayModal = ({
               {players
                 // .sort((a, b) => b.points - a.points)
                 .map((item) => {
-                  // console.log(item);
                   var playerScore = "";
                   addGameplay.players.map((player) => {
                     if (player.id === item.id) {
