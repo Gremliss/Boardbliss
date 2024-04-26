@@ -28,7 +28,21 @@ const windowHeight = Dimensions.get("window").height;
 
 const AddGameplay = (props) => {
   const [collection, setCollection] = useState();
-  const [gameParams, setGameParams] = useState();
+  const [gameParams, setGameParams] = useState({
+    name: "",
+    yearpublished: "",
+    owner: "You",
+    rating: "",
+    minPlayers: "",
+    maxPlayers: "",
+    minPlaytime: "",
+    maxPlaytime: "",
+    bggImage: null,
+    id: Date.now(),
+    isChecked: false,
+    expansion: false,
+    stats: [],
+  });
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
@@ -364,6 +378,7 @@ const AddGameplay = (props) => {
           onClose={() => setModalVisible(false)}
           onSubmit={addNewGameplay}
           isExisting={false}
+          gameParams={gameParams}
         />
 
         <NewGameModal

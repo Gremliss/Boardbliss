@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
+  Image,
   Keyboard,
   Modal,
   StatusBar,
@@ -29,6 +30,7 @@ const NewGameplayModal = ({
   isExisting,
   gameplayParams,
   navigation,
+  gameParams,
 }) => {
   const currentDate = new Date();
   // const [collection, setCollection] = useState([]);
@@ -351,6 +353,20 @@ const NewGameplayModal = ({
             <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
               <View>
                 <View style={[styles.flexRow]}>
+                  <Text style={[styles.gameNameStyle]}>{gameParams.name}</Text>
+                </View>
+                {/* {gameParams.bggImage?.length ? (
+                  <View style={styles.boargameImgContainer}>
+                    <Image
+                      style={styles.boargameImg}
+                      resizeMode="contain"
+                      source={{
+                        uri: `${gameParams.bggImage}`,
+                      }}
+                    />
+                  </View>
+                ) : null} */}
+                <View style={[styles.flexRow]}>
                   <Text style={[styles.nameOfInputStyle]}>Type:</Text>
                   <TouchableOpacity
                     style={[styles.inputTextStyle]}
@@ -457,14 +473,14 @@ const NewGameplayModal = ({
                         <>
                           {addGameplay?.type === "Rivalry" ? (
                             <>
-                              <View style={[styles.flexRow]}>
+                              <View style={[styles.flexRow, styles.playerRow]}>
                                 <Text
                                   style={[
                                     styles.nameOfInputStyle,
                                     { fontWeight: "bold" },
                                   ]}
                                 >
-                                  {item.name}:
+                                  {item.name}
                                 </Text>
                                 {chooseWinners === true ? (
                                   <TouchableOpacity
@@ -711,6 +727,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  playerRow: {
+    backgroundColor: colors.LIST_COLOR_ONE,
+    borderRadius: 8,
+    margin: 1,
+  },
   nameOfInputStyle: {
     padding: 8,
     flex: 2,
@@ -773,6 +794,22 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginVertical: 20,
     marginHorizontal: 50,
+  },
+  boargameImgContainer: {
+    alignItems: "center",
+  },
+  boargameImg: {
+    width: windowWidth,
+    height: 150,
+  },
+  gameNameStyle: {
+    flex: 1,
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: 5,
+    fontSize: 18,
+    backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
 });
 

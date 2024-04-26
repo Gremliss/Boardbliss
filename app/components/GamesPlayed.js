@@ -463,6 +463,7 @@ const GamesPlayed = (props) => {
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
         isExisting={false}
+        gameParams={gameParams}
       />
       <NewGameplayModal
         visible={editGameplaymodalVisible}
@@ -470,6 +471,7 @@ const GamesPlayed = (props) => {
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
         isExisting={true}
+        gameParams={gameParams}
       />
     </View>
   );

@@ -211,6 +211,7 @@ const CollectionBoardgameDetail = (props) => {
         onClose={() => setModalVisible(false)}
         onSubmit={addNewGameplay}
         isExisting={false}
+        gameParams={gameParams}
       />
     </>
   );

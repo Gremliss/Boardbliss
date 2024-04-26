@@ -26,7 +26,21 @@ const GameCalendar = (props) => {
   const [collection, setCollection] = useState([]);
   const [date, setDate] = useState(new Date());
   const currentDate = new Date();
-  const [gameParams, setGameParams] = useState();
+  const [gameParams, setGameParams] = useState({
+    name: "",
+    yearpublished: "",
+    owner: "You",
+    rating: "",
+    minPlayers: "",
+    maxPlayers: "",
+    minPlaytime: "",
+    maxPlaytime: "",
+    bggImage: null,
+    id: Date.now(),
+    isChecked: false,
+    expansion: false,
+    stats: [],
+  });
   const [gameplayParams, setGameplayParams] = useState({
     id: Date.now(),
     date: {
@@ -366,6 +380,7 @@ const GameCalendar = (props) => {
           onSubmit={addNewGameplay}
           gameplayParams={gameplayParams}
           isExisting={true}
+          gameParams={gameParams}
         />
       </View>
     </>
