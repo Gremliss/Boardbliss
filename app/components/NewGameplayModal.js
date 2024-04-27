@@ -355,7 +355,7 @@ const NewGameplayModal = ({
                 <View style={[styles.flexRow]}>
                   <Text style={[styles.gameNameStyle]}>{gameParams.name}</Text>
                 </View>
-                {/* {gameParams.bggImage?.length ? (
+                {gameParams.bggImage?.length ? (
                   <View style={styles.boargameImgContainer}>
                     <Image
                       style={styles.boargameImg}
@@ -365,7 +365,7 @@ const NewGameplayModal = ({
                       }}
                     />
                   </View>
-                ) : null} */}
+                ) : null}
                 <View style={[styles.flexRow]}>
                   <Text style={[styles.nameOfInputStyle]}>Type:</Text>
                   <TouchableOpacity
@@ -435,26 +435,31 @@ const NewGameplayModal = ({
                     </View>
                   </>
                 )}
-
-                <TouchableOpacity
-                  style={[styles.addButton]}
-                  onPress={() => setModalVisible(true)}
-                >
-                  <Text
-                    style={[
-                      {
-                        fontSize: 20,
-                        textAlign: "center",
-                        color: colors.LIGHT,
-                      },
-                    ]}
-                  >
-                    Players
-                  </Text>
-                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
-            <View>
+            <View
+              style={[
+                {
+                  marginVertical: 5,
+                },
+              ]}
+            >
+              <TouchableOpacity
+                style={[styles.addButton]}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text
+                  style={[
+                    {
+                      fontSize: 18,
+                      textAlign: "center",
+                      color: colors.LIGHT,
+                    },
+                  ]}
+                >
+                  Players
+                </Text>
+              </TouchableOpacity>
               {players
                 // .sort((a, b) => b.points - a.points)
                 .map((item) => {
@@ -789,18 +794,18 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
+    padding: 8,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 50,
+    marginHorizontal: 1,
   },
   boargameImgContainer: {
     alignItems: "center",
   },
   boargameImg: {
     width: windowWidth,
-    height: 150,
+    height: 120,
   },
   gameNameStyle: {
     flex: 1,

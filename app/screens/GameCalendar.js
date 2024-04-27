@@ -260,7 +260,7 @@ const GameCalendar = (props) => {
     if (game.stats && game.stats.length > 0) {
       // Filter stats for the target month
       const targetMonthStats = game.stats.filter(
-        (stat) => stat.date.month === date.getMonth() + 1
+        (stat) => parseInt(stat.date.month) === date.getMonth() + 1
       );
 
       // Iterate through stats for the target month
