@@ -47,7 +47,9 @@ const AddGameplay = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-
+  const [chosenDate, setChosenDate] = props.route.params?.item
+    ? useState(props.route.params.item)
+    : useState(null);
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
@@ -379,6 +381,7 @@ const AddGameplay = (props) => {
           onSubmit={addNewGameplay}
           isExisting={false}
           gameParams={gameParams}
+          chosenDate={chosenDate}
         />
 
         <NewGameModal

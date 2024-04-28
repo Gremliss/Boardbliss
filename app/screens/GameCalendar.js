@@ -165,11 +165,13 @@ const GameCalendar = (props) => {
 
     return (
       <View style={[styles.flatListItemContainer, {}]}>
-        <View>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("AddGameplay", { item })}
+        >
           <Text style={styles.headingFlatListItem(backgroundColor, fontWeight)}>
             {item.name}
           </Text>
-        </View>
+        </TouchableOpacity>
         {renderGames(item, index)}
       </View>
     );
@@ -442,6 +444,7 @@ const styles = StyleSheet.create({
       color: "white",
       fontWeight: weight,
       flex: 1,
+      paddingVertical: 2,
       paddingLeft: 30,
     };
   },

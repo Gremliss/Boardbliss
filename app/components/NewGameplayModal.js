@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -31,15 +31,38 @@ const NewGameplayModal = ({
   gameplayParams,
   navigation,
   gameParams,
+  chosenDate,
 }) => {
   const currentDate = new Date();
   // const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
   const [chooseWinners, setChooseWinners] = useState(isExisting ? true : false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [addGameplay, setAddGameplay] = isExisting
-    ? useState(gameplayParams)
-    : useState({
+  const initialGameplayState = useMemo(() => {
+    if (isExisting) {
+      return gameplayParams;
+    } else if (chosenDate) {
+      const parts = chosenDate.id.split(".");
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]);
+      const year = parseInt(parts[2]);
+      return {
+        id: Date.now(),
+        date: {
+          day: day,
+          month: month,
+          year: year,
+          hour: currentDate.getHours(),
+          minutes: currentDate.getMinutes(),
+        },
+        players: players.filter((player) => player.isChecked),
+        type: "Rivalry",
+        scoreType: "Points",
+        isChecked: false,
+        duration: { hours: null, min: null },
+      };
+    } else {
+      return {
         id: Date.now(),
         date: {
           day: currentDate.getDate(),
@@ -53,10 +76,16 @@ const NewGameplayModal = ({
         scoreType: "Points",
         isChecked: false,
         duration: { hours: null, min: null },
-      });
+      };
+    }
+  }, [isExisting, chosenDate, gameplayParams, currentDate, players]);
+
+  const [addGameplay, setAddGameplay] = useState(initialGameplayState);
+
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
+
   // const fetchCollection = async () => {
   //   const result = await AsyncStorage.getItem("collection");
   //   if (result?.length) setCollection(JSON.parse(result));
