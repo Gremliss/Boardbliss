@@ -239,7 +239,7 @@ const Players = (props) => {
           </View>
           <View style={[styles.cellContainer, { flex: 4 }]}>
             <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
-              Name
+              {longPressActive ? "Default Player" : "Player"}
             </Text>
           </View>
         </View>
@@ -260,8 +260,8 @@ const Players = (props) => {
           />
           <RoundIconBtn
             onPress={() => handleExitButton()}
-            antIconName={"close"}
-            style={styles.closeBtn}
+            antIconName={"check"}
+            style={styles.checkBtn}
           />
         </View>
       ) : null}
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 5,
     paddingRight: 40,
+    borderRadius: 5,
   },
   icon: {
     textAlign: "center",
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 15,
-    marginHorizontal: 80,
+    marginHorizontal: 8,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
@@ -331,12 +332,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.RED,
     color: colors.LIGHT,
   },
-  closeBtn: {
+  checkBtn: {
     position: "absolute",
     right: 25,
     bottom: 60,
     zIndex: 1,
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
   },
   checkIcon: {

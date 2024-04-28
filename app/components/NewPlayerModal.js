@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     color: "#EEEEEE",
     padding: 10,
     margin: 4,
+    borderRadius: 5,
   },
   modalBG: {
     flex: 1,
