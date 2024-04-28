@@ -221,7 +221,7 @@ const BoardGameStats = (props) => {
               </Text>
             </View>
           </View>
-          {sumHours / countGamesWithTime ? (
+          {countGamesWithTime ? (
             <View style={styles.horizontalContainer}>
               <View style={styles.horizontalView}>
                 <Text style={styles.gameInfo}>Average time played:</Text>
