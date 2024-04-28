@@ -50,7 +50,7 @@ const NewGameplayModal = ({
         id: Date.now(),
         date: {
           day: day,
-          month: month,
+          month: month + 1,
           year: year,
           hour: currentDate.getHours(),
           minutes: currentDate.getMinutes(),

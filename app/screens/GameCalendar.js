@@ -18,6 +18,7 @@ import RoundIconBtn from "../components/RoundIconButton";
 import colors from "../misc/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import NewGameplayModal from "../components/NewGameplayModal";
+import { useFocusEffect } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -87,6 +88,11 @@ const GameCalendar = (props) => {
   useEffect(() => {
     fetchCollection();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCollection();
+    }, [])
+  );
 
   if (month == 1) {
     // February
