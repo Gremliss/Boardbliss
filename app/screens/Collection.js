@@ -353,14 +353,14 @@ const Collection = (props) => {
               style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={[styles.textBtn]}>Add to collection</Text>
+              <Text style={[styles.textBtn]}>Add custom game</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.addButton, styles.addButtonBottomRadius]}
               onPress={() => props.navigation.navigate("SearchBgg")}
             >
-              <Text style={[styles.textBtn]}>Search BGG</Text>
+              <Text style={[styles.textBtn]}>Search game online</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -510,13 +510,13 @@ const styles = StyleSheet.create({
     borderColor: colors.PRIMARY_OPACITY,
   },
   addButtonTopRadius: {
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     marginTop: 10,
   },
   addButtonBottomRadius: {
-    borderBottomRightRadius: 50,
-    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
     marginBottom: 10,
   },
   textBtn: {

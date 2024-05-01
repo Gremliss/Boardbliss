@@ -428,7 +428,7 @@ const NewGameplayModal = ({
                         onPress={() => changeChooseWinners()}
                       >
                         <Text style={[{ color: colors.LIGHT }]}>
-                          {chooseWinners ? "Yes" : "No"}
+                          {chooseWinners ? "Manually" : "Automatic"}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -604,7 +604,7 @@ const NewGameplayModal = ({
             </View>
 
             <View style={[styles.flexRow]}>
-              <Text style={[styles.nameOfInputStyle]}>Time:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Time played:</Text>
               <TextInput
                 defaultValue={addGameplay?.duration?.hours?.toString()}
                 onChangeText={(text) => {

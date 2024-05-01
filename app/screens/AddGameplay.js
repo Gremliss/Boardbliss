@@ -296,23 +296,6 @@ const AddGameplay = (props) => {
     <>
       <StatusBar />
       <View style={[styles.container]}>
-        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-          <View>
-            <TouchableOpacity
-              style={[styles.addButton, styles.addButtonTopRadius]}
-              onPress={() => setNewGameModalVisible(true)}
-            >
-              <Text style={[styles.textBtn]}>Add to collection</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.addButton, styles.addButtonBottomRadius]}
-              onPress={() => props.navigation.navigate("SearchBgg")}
-            >
-              <Text style={[styles.textBtn]}>Search BGG</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
         <Text style={styles.blueText}>Choose game:</Text>
         <View style={styles.searchRow}>
           <TextInput
@@ -368,6 +351,23 @@ const AddGameplay = (props) => {
           showsHorizontalScrollIndicator={true}
           initialNumToRender={15}
         />
+        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
+          <View>
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonTopRadius]}
+              onPress={() => setNewGameModalVisible(true)}
+            >
+              <Text style={[styles.textBtn]}>Add custom game</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonBottomRadius]}
+              onPress={() => props.navigation.navigate("SearchBgg")}
+            >
+              <Text style={[styles.textBtn]}>Search game online</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
 
         <FilterModal
           visible={filterModalVisible}
@@ -460,13 +460,13 @@ const styles = StyleSheet.create({
     borderColor: colors.PRIMARY_OPACITY,
   },
   addButtonTopRadius: {
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     marginTop: 10,
   },
   addButtonBottomRadius: {
-    borderBottomRightRadius: 50,
-    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
     marginBottom: 5,
   },
   blueText: {

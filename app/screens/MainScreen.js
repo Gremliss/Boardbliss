@@ -30,7 +30,7 @@ const MainScreen = (props) => {
         style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("SearchBgg")}
       >
-        <Text style={[styles.textBtn]}>Search BGG</Text>
+        <Text style={[styles.textBtn]}>Search game online</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.btnContainer]}

@@ -93,7 +93,7 @@ export default function App() {
             component={RenderSearchBgg}
             name="SearchBgg"
             options={{
-              title: "Search BGG",
+              title: "Search game online (BGG)",
             }}
           />
           <Stack.Screen
