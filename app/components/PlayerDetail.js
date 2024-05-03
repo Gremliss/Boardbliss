@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   playerStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     margin: 8,
     borderRadius: 5,
   },

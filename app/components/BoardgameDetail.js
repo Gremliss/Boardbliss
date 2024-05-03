@@ -247,8 +247,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
     elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
+    marginVertical: 10,
+    marginHorizontal: 10,
   },
 });
 

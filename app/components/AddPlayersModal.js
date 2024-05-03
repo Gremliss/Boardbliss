@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 8,
+    padding: 11,
     flex: 5,
-    margin: 4,
+    margin: 2,
     borderRadius: 5,
   },
   addNewPlayer: {

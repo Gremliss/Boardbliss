@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,

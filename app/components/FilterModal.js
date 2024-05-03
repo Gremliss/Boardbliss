@@ -212,9 +212,9 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 11,
     flex: 5,
-    margin: 4,
+    margin: 2,
     borderRadius: 5,
   },
   changeOnClickText: {

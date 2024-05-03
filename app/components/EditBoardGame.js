@@ -248,9 +248,9 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
-    margin: 4,
+    margin: 2,
     borderRadius: 5,
   },
   bottomContainer: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
   },
 });
 

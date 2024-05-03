@@ -172,7 +172,7 @@ const Players = (props) => {
       setPlayers([...filteredPlayers]);
     } else {
       fetchPlayers();
-      ToastAndroid.show("Players not found", 2000);
+      ToastAndroid.show("Player not found", 1500);
     }
   };
 
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     fontSize: 20,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
     paddingRight: 40,
     borderRadius: 5,
