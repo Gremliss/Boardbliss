@@ -19,6 +19,9 @@
       "bundleIdentifier": "com.gremliss.Boardbliss"
     },
     "android": {
+      "permissions": [
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/Boardbliss_icon.png",
         "backgroundColor": "#ffffff"

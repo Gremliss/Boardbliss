@@ -17,6 +17,7 @@ import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
 import { StatusBar } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
+import TransferData from "./app/screens/TransferData";
 
 const Stack = createStackNavigator();
 
@@ -150,6 +151,13 @@ export default function App() {
             name="GamesPlayed"
             options={{
               title: "Games played",
+            }}
+          />
+          <Stack.Screen
+            component={TransferData}
+            name="TransferData"
+            options={{
+              title: "TransferData",
             }}
           />
         </Stack.Navigator>

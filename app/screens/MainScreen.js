@@ -39,6 +39,12 @@ const MainScreen = (props) => {
         <Text style={[styles.textBtn]}>Game Calendar</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        style={[styles.btnContainer]}
+        onPress={() => props.navigation.navigate("TransferData")}
+      >
+        <Text style={[styles.textBtn]}>Transfer data</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={[styles.btnContainer, styles.addButtonBottomRadius]}
         onPress={() => props.navigation.navigate("Players")}
       >
