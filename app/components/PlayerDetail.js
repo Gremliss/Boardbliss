@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: colors.BACKGROUND,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 2,
   },
   gameInfo: {

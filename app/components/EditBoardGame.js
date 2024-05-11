@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.LIGHT,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
     marginVertical: 20,
     marginHorizontal: 40,

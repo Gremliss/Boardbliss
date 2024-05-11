@@ -163,12 +163,6 @@ const CollectionBoardgameDetail = (props) => {
               {parseFloat(gameParams?.rating).toFixed(2)}
             </Text>
           </View>
-
-          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
-            <View>
-              <Text style={styles.closeButton}>Close</Text>
-            </View>
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -249,7 +243,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: colors.BACKGROUND,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 2,
   },
   gameInfo: {
@@ -263,17 +257,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     color: colors.DARK,
-  },
-  closeButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,
@@ -304,7 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
     marginVertical: 20,
     marginHorizontal: 20,

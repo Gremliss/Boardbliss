@@ -157,7 +157,7 @@ export default function App() {
             component={TransferData}
             name="TransferData"
             options={{
-              title: "TransferData",
+              title: "Transfer data",
             }}
           />
         </Stack.Navigator>
