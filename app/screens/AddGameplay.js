@@ -28,12 +28,28 @@ const windowHeight = Dimensions.get("window").height;
 
 const AddGameplay = (props) => {
   const [collection, setCollection] = useState();
-  const [gameParams, setGameParams] = useState();
+  const [gameParams, setGameParams] = useState({
+    name: "",
+    yearpublished: "",
+    owner: "You",
+    rating: "",
+    minPlayers: "",
+    maxPlayers: "",
+    minPlaytime: "",
+    maxPlaytime: "",
+    bggImage: null,
+    id: Date.now(),
+    isChecked: false,
+    expansion: false,
+    stats: [],
+  });
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-
+  const [chosenDate, setChosenDate] = props.route.params?.item
+    ? useState(props.route.params.item)
+    : useState(null);
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
@@ -81,6 +97,7 @@ const AddGameplay = (props) => {
       parsedResult = [];
     }
     const updatedCollection = [...parsedResult, newGame];
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -164,6 +181,7 @@ const AddGameplay = (props) => {
         return item;
       }
     });
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -278,23 +296,6 @@ const AddGameplay = (props) => {
     <>
       <StatusBar />
       <View style={[styles.container]}>
-        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-          <View>
-            <TouchableOpacity
-              style={[styles.addButton, styles.addButtonTopRadius]}
-              onPress={() => setNewGameModalVisible(true)}
-            >
-              <Text style={[styles.textBtn]}>Add to collection</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.addButton, styles.addButtonBottomRadius]}
-              onPress={() => props.navigation.navigate("SearchBgg")}
-            >
-              <Text style={[styles.textBtn]}>Search BGG</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
         <Text style={styles.blueText}>Choose game:</Text>
         <View style={styles.searchRow}>
           <TextInput
@@ -350,6 +351,23 @@ const AddGameplay = (props) => {
           showsHorizontalScrollIndicator={true}
           initialNumToRender={15}
         />
+        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
+          <View>
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonTopRadius]}
+              onPress={() => setNewGameModalVisible(true)}
+            >
+              <Text style={[styles.textBtn]}>Add custom game</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.addButton, styles.addButtonBottomRadius]}
+              onPress={() => props.navigation.navigate("SearchBgg")}
+            >
+              <Text style={[styles.textBtn]}>Search game online</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
 
         <FilterModal
           visible={filterModalVisible}
@@ -362,6 +380,8 @@ const AddGameplay = (props) => {
           onClose={() => setModalVisible(false)}
           onSubmit={addNewGameplay}
           isExisting={false}
+          gameParams={gameParams}
+          chosenDate={chosenDate}
         />
 
         <NewGameModal
@@ -390,7 +410,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     fontSize: 20,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
     paddingRight: 40,
   },
@@ -435,18 +455,18 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 12,
     elevation: 5,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
     borderWidth: 1,
     borderColor: colors.PRIMARY_OPACITY,
   },
   addButtonTopRadius: {
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     marginTop: 10,
   },
   addButtonBottomRadius: {
-    borderBottomRightRadius: 50,
-    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
     marginBottom: 5,
   },
   blueText: {

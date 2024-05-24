@@ -113,8 +113,9 @@ const styles = StyleSheet.create({
   playerStyle: {
     backgroundColor: colors.GRAY,
     color: "#EEEEEE",
-    padding: 10,
+    padding: 12,
     margin: 4,
+    borderRadius: 5,
   },
   modalBG: {
     flex: 1,

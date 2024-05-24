@@ -18,6 +18,7 @@ import RoundIconBtn from "../components/RoundIconButton";
 import colors from "../misc/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import NewGameplayModal from "../components/NewGameplayModal";
+import { useFocusEffect } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -26,7 +27,21 @@ const GameCalendar = (props) => {
   const [collection, setCollection] = useState([]);
   const [date, setDate] = useState(new Date());
   const currentDate = new Date();
-  const [gameParams, setGameParams] = useState();
+  const [gameParams, setGameParams] = useState({
+    name: "",
+    yearpublished: "",
+    owner: "You",
+    rating: "",
+    minPlayers: "",
+    maxPlayers: "",
+    minPlaytime: "",
+    maxPlaytime: "",
+    bggImage: null,
+    id: Date.now(),
+    isChecked: false,
+    expansion: false,
+    stats: [],
+  });
   const [gameplayParams, setGameplayParams] = useState({
     id: Date.now(),
     date: {
@@ -73,6 +88,11 @@ const GameCalendar = (props) => {
   useEffect(() => {
     fetchCollection();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCollection();
+    }, [])
+  );
 
   if (month == 1) {
     // February
@@ -128,7 +148,7 @@ const GameCalendar = (props) => {
         return item;
       }
     });
-
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -151,11 +171,13 @@ const GameCalendar = (props) => {
 
     return (
       <View style={[styles.flatListItemContainer, {}]}>
-        <View>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("AddGameplay", { item })}
+        >
           <Text style={styles.headingFlatListItem(backgroundColor, fontWeight)}>
             {item.name}
           </Text>
-        </View>
+        </TouchableOpacity>
         {renderGames(item, index)}
       </View>
     );
@@ -246,7 +268,7 @@ const GameCalendar = (props) => {
     if (game.stats && game.stats.length > 0) {
       // Filter stats for the target month
       const targetMonthStats = game.stats.filter(
-        (stat) => stat.date.month === date.getMonth() + 1
+        (stat) => parseInt(stat.date.month) === date.getMonth() + 1
       );
 
       // Iterate through stats for the target month
@@ -316,6 +338,7 @@ const GameCalendar = (props) => {
         return item;
       }
     });
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -365,6 +388,7 @@ const GameCalendar = (props) => {
           onSubmit={addNewGameplay}
           gameplayParams={gameplayParams}
           isExisting={true}
+          gameParams={gameParams}
         />
       </View>
     </>
@@ -426,6 +450,7 @@ const styles = StyleSheet.create({
       color: "white",
       fontWeight: weight,
       flex: 1,
+      paddingVertical: 2,
       paddingLeft: 30,
     };
   },

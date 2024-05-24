@@ -70,7 +70,7 @@ const EditBoardGame = (props) => {
         return item;
       }
     });
-
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
     // fetchCollection();
@@ -248,9 +248,9 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
-    margin: 4,
+    margin: 2,
     borderRadius: 5,
   },
   bottomContainer: {
@@ -284,10 +284,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.LIGHT,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
   },
 });
 

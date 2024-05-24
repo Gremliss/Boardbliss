@@ -221,7 +221,7 @@ const BoardGameStats = (props) => {
               </Text>
             </View>
           </View>
-          {sumHours / countGamesWithTime ? (
+          {countGamesWithTime ? (
             <View style={styles.horizontalContainer}>
               <View style={styles.horizontalView}>
                 <Text style={styles.gameInfo}>Average time played:</Text>
@@ -309,12 +309,6 @@ const BoardGameStats = (props) => {
               </View>
             </View>
           ) : null}
-
-          {/* <TouchableOpacity onPress={() => props.navigation.goBack()}>
-            <View>
-              <Text style={styles.closeButton}>Close</Text>
-            </View>
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <View style={[styles.bottomContainer]}>
@@ -388,7 +382,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: colors.BACKGROUND,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 2,
   },
   gameInfo: {
@@ -402,17 +396,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     color: colors.DARK,
-  },
-  closeButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 50,
   },
   bottomContainer: {
     width: windowWidth,

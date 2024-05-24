@@ -17,11 +17,13 @@ import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
 import { StatusBar } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
+import TransferData from "./app/screens/TransferData";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const [collection, setCollection] = useState([]);
+  // const [backupCollection, setBackupCollection] = useState([]);
   const [players, setPlayers] = useState([]);
 
   NavigationBar.setBackgroundColorAsync(colors.PRIMARY);
@@ -31,6 +33,13 @@ export default function App() {
       // await AsyncStorage.setItem("collection", JSON.stringify(collection));
       const asyncCollection = await AsyncStorage.getItem("collection");
       if (asyncCollection?.length) setCollection(JSON.parse(asyncCollection));
+      // const asyncBackupCollection = await AsyncStorage.getItem(
+      //   "backupCollection"
+      // );
+      // if (asyncBackupCollection?.length)
+      //   setBackupCollection(JSON.parse(asyncBackupCollection));
+      // console.log("Backup:");
+      // console.log(asyncBackupCollection);
       const asyncPlayers = await AsyncStorage.getItem("players");
       if (asyncPlayers?.length) setPlayers(JSON.parse(asyncPlayers));
     };
@@ -85,7 +94,7 @@ export default function App() {
             component={RenderSearchBgg}
             name="SearchBgg"
             options={{
-              title: "Search BGG",
+              title: "Search game online (BGG)",
             }}
           />
           <Stack.Screen
@@ -142,6 +151,13 @@ export default function App() {
             name="GamesPlayed"
             options={{
               title: "Games played",
+            }}
+          />
+          <Stack.Screen
+            component={TransferData}
+            name="TransferData"
+            options={{
+              title: "Transfer data",
             }}
           />
         </Stack.Navigator>

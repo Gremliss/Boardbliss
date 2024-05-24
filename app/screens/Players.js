@@ -172,7 +172,7 @@ const Players = (props) => {
       setPlayers([...filteredPlayers]);
     } else {
       fetchPlayers();
-      ToastAndroid.show("Players not found", 2000);
+      ToastAndroid.show("Player not found", 1500);
     }
   };
 
@@ -239,7 +239,7 @@ const Players = (props) => {
           </View>
           <View style={[styles.cellContainer, { flex: 4 }]}>
             <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
-              Name
+              {longPressActive ? "Default Player" : "Player"}
             </Text>
           </View>
         </View>
@@ -260,8 +260,8 @@ const Players = (props) => {
           />
           <RoundIconBtn
             onPress={() => handleExitButton()}
-            antIconName={"close"}
-            style={styles.closeBtn}
+            antIconName={"check"}
+            style={styles.checkBtn}
           />
         </View>
       ) : null}
@@ -290,9 +290,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     fontSize: 20,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
     paddingRight: 40,
+    borderRadius: 5,
   },
   icon: {
     textAlign: "center",
@@ -306,10 +307,10 @@ const styles = StyleSheet.create({
     color: colors.LIGHT,
     padding: 10,
     paddingBottom: 12,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
     marginVertical: 15,
-    marginHorizontal: 80,
+    marginHorizontal: 8,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,
@@ -331,12 +332,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.RED,
     color: colors.LIGHT,
   },
-  closeBtn: {
+  checkBtn: {
     position: "absolute",
     right: 25,
     bottom: 60,
     zIndex: 1,
-    backgroundColor: colors.GRAY,
+    backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
   },
   checkIcon: {

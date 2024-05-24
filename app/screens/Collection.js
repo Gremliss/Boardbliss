@@ -207,6 +207,7 @@ const Collection = (props) => {
     const updatedResult = parsedResult.filter((item) => {
       return !itemsToDelete.some((deleteItem) => deleteItem.id === item.id);
     });
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedResult);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedResult));
     setCheckAllItems(false);
@@ -242,6 +243,7 @@ const Collection = (props) => {
       collection = [];
     }
     const updatedCollection = [...collection, newGame];
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -351,14 +353,14 @@ const Collection = (props) => {
               style={[styles.addButton, styles.addButtonTopRadius]}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={[styles.textBtn]}>Add to collection</Text>
+              <Text style={[styles.textBtn]}>Add custom game</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.addButton, styles.addButtonBottomRadius]}
               onPress={() => props.navigation.navigate("SearchBgg")}
             >
-              <Text style={[styles.textBtn]}>Search BGG</Text>
+              <Text style={[styles.textBtn]}>Search game online</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -486,7 +488,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     fontSize: 20,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
     paddingRight: 40,
   },
@@ -503,18 +505,18 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 12,
     elevation: 5,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
     borderWidth: 1,
     borderColor: colors.PRIMARY_OPACITY,
   },
   addButtonTopRadius: {
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     marginTop: 10,
   },
   addButtonBottomRadius: {
-    borderBottomRightRadius: 50,
-    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
     marginBottom: 10,
   },
   textBtn: {

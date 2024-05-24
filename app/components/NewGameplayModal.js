@@ -1,9 +1,10 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Dimensions,
+  Image,
   Keyboard,
   Modal,
   StatusBar,
@@ -29,15 +30,39 @@ const NewGameplayModal = ({
   isExisting,
   gameplayParams,
   navigation,
+  gameParams,
+  chosenDate,
 }) => {
   const currentDate = new Date();
   // const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
   const [chooseWinners, setChooseWinners] = useState(isExisting ? true : false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [addGameplay, setAddGameplay] = isExisting
-    ? useState(gameplayParams)
-    : useState({
+  const initialGameplayState = useMemo(() => {
+    if (isExisting) {
+      return gameplayParams;
+    } else if (chosenDate) {
+      const parts = chosenDate.id.split(".");
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]);
+      const year = parseInt(parts[2]);
+      return {
+        id: Date.now(),
+        date: {
+          day: day,
+          month: month + 1,
+          year: year,
+          hour: currentDate.getHours(),
+          minutes: currentDate.getMinutes(),
+        },
+        players: players.filter((player) => player.isChecked),
+        type: "Rivalry",
+        scoreType: "Points",
+        isChecked: false,
+        duration: { hours: null, min: null },
+      };
+    } else {
+      return {
         id: Date.now(),
         date: {
           day: currentDate.getDate(),
@@ -46,20 +71,25 @@ const NewGameplayModal = ({
           hour: currentDate.getHours(),
           minutes: currentDate.getMinutes(),
         },
-        players: [],
+        players: players.filter((player) => player.isChecked),
         type: "Rivalry",
         scoreType: "Points",
         isChecked: false,
         duration: { hours: null, min: null },
-      });
+      };
+    }
+  }, [isExisting, chosenDate, gameplayParams, currentDate, players]);
+
+  const [addGameplay, setAddGameplay] = useState(initialGameplayState);
+
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
+
   // const fetchCollection = async () => {
   //   const result = await AsyncStorage.getItem("collection");
   //   if (result?.length) setCollection(JSON.parse(result));
   // };
-
   const fetchPlayers = async () => {
     const result = await AsyncStorage.getItem("players");
     if (result?.length) setPlayers(JSON.parse(result));
@@ -69,10 +99,8 @@ const NewGameplayModal = ({
   //   const matchingPlayer = addGameplay.players.find(
   //     (player) => player.id === item.id
   //   );
-  //   // console.log(matchingPlayer);
   //   if (matchingPlayer) {
   //     item = { ...item, points: matchingPlayer.points };
-  //     // console.log(item);
   //   }
   // });
 
@@ -251,7 +279,7 @@ const NewGameplayModal = ({
             name: item.name,
             id: item.id,
             victory: false,
-            points: 0,
+            points: null,
           });
         }
         return { ...prevState, players: updatedPlayers };
@@ -306,6 +334,14 @@ const NewGameplayModal = ({
     fetchPlayers();
   };
 
+  const addCheckedPlayers = () => {
+    setAddGameplay((prevState) => {
+      const updatedPlayers = players.filter((player) => player.isChecked);
+
+      return { ...prevState, players: updatedPlayers };
+    });
+  };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor = colors.LIST_COLOR_TWO;
     return (
@@ -337,12 +373,28 @@ const NewGameplayModal = ({
         visible={visible}
         animationType="fade"
         onRequestClose={closeModal}
-        onShow={isExisting ? () => setAddGameplay(gameplayParams) : null}
+        onShow={
+          isExisting ? () => setAddGameplay(gameplayParams) : addCheckedPlayers
+        }
       >
         <View style={[styles.container]}>
           <ScrollView style={styles.keyboardContainer}>
             <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
               <View>
+                <View style={[styles.flexRow]}>
+                  <Text style={[styles.gameNameStyle]}>{gameParams.name}</Text>
+                </View>
+                {gameParams.bggImage?.length ? (
+                  <View style={styles.boargameImgContainer}>
+                    <Image
+                      style={styles.boargameImg}
+                      resizeMode="contain"
+                      source={{
+                        uri: `${gameParams.bggImage}`,
+                      }}
+                    />
+                  </View>
+                ) : null}
                 <View style={[styles.flexRow]}>
                   <Text style={[styles.nameOfInputStyle]}>Type:</Text>
                   <TouchableOpacity
@@ -376,7 +428,7 @@ const NewGameplayModal = ({
                         onPress={() => changeChooseWinners()}
                       >
                         <Text style={[{ color: colors.LIGHT }]}>
-                          {chooseWinners ? "Yes" : "No"}
+                          {chooseWinners ? "Manually" : "Automatic"}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -412,30 +464,34 @@ const NewGameplayModal = ({
                     </View>
                   </>
                 )}
-
-                <TouchableOpacity
-                  style={[styles.addButton]}
-                  onPress={() => setModalVisible(true)}
-                >
-                  <Text
-                    style={[
-                      {
-                        fontSize: 20,
-                        textAlign: "center",
-                        color: colors.LIGHT,
-                      },
-                    ]}
-                  >
-                    Players
-                  </Text>
-                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
-            <View>
+            <View
+              style={[
+                {
+                  marginVertical: 5,
+                },
+              ]}
+            >
+              <TouchableOpacity
+                style={[styles.addButton]}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text
+                  style={[
+                    {
+                      fontSize: 18,
+                      textAlign: "center",
+                      color: colors.LIGHT,
+                    },
+                  ]}
+                >
+                  Players
+                </Text>
+              </TouchableOpacity>
               {players
                 // .sort((a, b) => b.points - a.points)
                 .map((item) => {
-                  // console.log(item);
                   var playerScore = "";
                   addGameplay.players.map((player) => {
                     if (player.id === item.id) {
@@ -451,14 +507,14 @@ const NewGameplayModal = ({
                         <>
                           {addGameplay?.type === "Rivalry" ? (
                             <>
-                              <View style={[styles.flexRow]}>
+                              <View style={[styles.flexRow, styles.playerRow]}>
                                 <Text
                                   style={[
                                     styles.nameOfInputStyle,
                                     { fontWeight: "bold" },
                                   ]}
                                 >
-                                  {item.name}:
+                                  {item.name}
                                 </Text>
                                 {chooseWinners === true ? (
                                   <TouchableOpacity
@@ -548,7 +604,7 @@ const NewGameplayModal = ({
             </View>
 
             <View style={[styles.flexRow]}>
-              <Text style={[styles.nameOfInputStyle]}>Time:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Time played:</Text>
               <TextInput
                 defaultValue={addGameplay?.duration?.hours?.toString()}
                 onChangeText={(text) => {
@@ -705,6 +761,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  playerRow: {
+    backgroundColor: colors.LIST_COLOR_ONE,
+    borderRadius: 8,
+    margin: 1,
+  },
   nameOfInputStyle: {
     padding: 8,
     flex: 2,
@@ -713,9 +774,9 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     backgroundColor: colors.GRAY,
     color: colors.LIGHT,
-    padding: 8,
+    padding: 11,
     flex: 2,
-    margin: 4,
+    margin: 2,
     borderRadius: 5,
   },
   btnContainer: {
@@ -762,11 +823,27 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
+    padding: 8,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 50,
+    marginHorizontal: 1,
+  },
+  boargameImgContainer: {
+    alignItems: "center",
+  },
+  boargameImg: {
+    width: windowWidth,
+    height: 120,
+  },
+  gameNameStyle: {
+    flex: 1,
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: 5,
+    fontSize: 18,
+    backgroundColor: colors.GRAY,
+    color: colors.LIGHT,
   },
 });
 

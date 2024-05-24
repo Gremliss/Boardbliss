@@ -30,13 +30,19 @@ const MainScreen = (props) => {
         style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("SearchBgg")}
       >
-        <Text style={[styles.textBtn]}>Search BGG</Text>
+        <Text style={[styles.textBtn]}>Search game online</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("GameCalendar")}
       >
         <Text style={[styles.textBtn]}>Game Calendar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.btnContainer]}
+        onPress={() => props.navigation.navigate("TransferData")}
+      >
+        <Text style={[styles.textBtn]}>Transfer data</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.btnContainer, styles.addButtonBottomRadius]}
@@ -60,8 +66,7 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingBottom: 27,
     elevation: 5,
-    marginHorizontal: 30,
-    width: windowWidth / 1.5,
+    width: windowWidth / 1.3,
     borderWidth: 1,
     borderRadius: 1,
     borderColor: colors.PRIMARY_OPACITY,

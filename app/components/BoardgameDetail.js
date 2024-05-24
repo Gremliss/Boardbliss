@@ -168,11 +168,6 @@ const BoardGameDetail = (props) => {
               <Text style={styles.closeButton}>Add to friends collection</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
-            <View>
-              <Text style={styles.closeButton}>Close</Text>
-            </View>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </>
@@ -216,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: colors.BACKGROUND,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 2,
   },
   gameInfo: {
@@ -233,22 +228,21 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     backgroundColor: colors.BACKGROUND,
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 15,
     marginTop: 10,
     color: colors.DARK,
   },
-
   closeButton: {
     backgroundColor: colors.PRIMARY,
     fontSize: 20,
     textAlign: "center",
     color: colors.LIGHT,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
+    marginVertical: 10,
+    marginHorizontal: 10,
   },
 });
 

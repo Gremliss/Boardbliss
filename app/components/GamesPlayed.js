@@ -288,7 +288,7 @@ const GamesPlayed = (props) => {
         return item;
       }
     });
-
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -327,6 +327,7 @@ const GamesPlayed = (props) => {
       }
     });
     setGameParams(newGameParams);
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
@@ -462,6 +463,7 @@ const GamesPlayed = (props) => {
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
         isExisting={false}
+        gameParams={gameParams}
       />
       <NewGameplayModal
         visible={editGameplaymodalVisible}
@@ -469,6 +471,7 @@ const GamesPlayed = (props) => {
         onSubmit={addNewGameplay}
         gameplayParams={gameplayParams}
         isExisting={true}
+        gameParams={gameParams}
       />
     </View>
   );
@@ -504,10 +507,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PRIMARY,
     color: colors.LIGHT,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 15,
     elevation: 5,
     marginVertical: 20,
-    marginHorizontal: 80,
+    marginHorizontal: 40,
   },
   itemContainer: {
     backgroundColor: colors.PRIMARY,

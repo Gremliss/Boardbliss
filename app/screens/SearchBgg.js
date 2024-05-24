@@ -149,7 +149,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           ...collection,
           ...updatedCollection.map((item) => ({ ...item, owner: "Friend" })),
         ];
-
+    await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
     setCollection(newCollection);
   };
