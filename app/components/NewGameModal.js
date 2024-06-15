@@ -145,7 +145,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
               <TouchableOpacity
-                style={[styles.inputTextStyle]}
+                style={[styles.inputTextStyle, { padding: 14 }]}
                 onPress={() => changeOwner()}
               >
                 <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
@@ -154,7 +154,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
             <View style={[styles.flexRow]}>
               <Text style={[styles.nameOfInputStyle]}>Expansion:</Text>
               <TouchableOpacity
-                style={[styles.inputTextStyle]}
+                style={[styles.inputTextStyle, { padding: 14 }]}
                 onPress={() => changeExpansion()}
               >
                 <Text style={[{ color: colors.LIGHT }]}>

@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     paddingHorizontal: 1,
     borderColor: colors.BACKGROUND,
-    paddingVertical: 4,
+    paddingVertical: 11,
   },
   centerStyle: {
     justifyContent: "center",
