@@ -186,72 +186,60 @@ const GameCalendar = (props) => {
   const renderGames = (item, index) => {
     const currentDate = item.id; // Date "day.month.year"
 
-    const gamesPlayedOnThisDate = collection.filter((game) => {
+    const gamesPlayedOnThisDate = collection.reduce((acc, game) => {
       const stats = game.stats;
-      return (
-        stats &&
-        stats.some((session) => {
+      if (stats) {
+        const filteredSessions = stats.filter((session) => {
           const sessionDate = `${session.date.day}.${session.date.month - 1}.${
             session.date.year
           }`;
           return sessionDate === currentDate;
-        })
-      );
-    });
+        });
+        filteredSessions.forEach((session) => {
+          acc.push({
+            game: game,
+            session: session,
+          });
+        });
+      }
+      return acc;
+    }, []);
 
-    if (
-      Array.isArray(gamesPlayedOnThisDate) &&
-      gamesPlayedOnThisDate.length > 0
-    ) {
+    const sortedGames = gamesPlayedOnThisDate.sort(
+      (a, b) => a.session.id - b.session.id
+    );
+
+    if (sortedGames.length > 0) {
       return (
         <View style={styles.dailyGamesContainer}>
-          {gamesPlayedOnThisDate.map((game) => {
-            const gameName = game.name;
-            const gameSessions = game.stats.filter((session) => {
-              const sessionDate = `${session.date.day}.${
-                session.date.month - 1
-              }.${session.date.year}`;
-              return sessionDate === currentDate;
-            });
+          {sortedGames.map((item, index) => (
+            <View key={`${item.session.id}-${index}`} style={styles.gameItem}>
+              <TouchableOpacity
+                onPress={() => handleItemPressed(item.game, item.session)}
+                onLongPress={() => displayDeleteAlert(item.game, item.session)}
+              >
+                {item.session.coop?.victory === "Yes" ? (
+                  <Text style={styles.coopVictory}>{item.game.name}</Text>
+                ) : (
+                  <Text style={styles.gameName}>{item.game.name}</Text>
+                )}
 
-            return (
-              <View key={`${game.id}`}>
-                {gameSessions.map((session, sessionIndex) => (
-                  <View
-                    key={`${game.id}-${sessionIndex}`}
-                    style={styles.gameItem}
-                  >
-                    <TouchableOpacity
-                      onPress={() => handleItemPressed(game, session)}
-                      onLongPress={() => displayDeleteAlert(game, session)}
-                    >
-                      {session.coop?.victory == "Yes" ? (
-                        <Text style={styles.coopVictory}>{gameName}</Text>
+                <Text style={styles.players}>
+                  👥{" "}
+                  {item.session.players.map((player, playerIndex) => (
+                    <Text key={playerIndex}>
+                      {playerIndex > 0 && ", "}{" "}
+                      {player.victory ? (
+                        <Text style={styles.winPlayer}>{player.name}</Text>
                       ) : (
-                        <Text style={styles.gameName}>{gameName}</Text>
+                        player.name
                       )}
-
-                      <Text style={styles.players}>
-                        👥{" "}
-                        {session.players.map((player, playerIndex) => (
-                          <Text key={playerIndex}>
-                            {playerIndex > 0 && ", "}{" "}
-                            {player.victory ? (
-                              <Text style={styles.winPlayer}>
-                                {player.name}
-                              </Text>
-                            ) : (
-                              player.name
-                            )}
-                          </Text>
-                        ))}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            );
-          })}
+                    </Text>
+                  ))}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
         </View>
       );
     } else {
@@ -292,7 +280,7 @@ const GameCalendar = (props) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const ITEM_WIDTH = windowWidth / 4;
+  // const ITEM_WIDTH = windowWidth / 4;
   // const getItemLayout = (_, index) => {
   //   return {
   //     length: ITEM_WIDTH,
