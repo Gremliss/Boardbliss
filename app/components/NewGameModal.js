@@ -25,7 +25,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
   const [addGame, setAddGame] = useState({
     name: "",
     yearpublished: "",
-    owner: "You",
+    owner: "Yes",
     rating: "",
     minPlayers: "",
     maxPlayers: "",
@@ -50,7 +50,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
       setAddGame({
         name: "",
         yearpublished: "",
-        owner: "You",
+        owner: "Yes",
         rating: "",
         minPlayers: "",
         maxPlayers: "",
@@ -79,7 +79,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     setAddGame({
       name: "",
       yearpublished: "",
-      owner: "You",
+      owner: "Yes",
       rating: "",
       minPlayers: "",
       maxPlayers: "",
@@ -103,9 +103,9 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
   }, []);
 
   const changeOwner = () => {
-    addGame.owner === "You"
-      ? setAddGame({ ...addGame, owner: "Friend" })
-      : setAddGame({ ...addGame, owner: "You" });
+    addGame.owner === "Yes"
+      ? setAddGame({ ...addGame, owner: "No" })
+      : setAddGame({ ...addGame, owner: "Yes" });
   };
 
   const changeExpansion = () => {
@@ -143,7 +143,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
               />
             </View>
             <View style={[styles.flexRow]}>
-              <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Owned:</Text>
               <TouchableOpacity
                 style={[styles.inputTextStyle, { padding: 14 }]}
                 onPress={() => changeOwner()}

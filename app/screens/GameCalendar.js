@@ -30,7 +30,7 @@ const GameCalendar = (props) => {
   const [gameParams, setGameParams] = useState({
     name: "",
     yearpublished: "",
-    owner: "You",
+    owner: "Yes",
     rating: "",
     minPlayers: "",
     maxPlayers: "",

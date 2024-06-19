@@ -160,14 +160,14 @@ const BoardGameDetail = (props) => {
             <Text style={styles.gameInfoValue}>{fixedRating}</Text>
           </View>
           <Text style={styles.description}>{descriptionWithoutTags}</Text>
-          <TouchableOpacity onPress={() => addToCollection("You")}>
+          <TouchableOpacity onPress={() => addToCollection("Yes")}>
             <View>
               <Text style={styles.closeButton}>Add to your collection</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => addToCollection("Friend")}>
+          <TouchableOpacity onPress={() => addToCollection("No")}>
             <View>
-              <Text style={styles.closeButton}>Add to friends collection</Text>
+              <Text style={styles.closeButton}>Add as played game</Text>
             </View>
           </TouchableOpacity>
         </View>
