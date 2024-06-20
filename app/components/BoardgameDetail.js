@@ -75,7 +75,7 @@ const BoardGameDetail = (props) => {
         bggImage: game.image,
         id: gameId,
         owner: owner,
-        expansion: false,
+        expansion: isExpansion,
         rating: fixedRating,
         isChecked: false,
         stats: [],
@@ -113,6 +113,8 @@ const BoardGameDetail = (props) => {
   var descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
   var ratingBgg = game.statistics[0].ratings[0].average;
   var fixedRating = parseFloat(ratingBgg).toFixed(2);
+  var isExpansion =
+    game.boardgamecategory?.[0]?._?.includes("Expansion") ?? false;
 
   return (
     <>
@@ -158,14 +160,14 @@ const BoardGameDetail = (props) => {
             <Text style={styles.gameInfoValue}>{fixedRating}</Text>
           </View>
           <Text style={styles.description}>{descriptionWithoutTags}</Text>
-          <TouchableOpacity onPress={() => addToCollection("You")}>
+          <TouchableOpacity onPress={() => addToCollection("Yes")}>
             <View>
               <Text style={styles.closeButton}>Add to your collection</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => addToCollection("Friend")}>
+          <TouchableOpacity onPress={() => addToCollection("No")}>
             <View>
-              <Text style={styles.closeButton}>Add to friends collection</Text>
+              <Text style={styles.closeButton}>Add as played game</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -196,6 +198,7 @@ const styles = StyleSheet.create({
     height: 300,
   },
   gameName: {
+    textAlign: "center",
     fontSize: 26,
     paddingVertical: 5,
     color: colors.PRIMARY,

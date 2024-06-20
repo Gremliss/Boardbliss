@@ -145,7 +145,14 @@ const Collection = (props) => {
             </View>
             <View style={[styles.cellContainer, { flex: 3 }]}>
               <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
-              <Text style={styles.yearText}>{item.yearpublished}</Text>
+              <View
+                style={[styles.flexRow, { justifyContent: "space-between" }]}
+              >
+                <Text style={styles.yearText}>{item.yearpublished}</Text>
+                {item.owner === "Yes" ? (
+                  <Text style={styles.yearText}>✔ </Text>
+                ) : null}
+              </View>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
               {!isNaN(parseFloat(item.rating).toFixed(2)) ? (

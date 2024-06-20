@@ -40,7 +40,7 @@ const EditBoardGame = (props) => {
   }, []);
 
   const changeOwner = () => {
-    owner === "You" ? setOwner("Friend") : setOwner("You");
+    owner === "Yes" ? setOwner("No") : setOwner("Yes");
   };
 
   const changeExpansion = () => {
@@ -103,7 +103,7 @@ const EditBoardGame = (props) => {
             />
           </View>
           <View style={[styles.flexRow]}>
-            <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
+            <Text style={[styles.nameOfInputStyle]}>Owned:</Text>
             <TouchableOpacity
               style={[styles.inputTextStyle]}
               onPress={() => changeOwner()}

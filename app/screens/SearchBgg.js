@@ -112,7 +112,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         maxPlaytime: item.stats[0].$.maxplaytime,
         bggImage: item.image[0],
         id: item.$.objectid,
-        owner: "You",
+        owner: "Yes",
         rating: item.stats[0].rating[0].average[0].$.value,
         isChecked: false,
         expansion: false,
@@ -130,7 +130,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
       [
         { text: "Cancel", onPress: () => null },
         {
-          text: "Add to friends collection",
+          text: "Add as played game",
           onPress: () => addUserCollection(false),
         },
         {
@@ -147,7 +147,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
       ? [...collection, ...updatedCollection]
       : [
           ...collection,
-          ...updatedCollection.map((item) => ({ ...item, owner: "Friend" })),
+          ...updatedCollection.map((item) => ({ ...item, owner: "No" })),
         ];
     await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     await AsyncStorage.setItem("collection", JSON.stringify(newCollection));
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     fontSize: 20,
     color: colors.LIGHT,
-    padding: 10,
+    padding: 12,
     flex: 5,
   },
   icon: {

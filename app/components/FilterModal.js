@@ -66,11 +66,11 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     setFilterGames({
       ...filterGames,
       owner:
-        filterGames.owner === "You"
-          ? "Friend"
-          : filterGames.owner === "Friend"
+        filterGames.owner === "Yes"
+          ? "No"
+          : filterGames.owner === "No"
           ? "All"
-          : "You",
+          : "Yes",
     });
   };
   const changeExpansion = () => {
@@ -100,7 +100,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
               />
             </View>
             <View style={[styles.flexRow]}>
-              <Text style={[styles.nameOfInputStyle]}>Owner:</Text>
+              <Text style={[styles.nameOfInputStyle]}>Owned:</Text>
               <TouchableOpacity
                 style={[styles.inputTextStyle]}
                 onPress={() => changeOwner()}
