@@ -33,6 +33,7 @@ const Collection = (props) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [checkAllItems, setCheckAllItems] = useState(false);
   var todayDate = new Date();
+  const [sortBy, setSortBy] = useState("Name");
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
     if (result?.length) setCollection(JSON.parse(result));
@@ -46,17 +47,62 @@ const Collection = (props) => {
     return () => backHandler.remove();
   }, [props.navigation]);
 
-  collection?.sort((a, b) => {
-    const nameA = a.name?.toLowerCase();
-    const nameB = b.name?.toLowerCase();
-    if (nameA < nameB) {
-      return -1;
-    } else if (nameA > nameB) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  const checkDaysAgo = (item) => {
+    const allDates = item.stats.map((stat) => stat.date);
+
+    const todayDate = new Date();
+
+    const newestDate = allDates.reduce((maxDate, currentDate) => {
+      const current = new Date(
+        currentDate.year,
+        currentDate.month - 1,
+        currentDate.day,
+        currentDate.hour || 0,
+        currentDate.minutes || 0
+      );
+      return maxDate === null || current > maxDate ? current : maxDate;
+    }, null);
+
+    const daysDifference = newestDate
+      ? Math.floor((todayDate - newestDate) / (1000 * 60 * 60 * 24))
+      : null;
+
+    return daysDifference;
+  };
+
+  const sortCollection = (key, comparator, ascending = false) => {
+    collection?.sort((a, b) => {
+      const value_A =
+        key === "Days ago" ? comparator(a) : a[key]?.toString().toLowerCase();
+      const value_B =
+        key === "Days ago" ? comparator(b) : b[key]?.toString().toLowerCase();
+
+      if (value_A > value_B) {
+        return ascending ? 1 : -1;
+      } else if (value_A < value_B) {
+        return ascending ? -1 : 1;
+      } else {
+        return 0;
+      }
+    });
+  };
+
+  switch (sortBy) {
+    case "Rating":
+      sortCollection("rating");
+      break;
+    case "Players":
+      sortCollection("maxPlayers");
+      break;
+    case "Time":
+      sortCollection("maxPlaytime", null, true);
+      break;
+    case "Days ago":
+      sortCollection("Days ago", checkDaysAgo);
+      break;
+    default:
+      sortCollection("name", null, true);
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -255,7 +301,7 @@ const Collection = (props) => {
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
-  const handleFilter = async (filterItems) => {
+  const handleFilter = async (filterItems, sortBy) => {
     const result = await AsyncStorage.getItem("collection");
     var filteredCollection = JSON.parse(result);
     if (filterItems.yearpublished) {
@@ -330,6 +376,7 @@ const Collection = (props) => {
 
     if (filteredCollection.length) {
       setCollection(filteredCollection);
+      setSortBy(sortBy);
     } else {
       fetchCollection();
       ToastAndroid.show("Games not found", 2000);
