@@ -59,7 +59,6 @@ const GameCalendar = (props) => {
   });
   const [editGameplaymodalVisible, setEditGameplaymodalVisible] =
     useState(false);
-  const dayNow = new Date();
   const months = [
     "January",
     "February",
@@ -156,7 +155,7 @@ const GameCalendar = (props) => {
   const renderItem = ({ item, index }) => {
     const isCurrentDate =
       item.id ===
-      `${dayNow.getDate()}.${dayNow.getMonth()}.${dayNow.getFullYear()}`;
+      `${currentDate.getDate()}.${currentDate.getMonth()}.${currentDate.getFullYear()}`;
 
     const backgroundColor =
       item.name.slice(-3) === "Sun" || item.name.slice(-3) === "Sat"

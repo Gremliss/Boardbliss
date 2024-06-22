@@ -13,6 +13,8 @@ import GamesPlayed from "./app/components/GamesPlayed";
 import BoardGameStats from "./app/components/BoardGameStats";
 import PlayerDetail from "./app/components/PlayerDetail";
 import GameCalendar from "./app/screens/GameCalendar";
+import Stats from "./app/screens/Stats";
+import YearlyStats from "./app/components/YearlyStats";
 import AddGameplay from "./app/screens/AddGameplay";
 import colors from "./app/misc/colors";
 import { StatusBar } from "react-native";
@@ -109,6 +111,20 @@ export default function App() {
             name="GameCalendar"
             options={{
               title: "Game Calendar",
+            }}
+          />
+          <Stack.Screen
+            component={Stats}
+            name="Stats"
+            options={{
+              title: "Monthly Stats",
+            }}
+          />
+          <Stack.Screen
+            component={YearlyStats}
+            name="YearlyStats"
+            options={{
+              title: "Yearly Stats",
             }}
           />
           <Stack.Screen

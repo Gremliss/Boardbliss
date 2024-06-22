@@ -158,7 +158,7 @@ const CollectionBoardgameDetail = (props) => {
             </View>
           </View>
           <View style={styles.horizontalView}>
-            <Text style={styles.gameInfo}>Rating BGG:</Text>
+            <Text style={styles.gameInfo}>Rating:</Text>
             <Text style={styles.gameInfoValue}>
               {parseFloat(gameParams?.rating).toFixed(2)}
             </Text>

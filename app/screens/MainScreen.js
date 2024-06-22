@@ -40,6 +40,12 @@ const MainScreen = (props) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.btnContainer]}
+        onPress={() => props.navigation.navigate("Stats")}
+      >
+        <Text style={[styles.textBtn]}>Stats</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("TransferData")}
       >
         <Text style={[styles.textBtn]}>Transfer data</Text>
@@ -63,8 +69,8 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     backgroundColor: colors.PRIMARY,
-    padding: 25,
-    paddingBottom: 27,
+    padding: 20,
+    paddingBottom: 22,
     elevation: 5,
     width: windowWidth / 1.3,
     borderWidth: 1,
