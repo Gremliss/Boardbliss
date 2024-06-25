@@ -59,10 +59,30 @@ const Stats = (props) => {
     setDate(newDate);
   };
 
+  const findOldestStat = (stats) => {
+    if (stats.length === 0) return null;
+
+    return stats.reduce((oldest, current) => {
+      const oldestDate = new Date(
+        oldest.date.year,
+        oldest.date.month - 1,
+        oldest.date.day
+      );
+      const currentDate = new Date(
+        current.date.year,
+        current.date.month - 1,
+        current.date.day
+      );
+
+      return currentDate < oldestDate ? current : oldest;
+    });
+  };
+
   let totalHours = 0;
   let totalMinutes = 0;
   let numOfCoop = 0;
   let numOfRivalry = 0;
+  let newGamesCount = 0;
   let monthlyPlayers = [];
   let monthlyGames = [];
   // Iterate through games
@@ -124,23 +144,47 @@ const Stats = (props) => {
           monthlyGames[gameIndex].games += 1;
         }
         // Mark new games
+        const oldestStat = findOldestStat(game.stats);
+
         gameIndex = monthlyGames.findIndex((item) => item.name === game.name);
-        if (game.stats.length === monthlyGames[gameIndex].games) {
+
+        if (
+          (stat.date.month === oldestStat.date.month) &
+          (stat.date.year === oldestStat.date.year)
+        ) {
           monthlyGames[gameIndex].new = true;
         }
-        // Sort
-        monthlyGames?.sort((a, b) => {
-          if (a.games > b.games) {
-            return -1;
-          } else if (a.games < b.games) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
       });
     }
   }
+
+  // Sort
+  monthlyGames?.sort((a, b) => {
+    if (a.games > b.games) {
+      return -1;
+    } else if (a.games < b.games) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  monthlyPlayers?.sort((a, b) => {
+    if (a.games > b.games) {
+      return -1;
+    } else if (a.games < b.games) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  // Count new games
+  monthlyGames.forEach((game) => {
+    if (game.new === true) {
+      newGamesCount++;
+    }
+  });
 
   totalHours += Math.floor(totalMinutes / 60);
   totalMinutes = totalMinutes % 60;
@@ -173,6 +217,10 @@ const Stats = (props) => {
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Coop:</Text>
               <Text style={styles.gameInfoValue}>{numOfCoop}</Text>
+            </View>
+            <View style={styles.horizontalView}>
+              <Text style={styles.gameInfo}>New games:</Text>
+              <Text style={styles.gameInfoValue}>{newGamesCount}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Time:</Text>

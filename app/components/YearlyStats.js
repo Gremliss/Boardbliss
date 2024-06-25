@@ -40,10 +40,30 @@ const YearlyStats = (props) => {
     setDate(newDate);
   };
 
+  const findOldestStat = (stats) => {
+    if (stats.length === 0) return null;
+
+    return stats.reduce((oldest, current) => {
+      const oldestDate = new Date(
+        oldest.date.year,
+        oldest.date.month - 1,
+        oldest.date.day
+      );
+      const currentDate = new Date(
+        current.date.year,
+        current.date.month - 1,
+        current.date.day
+      );
+
+      return currentDate < oldestDate ? current : oldest;
+    });
+  };
+
   let totalHours = 0;
   let totalMinutes = 0;
   let numOfCoop = 0;
   let numOfRivalry = 0;
+  let newGamesCount = 0;
   let yearlyPlayers = [];
   let yearlyGames = [];
   // Iterate through games
@@ -103,23 +123,44 @@ const YearlyStats = (props) => {
           yearlyGames[gameIndex].games += 1;
         }
         // Mark new games
+        const oldestStat = findOldestStat(game.stats);
+
         gameIndex = yearlyGames.findIndex((item) => item.name === game.name);
-        if (game.stats.length === yearlyGames[gameIndex].games) {
+
+        if (stat.date.year === oldestStat.date.year) {
           yearlyGames[gameIndex].new = true;
         }
-        // Sort
-        yearlyGames?.sort((a, b) => {
-          if (a.games > b.games) {
-            return -1;
-          } else if (a.games < b.games) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
       });
     }
   }
+
+  // Sort
+  yearlyGames?.sort((a, b) => {
+    if (a.games > b.games) {
+      return -1;
+    } else if (a.games < b.games) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  yearlyPlayers?.sort((a, b) => {
+    if (a.games > b.games) {
+      return -1;
+    } else if (a.games < b.games) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  // Count new games
+  yearlyGames.forEach((game) => {
+    if (game.new === true) {
+      newGamesCount++;
+    }
+  });
 
   totalHours += Math.floor(totalMinutes / 60);
   totalMinutes = totalMinutes % 60;
@@ -151,6 +192,10 @@ const YearlyStats = (props) => {
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Coop:</Text>
               <Text style={styles.gameInfoValue}>{numOfCoop}</Text>
+            </View>
+            <View style={styles.horizontalView}>
+              <Text style={styles.gameInfo}>New games:</Text>
+              <Text style={styles.gameInfoValue}>{newGamesCount}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Time:</Text>
