@@ -25,6 +25,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const PlayerDetail = (props) => {
   const [collection, setCollection] = useState(props.route.params.collection);
+  const [filteredCollection, setFilteredCollection] = useState([]);
   const [players, setPlayers] = useState([]);
   const [playerParams, setPlayerParams] = useState(props.route.params.item);
   const [name, setName] = useState(playerParams.name);
@@ -61,7 +62,17 @@ const PlayerDetail = (props) => {
   };
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
-    if (result?.length) setCollection(JSON.parse(result));
+    const parsedResult = JSON.parse(result);
+    if (parsedResult?.length) {
+      setCollection(parsedResult);
+      setFilteredCollection(
+        parsedResult.filter((item) => {
+          return item.stats.some((stat) => {
+            return stat.players.some((player) => player.name === name);
+          });
+        })
+      );
+    }
   };
   useEffect(() => {
     fetchPlayers();
@@ -91,7 +102,13 @@ const PlayerDetail = (props) => {
       })),
     }));
     await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
-    setCollection(updatedCollection);
+    setFilteredCollection(
+      updatedCollection.filter((item) => {
+        return item.stats.some((stat) => {
+          return stat.players.some((player) => player.name === name);
+        });
+      })
+    );
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
 
     setPlayers(updatedPlayers);
@@ -104,7 +121,7 @@ const PlayerDetail = (props) => {
   let gamesPlayed = 0;
   let coopGames = 0;
   let coopVictories = 0;
-  collection.forEach((gameParams) => {
+  filteredCollection.forEach((gameParams) => {
     // Count the number of games and victories for player
     gameParams.stats.map((game) => {
       if (game.type !== "Co-Op") {
@@ -176,6 +193,13 @@ const PlayerDetail = (props) => {
     });
     await AsyncStorage.setItem("backupCollection", JSON.stringify(collection));
     setCollection(updatedCollection);
+    setFilteredCollection(
+      updatedCollection.filter((item) => {
+        return item.stats.some((stat) => {
+          return stat.players.some((player) => player.name === name);
+        });
+      })
+    );
     await AsyncStorage.setItem("collection", JSON.stringify(updatedCollection));
   };
 
@@ -310,7 +334,7 @@ const PlayerDetail = (props) => {
             Games
           </Text>
           <FlatList
-            data={collection}
+            data={filteredCollection}
             renderItem={renderGames}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={true}
