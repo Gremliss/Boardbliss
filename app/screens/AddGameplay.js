@@ -152,7 +152,7 @@ const AddGameplay = (props) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    var newGameParams = { ...gameParams };
+    let newGameParams = { ...gameParams };
     const isExists = gameParams.stats.some(
       (item) => item.id === newGameplay.id
     );
@@ -213,7 +213,7 @@ const AddGameplay = (props) => {
 
   const handleFilter = async (filterItems) => {
     const result = await AsyncStorage.getItem("collection");
-    var filteredCollection = JSON.parse(result);
+    let filteredCollection = JSON.parse(result);
     if (filterItems.yearpublished) {
       filteredCollection = filteredCollection.filter((item) => {
         if (item.yearpublished) {

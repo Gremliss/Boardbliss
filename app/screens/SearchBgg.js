@@ -32,7 +32,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
   const [loading, setLoading] = useState(false);
-  var countUserGamesToAdd = 0;
+  let countUserGamesToAdd = 0;
 
   const handleKeyboardClose = () => {
     Keyboard.dismiss();
@@ -42,7 +42,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   };
   const handleSearchButton = () => {
     setLoading(true);
-    var searchLink = `https://boardgamegeek.com/xmlapi2/search?query=${searchText}`;
+    let searchLink = `https://boardgamegeek.com/xmlapi2/search?query=${searchText}`;
     axios
       .get(searchLink)
       .then((response) => {
@@ -64,7 +64,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
 
   const handleSearchUserCollectionButton = async () => {
     setLoading(true);
-    var searchLink = `https://api.geekdo.com/xmlapi/collection/${searchUserCollectionText}`;
+    let searchLink = `https://api.geekdo.com/xmlapi/collection/${searchUserCollectionText}`;
     axios
       .get(searchLink)
       .then((response) => {
@@ -197,7 +197,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   };
 
   const openBoardgameDetail = (gameId, name) => {
-    var stringGameId = gameId.toString();
+    let stringGameId = gameId.toString();
     navigation.navigate("BoardGameDetail", { stringGameId, name });
   };
 

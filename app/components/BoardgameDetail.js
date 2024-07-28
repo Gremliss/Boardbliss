@@ -108,12 +108,12 @@ const BoardGameDetail = (props) => {
     );
   };
 
-  var game = detailData?.boardgames?.boardgame[0];
-  var decodedDescription = decode(`${game.description}`);
-  var descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
-  var ratingBgg = game.statistics[0].ratings[0].average;
-  var fixedRating = parseFloat(ratingBgg).toFixed(2);
-  var isExpansion =
+  let game = detailData?.boardgames?.boardgame[0];
+  let decodedDescription = decode(`${game.description}`);
+  let descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
+  let ratingBgg = game.statistics[0].ratings[0].average;
+  let fixedRating = parseFloat(ratingBgg).toFixed(2);
+  let isExpansion =
     game.boardgamecategory?.[0]?._?.includes("Expansion") ?? false;
 
   return (

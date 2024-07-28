@@ -48,7 +48,7 @@ const GamesPlayed = (props) => {
     const result = await AsyncStorage.getItem("collection");
     const parsedResult = JSON.parse(result);
     if (result?.length) setCollection(parsedResult);
-    var newGameParams;
+    let newGameParams;
     parsedResult.map((item) => {
       if (item.id === gameParams.id) {
         newGameParams = item;
@@ -94,7 +94,7 @@ const GamesPlayed = (props) => {
   };
   const renderPlayers = (players, type, scoreType) => {
     // Convert the players object into an array of [name, value] pairs
-    var sortedPlayers;
+    let sortedPlayers;
     if (type == "Rivalry") {
       if (scoreType == "Points") {
         // Sort the player array based on the values in descending order
@@ -158,9 +158,9 @@ const GamesPlayed = (props) => {
   };
   const checkFormat = (value) => {
     if (value > 9) {
-      var newValue = value;
+      let newValue = value;
     } else {
-      var newValue = "0" + value;
+      let newValue = "0" + value;
     }
     return newValue;
   };
@@ -260,7 +260,7 @@ const GamesPlayed = (props) => {
     setLongPressActive(false);
   };
   const displayDeleteAlert = () => {
-    var count = 0;
+    let count = 0;
     gameParams.stats.forEach((item) => {
       item.isChecked ? count++ : null;
     });
@@ -297,7 +297,7 @@ const GamesPlayed = (props) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    var newGameParams = { ...gameParams };
+    let newGameParams = { ...gameParams };
     const isExists = gameParams.stats.some(
       (item) => item.id === newGameplay.id
     );

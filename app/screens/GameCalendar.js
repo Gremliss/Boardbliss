@@ -59,7 +59,6 @@ const GameCalendar = (props) => {
   });
   const [editGameplaymodalVisible, setEditGameplaymodalVisible] =
     useState(false);
-  const dayNow = new Date();
   const months = [
     "January",
     "February",
@@ -76,10 +75,10 @@ const GameCalendar = (props) => {
   ];
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const nDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  var year = date.getFullYear();
-  var month = date.getMonth();
-  var firstDay = new Date(year, month, 1).getDay();
-  var maxDays = nDays[month];
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let firstDay = new Date(year, month, 1).getDay();
+  let maxDays = nDays[month];
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -100,13 +99,13 @@ const GameCalendar = (props) => {
       maxDays += 1;
     }
   }
-  var numberOfDays = [];
-  var n = firstDay;
-  for (var i = 1; i < maxDays + 1; i++) {
+  let numberOfDays = [];
+  let n = firstDay;
+  for (let i = 1; i < maxDays + 1; i++) {
     if (n > 6) {
       n = 0;
     }
-    var day = weekDays[n];
+    let day = weekDays[n];
     numberOfDays.push({
       name: i + ". " + day,
       id: i + "." + month + "." + year,
@@ -119,7 +118,7 @@ const GameCalendar = (props) => {
     dateObject = moment(dateObject).set("month", monthNo); // change month value
   };
   changeMonth = async (n) => {
-    var newDateMs = date.setMonth(date.getMonth() + n);
+    let newDateMs = date.setMonth(date.getMonth() + n);
     const newDate = new Date(newDateMs);
     setDate(newDate);
   };
@@ -156,7 +155,7 @@ const GameCalendar = (props) => {
   const renderItem = ({ item, index }) => {
     const isCurrentDate =
       item.id ===
-      `${dayNow.getDate()}.${dayNow.getMonth()}.${dayNow.getFullYear()}`;
+      `${currentDate.getDate()}.${currentDate.getMonth()}.${currentDate.getFullYear()}`;
 
     const backgroundColor =
       item.name.slice(-3) === "Sun" || item.name.slice(-3) === "Sat"
@@ -299,7 +298,7 @@ const GameCalendar = (props) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    var newGameParams = { ...gameParams };
+    let newGameParams = { ...gameParams };
     const isExists = gameParams.stats.some(
       (item) => item.id === newGameplay.id
     );

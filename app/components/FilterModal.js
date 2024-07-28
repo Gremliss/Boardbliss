@@ -31,13 +31,14 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     minPlaytime: null,
     maxPlaytime: null,
   });
+  const [sortBy, setSortBy] = useState("Name");
 
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
   const handleSubmit = () => {
-    onSubmit(filterGames);
+    onSubmit(filterGames, sortBy);
     onClose();
   };
 
@@ -73,6 +74,20 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
           : "Yes",
     });
   };
+  const changeSortBy = () => {
+    setSortBy(
+      sortBy === "Name"
+        ? "Rating"
+        : sortBy === "Rating"
+        ? "Players"
+        : sortBy === "Players"
+        ? "Time"
+        : sortBy === "Time"
+        ? "Days ago"
+        : "Name"
+    );
+  };
+
   const changeExpansion = () => {
     setFilterGames({
       ...filterGames,
@@ -172,6 +187,15 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 keyboardType="numeric"
                 placeholderTextColor={colors.PLACEHOLDER}
               />
+            </View>
+            <View style={[styles.flexRow]}>
+              <Text style={[styles.nameOfInputStyle]}>Sort by:</Text>
+              <TouchableOpacity
+                style={[styles.inputTextStyle]}
+                onPress={() => changeSortBy()}
+              >
+                <Text style={[styles.changeOnClickText]}>{sortBy}</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
