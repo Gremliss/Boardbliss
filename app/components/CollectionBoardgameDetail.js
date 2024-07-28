@@ -29,7 +29,7 @@ const CollectionBoardgameDetail = (props) => {
     const parsedResult = JSON.parse(result);
     if (result?.length) setCollection(parsedResult);
 
-    var newGameParams;
+    let newGameParams;
     parsedResult.map((item) => {
       if (item.id === gameParams.id) {
         newGameParams = item;
@@ -60,7 +60,7 @@ const CollectionBoardgameDetail = (props) => {
       gameParams.stats = [];
     }
 
-    var newGameParams = {
+    let newGameParams = {
       ...gameParams,
       stats: [...gameParams.stats, newGameplay],
     };

@@ -181,7 +181,7 @@ const NewGameplayModal = ({
         let winningPlayers = [];
         if (addGameplay.players.length > 0) {
           if (addGameplay.type === "Rivalry") {
-            var maxScore;
+            let maxScore;
             if (addGameplay.scoreType === "Points") {
               maxScore = Math.max(
                 ...addGameplay.players.map((player) => player.points)
@@ -298,7 +298,7 @@ const NewGameplayModal = ({
   };
 
   const handleCheckWinner = async (item) => {
-    var victoryValue;
+    let victoryValue;
     setAddGameplay((prevState) => {
       const updatedPlayers = addGameplay.players.map((player) => {
         if (player.id === item.id) {
@@ -492,7 +492,7 @@ const NewGameplayModal = ({
               {players
                 // .sort((a, b) => b.points - a.points)
                 .map((item) => {
-                  var playerScore = "";
+                  let playerScore = "";
                   addGameplay.players.map((player) => {
                     if (player.id === item.id) {
                       // Update points of existing player

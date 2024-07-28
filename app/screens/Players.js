@@ -135,7 +135,7 @@ const Players = (props) => {
   };
 
   const displayDeleteAlert = () => {
-    var count = 0;
+    let count = 0;
     players.forEach((item) => {
       item.isChecked ? count++ : null;
     });

@@ -162,7 +162,7 @@ const PlayerDetail = (props) => {
     if (!gameParams.stats) {
       gameParams.stats = [];
     }
-    var newGameParams = { ...gameParams };
+    let newGameParams = { ...gameParams };
     const isExists = gameParams.stats.some(
       (item) => item.id === newGameplay.id
     );

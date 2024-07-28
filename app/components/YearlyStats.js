@@ -35,7 +35,7 @@ const YearlyStats = (props) => {
   );
 
   changeYear = async (n) => {
-    var newDateMs = date.setFullYear(date.getFullYear() + n);
+    let newDateMs = date.setFullYear(date.getFullYear() + n);
     const newDate = new Date(newDateMs);
     setDate(newDate);
   };

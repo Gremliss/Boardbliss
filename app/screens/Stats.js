@@ -54,7 +54,7 @@ const Stats = (props) => {
     dateObject = moment(dateObject).set("month", monthNo); // change month value
   };
   changeMonth = async (n) => {
-    var newDateMs = date.setMonth(date.getMonth() + n);
+    let newDateMs = date.setMonth(date.getMonth() + n);
     const newDate = new Date(newDateMs);
     setDate(newDate);
   };

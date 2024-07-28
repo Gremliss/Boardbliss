@@ -32,7 +32,7 @@ const Collection = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [checkAllItems, setCheckAllItems] = useState(false);
-  var todayDate = new Date();
+  let todayDate = new Date();
   const [sortBy, setSortBy] = useState("Name");
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -238,7 +238,7 @@ const Collection = (props) => {
   };
 
   const displayDeleteAlert = () => {
-    var count = 0;
+    let count = 0;
     collection.forEach((item) => {
       item.isChecked ? count++ : null;
     });
@@ -303,7 +303,7 @@ const Collection = (props) => {
 
   const handleFilter = async (filterItems, sortBy) => {
     const result = await AsyncStorage.getItem("collection");
-    var filteredCollection = JSON.parse(result);
+    let filteredCollection = JSON.parse(result);
     if (filterItems.yearpublished) {
       filteredCollection = filteredCollection.filter((item) => {
         if (item.yearpublished) {
