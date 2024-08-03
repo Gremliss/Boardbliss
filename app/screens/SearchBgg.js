@@ -14,6 +14,7 @@ import {
   BackHandler,
   Alert,
   ToastAndroid,
+  ActivityIndicator,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
@@ -40,56 +41,67 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const handleSearchText = (text) => {
     setSearchText(text);
   };
-  const handleSearchButton = () => {
+
+  const handleSearchButton = async () => {
     setLoading(true);
     let searchLink = `https://boardgamegeek.com/xmlapi2/search?query=${searchText}`;
-    axios
-      .get(searchLink)
-      .then((response) => {
-        const xmlData = response.data;
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error(error);
-          } else {
-            setData(result);
-          }
+
+    try {
+      const response = await fetch(searchLink);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const xmlData = await response.text();
+
+      xml2js.parseString(xmlData, (error, result) => {
+        if (error) {
+          console.error("XML Parsing Error:", error);
+          ToastAndroid.show("Error parsing XML data", 2000);
           setLoading(false);
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+          return;
+        }
+
+        setData(result);
         setLoading(false);
       });
+    } catch (error) {
+      console.error("API Request Error:", error);
+      ToastAndroid.show("Error fetching search results", 2000);
+      setLoading(false);
+    }
   };
 
   const handleSearchUserCollectionButton = async () => {
-    setLoading(true);
-    let searchLink = `https://api.geekdo.com/xmlapi/collection/${searchUserCollectionText}`;
-    axios
-      .get(searchLink)
-      .then((response) => {
-        const xmlData = response.data;
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error(error);
+    try {
+      setLoading(true);
+      let searchLink = `https://api.geekdo.com/xmlapi/collection/${searchUserCollectionText}`;
+      const response = await axios.get(searchLink);
+      const xmlData = response.data;
+
+      xml2js.parseString(xmlData, (error, result) => {
+        if (error) {
+          console.error("XML Parsing Error:", error);
+          ToastAndroid.show("Error parsing XML data", 2000);
+        } else {
+          if (result.items?.item && result.items.item.length > 0) {
+            result.items.item.forEach((item) => {
+              addToCollection(item);
+            });
+            displayAddAlert();
+            countUserGamesToAdd = 0;
           } else {
-            if (result.items?.item && result.items?.item.length > 0) {
-              result.items.item.forEach((item) => {
-                addToCollection(item);
-              });
-              displayAddAlert();
-              countUserGamesToAdd = 0;
-            } else {
-              ToastAndroid.show("BGG user not found", 2000);
-            }
+            ToastAndroid.show("BGG user not found", 2000);
           }
-          setLoading(false);
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+        }
         setLoading(false);
       });
+    } catch (error) {
+      console.error("API Request Error:", error);
+      ToastAndroid.show("Error fetching user collection", 2000);
+      setLoading(false);
+    }
   };
 
   const addToCollection = async (item) => {
@@ -267,6 +279,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
 
         {loading ? (
           <View style={[styles.loadingView]}>
+            <ActivityIndicator size="large" />
             <Text>Loading data...</Text>
           </View>
         ) : (
