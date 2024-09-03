@@ -260,7 +260,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         <View style={styles.searchRow}>
           <TextInput
             onChangeText={(text) => handleSearchText(text)}
-            placeholder="Search game"
+            placeholder="Search game online"
             style={[styles.searchBar]}
             placeholderTextColor={colors.PLACEHOLDER}
             value={searchText}
