@@ -423,6 +423,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     padding: 6,
+    paddingVertical: 2,
     backgroundColor: colors.BACKGROUND,
     borderRadius: 10,
     margin: 1,
