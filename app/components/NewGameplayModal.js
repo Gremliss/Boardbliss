@@ -168,12 +168,14 @@ const NewGameplayModal = ({
     }
     if (
       parseInt(addGameplay.date.day) < 1 ||
-      parseInt(addGameplay.date.day) > 59
+      parseInt(addGameplay.date.day) > 59 ||
+      addGameplay.date.day.length > 2
     ) {
       displayDateAlert(1, 59, "day");
     } else if (
       parseInt(addGameplay.date.month) > 12 ||
-      parseInt(addGameplay.date.month) < 1
+      parseInt(addGameplay.date.month) < 1 ||
+      addGameplay.date.month.length > 2
     ) {
       displayDateAlert(1, 12, "month");
     } else {

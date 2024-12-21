@@ -157,13 +157,15 @@ const GamesPlayed = (props) => {
     return `${day}/${month}/${year}`;
   };
   const checkFormat = (value) => {
-    if (value > 9) {
-      let newValue = value;
-    } else {
-      let newValue = "0" + value;
+    const numericValue = Number(value);
+
+    if (isNaN(numericValue) || numericValue < 0) {
+      return "1";
     }
-    return newValue;
+
+    return numericValue < 10 ? "0" + numericValue : String(numericValue);
   };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor =
       index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
