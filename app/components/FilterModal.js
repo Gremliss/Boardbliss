@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -15,12 +15,13 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const FilterModal = ({ visible, onClose, onSubmit }) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState([]);
   const [filterGames, setFilterGames] = useState({
     yearpublished: null,
@@ -95,6 +96,93 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     });
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      color: currentColors.LIGHT,
+      paddingVertical: 80,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    nameOfInputStyle: {
+      padding: 10,
+      flex: 2,
+      margin: 4,
+      color: currentColors.DARK,
+    },
+    inputTextStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 11,
+      flex: 5,
+      margin: 2,
+      borderRadius: 5,
+    },
+    changeOnClickText: {
+      color: currentColors.LIGHT,
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.DARK,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    closeButton: {
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      padding: 10,
+      borderRadius: 50,
+      elevation: 5,
+      marginVertical: 20,
+      marginHorizontal: 30,
+    },
+
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    addBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -111,7 +199,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Year published"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -146,7 +234,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Players"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -159,7 +247,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Min playtime"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -172,7 +260,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Max playtime"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -185,7 +273,7 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
                 placeholder="Rating"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <View style={[styles.flexRow]}>
@@ -216,92 +304,5 @@ const FilterModal = ({ visible, onClose, onSubmit }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    color: colors.LIGHT,
-    paddingVertical: 80,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  nameOfInputStyle: {
-    padding: 10,
-    flex: 2,
-    margin: 4,
-    color: colors.DARK,
-  },
-  inputTextStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 11,
-    flex: 5,
-    margin: 2,
-    borderRadius: 5,
-  },
-  changeOnClickText: {
-    color: colors.LIGHT,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.DARK,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  closeButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
-  },
-
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-});
 
 export default FilterModal;

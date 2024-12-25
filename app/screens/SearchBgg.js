@@ -1,6 +1,6 @@
 import axios from "axios";
 import xml2js from "react-native-xml2js";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   FlatList,
@@ -20,12 +20,13 @@ import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NewPlayerModal from "../components/NewPlayerModal";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
@@ -177,11 +178,11 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
         onPress={() => openBoardgameDetail(itemId, item.name[0].$.value)}
       >
         <View style={styles.itemContainer}>
-          <Text style={[{ color: colors.LIGHT }]}>
+          <Text style={[{ color: currentColors.LIGHT }]}>
             {index + 1}. {item.name[0].$.value}
           </Text>
           {yearPublished && (
-            <Text style={[styles.yearText, { color: colors.LIGHT }]}>
+            <Text style={[styles.yearText, { color: currentColors.LIGHT }]}>
               {yearPublished}
             </Text>
           )}
@@ -232,6 +233,67 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     setSearchText("");
   };
 
+  const styles = StyleSheet.create({
+    loadingView: {
+      textAlign: "center",
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    searchRow: {
+      flexDirection: "row",
+      marginTop: 10,
+      marginBottom: 4,
+    },
+    searchBar: {
+      backgroundColor: currentColors.GRAY,
+      fontSize: 20,
+      color: currentColors.LIGHT,
+      padding: 12,
+      flex: 5,
+    },
+    icon: {
+      textAlign: "center",
+      flex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      padding: 10,
+      borderRadius: 50,
+      elevation: 5,
+      marginVertical: 20,
+      marginHorizontal: 30,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 15,
+      padding: 12,
+      margin: 1,
+    },
+    yearText: {
+      fontSize: 12,
+      opacity: 0.6,
+      paddingLeft: 15,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: 80,
+      alignSelf: "center",
+      color: currentColors.LIGHT,
+      zIndex: 1,
+    },
+  });
+
   return (
     <>
       <View style={[styles.container]}>
@@ -240,7 +302,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => setSearchUserCollectionText(text)}
             placeholder="Add BGG user collection"
             style={[styles.searchBar]}
-            placeholderTextColor={colors.PLACEHOLDER}
+            placeholderTextColor={currentColors.PLACEHOLDER}
             value={searchUserCollectionText}
             onSubmitEditing={handleSearchUserCollectionButton}
           />
@@ -254,7 +316,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             style={[styles.icon]}
             onPress={handleSearchUserCollectionButton}
           >
-            <AntDesign name={"plus"} size={24} color={colors.LIGHT} />
+            <AntDesign name={"plus"} size={24} color={currentColors.LIGHT} />
           </TouchableOpacity>
         </View>
         <View style={styles.searchRow}>
@@ -262,7 +324,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             onChangeText={(text) => handleSearchText(text)}
             placeholder="Search game online"
             style={[styles.searchBar]}
-            placeholderTextColor={colors.PLACEHOLDER}
+            placeholderTextColor={currentColors.PLACEHOLDER}
             value={searchText}
             onSubmitEditing={handleSearchButton}
           />
@@ -273,7 +335,7 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
             style={styles.clearIcon}
           />
           <TouchableOpacity style={[styles.icon]} onPress={handleSearchButton}>
-            <Fontisto name={"zoom"} size={24} color={colors.LIGHT} />
+            <Fontisto name={"zoom"} size={24} color={currentColors.LIGHT} />
           </TouchableOpacity>
         </View>
 
@@ -295,66 +357,5 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingView: {
-    textAlign: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  searchRow: {
-    flexDirection: "row",
-    marginTop: 10,
-    marginBottom: 4,
-  },
-  searchBar: {
-    backgroundColor: colors.GRAY,
-    fontSize: 20,
-    color: colors.LIGHT,
-    padding: 12,
-    flex: 5,
-  },
-  icon: {
-    textAlign: "center",
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 15,
-    padding: 12,
-    margin: 1,
-  },
-  yearText: {
-    fontSize: 12,
-    opacity: 0.6,
-    paddingLeft: 15,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: 80,
-    alignSelf: "center",
-    color: colors.LIGHT,
-    zIndex: 1,
-  },
-});
 
 export default SearchBgg;

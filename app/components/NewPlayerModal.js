@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -13,12 +13,13 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
+  const { currentColors } = useContext(ColorContext);
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState("");
 
@@ -62,6 +63,50 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     onClose();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentColors.BACKGROUND,
+    },
+    input: (windowHeight) => {
+      return {
+        fontSize: 20,
+        marginTop: windowHeight / 3,
+        marginHorizontal: 20,
+      };
+    },
+    playerStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: "#EEEEEE",
+      padding: 12,
+      margin: 4,
+      borderRadius: 5,
+    },
+    modalBG: {
+      flex: 1,
+      zIndex: -1,
+    },
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    addBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -72,7 +117,7 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
             onChangeText={(text) => handleOnChangeText(text, "name")}
             placeholder="Player name"
             style={[styles.input(windowHeight), styles.playerStyle]}
-            placeholderTextColor={colors.PLACEHOLDER}
+            placeholderTextColor={currentColors.PLACEHOLDER}
             onSubmitEditing={handleSubmit}
           />
           <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
@@ -97,49 +142,5 @@ const NewPlayerModal = ({ visible, onClose, onSubmit }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.BACKGROUND,
-  },
-  input: (windowHeight) => {
-    return {
-      fontSize: 20,
-      marginTop: windowHeight / 3,
-      marginHorizontal: 20,
-    };
-  },
-  playerStyle: {
-    backgroundColor: colors.GRAY,
-    color: "#EEEEEE",
-    padding: 12,
-    margin: 4,
-    borderRadius: 5,
-  },
-  modalBG: {
-    flex: 1,
-    zIndex: -1,
-  },
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-});
 
 export default NewPlayerModal;

@@ -1,6 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -14,8 +14,9 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import colors from "../misc/colors";
+
 import RoundIconBtn from "./RoundIconButton";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -27,6 +28,7 @@ const AddPlayersModal = ({
   setPlayers,
   renderItem,
 }) => {
+  const { currentColors } = useContext(ColorContext);
   const [name, setName] = useState("");
 
   const handleKeyboardDismiss = () => {
@@ -71,6 +73,65 @@ const AddPlayersModal = ({
     onClose();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentColors.BACKGROUND,
+    },
+    flatListContainer: {
+      marginBottom: 200,
+    },
+    input: (windowHeight) => {
+      return {
+        fontSize: 20,
+        marginTop: windowHeight / 3,
+        marginHorizontal: 20,
+      };
+    },
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    closeBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+    addBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    flexRow: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    nameOfInputStyle: {
+      padding: 8,
+      flex: 2,
+      margin: 4,
+      color: currentColors.DARK,
+    },
+    inputTextStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 11,
+      flex: 5,
+      margin: 2,
+      borderRadius: 5,
+    },
+    addNewPlayer: {
+      padding: 9,
+      color: currentColors.LIGHT,
+      borderRadius: 5,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -83,7 +144,7 @@ const AddPlayersModal = ({
               onChangeText={(text) => setName(text)}
               placeholder="Player name"
               style={[styles.inputTextStyle]}
-              placeholderTextColor={colors.PLACEHOLDER}
+              placeholderTextColor={currentColors.PLACEHOLDER}
               onSubmitEditing={handleNewPlayer}
             />
             {name !== "" ? (
@@ -92,7 +153,7 @@ const AddPlayersModal = ({
                 size={24}
                 style={[styles.addNewPlayer]}
                 onPress={() => handleNewPlayer()}
-                backgroundColor={colors.PRIMARY}
+                backgroundColor={currentColors.PRIMARY}
               />
             ) : null}
           </View>
@@ -135,64 +196,5 @@ const AddPlayersModal = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.BACKGROUND,
-  },
-  flatListContainer: {
-    marginBottom: 200,
-  },
-  input: (windowHeight) => {
-    return {
-      fontSize: 20,
-      marginTop: windowHeight / 3,
-      marginHorizontal: 20,
-    };
-  },
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  closeBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  addBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  flexRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  nameOfInputStyle: {
-    padding: 8,
-    flex: 2,
-    margin: 4,
-    color: colors.DARK,
-  },
-  inputTextStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 11,
-    flex: 5,
-    margin: 2,
-    borderRadius: 5,
-  },
-  addNewPlayer: {
-    padding: 9,
-    color: colors.LIGHT,
-    borderRadius: 5,
-  },
-});
 
 export default AddPlayersModal;

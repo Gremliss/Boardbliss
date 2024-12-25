@@ -1,7 +1,7 @@
 import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -19,12 +19,13 @@ import { TextInput } from "react-native-gesture-handler";
 import FilterModal from "../components/FilterModal";
 import RoundIconBtn from "../components/RoundIconButton";
 import NewPlayerModal from "../components/NewPlayerModal";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Players = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -84,7 +85,9 @@ const Players = (props) => {
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
-      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+      index % 2 === 0
+        ? currentColors.LIST_COLOR_ONE
+        : currentColors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -101,7 +104,7 @@ const Players = (props) => {
                     item.isChecked ? "check-box" : "check-box-outline-blank"
                   }
                   size={20}
-                  color={colors.LIGHT}
+                  color={currentColors.LIGHT}
                 />
               </View>
             ) : null}
@@ -196,6 +199,98 @@ const Players = (props) => {
     await AsyncStorage.setItem("players", JSON.stringify(updatedPlayers));
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    searchRow: {
+      flexDirection: "row",
+      marginBottom: 4,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    searchBar: {
+      backgroundColor: currentColors.GRAY,
+      fontSize: 20,
+      color: currentColors.LIGHT,
+      padding: 12,
+      flex: 5,
+      paddingRight: 40,
+      borderRadius: 5,
+    },
+    icon: {
+      textAlign: "center",
+      flex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 10,
+      paddingBottom: 12,
+      borderRadius: 15,
+      elevation: 5,
+      marginVertical: 15,
+      marginHorizontal: 8,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+      padding: 3,
+    },
+    yearText: {
+      fontSize: 12,
+      opacity: 0.6,
+      paddingLeft: 8,
+      fontStyle: "italic",
+    },
+    deleteBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.RED,
+      color: currentColors.LIGHT,
+    },
+    checkBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+    },
+    checkIcon: {
+      justiftyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+      width: 20,
+      margin: 2,
+    },
+    cellContainer: {
+      borderRightWidth: 1,
+      paddingHorizontal: 1,
+      borderColor: currentColors.BACKGROUND,
+      paddingVertical: 11,
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: 20,
+      alignSelf: "center",
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <View style={[styles.container]}>
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
@@ -206,7 +301,11 @@ const Players = (props) => {
           >
             <Text
               style={[
-                { fontSize: 20, textAlign: "center", color: colors.LIGHT },
+                {
+                  fontSize: 20,
+                  textAlign: "center",
+                  color: currentColors.LIGHT,
+                },
               ]}
             >
               Add player
@@ -220,7 +319,7 @@ const Players = (props) => {
           onChangeText={(text) => handleSearchText(text)}
           placeholder="Search player"
           style={[styles.searchBar]}
-          placeholderTextColor={colors.PLACEHOLDER}
+          placeholderTextColor={currentColors.PLACEHOLDER}
         />
         <AntDesign
           name="close"
@@ -235,10 +334,12 @@ const Players = (props) => {
           <View
             style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
           >
-            <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
+            <Text style={[{ color: currentColors.LIGHT }]}>Nr</Text>
           </View>
           <View style={[styles.cellContainer, { flex: 4 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
+            <Text
+              style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
+            >
               {longPressActive ? "Default Player" : "Player"}
             </Text>
           </View>
@@ -273,97 +374,5 @@ const Players = (props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  searchRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  searchBar: {
-    backgroundColor: colors.GRAY,
-    fontSize: 20,
-    color: colors.LIGHT,
-    padding: 12,
-    flex: 5,
-    paddingRight: 40,
-    borderRadius: 5,
-  },
-  icon: {
-    textAlign: "center",
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    paddingBottom: 12,
-    borderRadius: 15,
-    elevation: 5,
-    marginVertical: 15,
-    marginHorizontal: 8,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-    padding: 3,
-  },
-  yearText: {
-    fontSize: 12,
-    opacity: 0.6,
-    paddingLeft: 8,
-    fontStyle: "italic",
-  },
-  deleteBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.RED,
-    color: colors.LIGHT,
-  },
-  checkBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-  },
-  checkIcon: {
-    justiftyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 20,
-    margin: 2,
-  },
-  cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 1,
-    borderColor: colors.BACKGROUND,
-    paddingVertical: 11,
-  },
-  centerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: 20,
-    alignSelf: "center",
-    color: colors.LIGHT,
-  },
-});
 
 export default Players;

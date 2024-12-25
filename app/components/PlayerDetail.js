@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -17,13 +17,14 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import colors from "../misc/colors";
 import NewGameplayModal from "./NewGameplayModal";
+import { ColorContext } from "../misc/ColorContext";
 
-const windowWidth = Dimensions.get("window").width;
+// const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const PlayerDetail = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState(props.route.params.collection);
   const [filteredCollection, setFilteredCollection] = useState([]);
   const [players, setPlayers] = useState([]);
@@ -263,6 +264,116 @@ const PlayerDetail = (props) => {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentColors.BACKGROUND,
+    },
+    input: (windowHeight) => {
+      return {
+        fontSize: 20,
+        // marginTop: windowHeight / 6,
+        marginHorizontal: 20,
+      };
+    },
+    playerStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 12,
+      margin: 2,
+      borderRadius: 5,
+    },
+    flexBackground: {
+      flex: 1,
+      // zIndex: -1,
+    },
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    addBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+    horizontalContainer: {
+      flexDirection: "row",
+      marginHorizontal: 20,
+    },
+    horizontalView: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      flex: 1,
+      padding: 6,
+      paddingVertical: 2,
+      backgroundColor: currentColors.BACKGROUND,
+      borderRadius: 10,
+      margin: 1,
+    },
+
+    horizontalViewGames: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      flex: 1,
+    },
+    gameInfo: {
+      fontSize: 16,
+      paddingVertical: 5,
+      opacity: 1,
+      color: currentColors.DARK,
+      fontWeight: "bold",
+    },
+    gameInfoValue: {
+      fontSize: 16,
+      paddingVertical: 5,
+      color: currentColors.DARK,
+    },
+    flatListContainer: {
+      flex: 1,
+      marginBottom: 80,
+      margin: 2,
+      padding: 2,
+      borderRadius: 5,
+      backgroundColor: currentColors.LIGHT_YELLOW,
+    },
+    gamesContainer: {
+      padding: 5,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+    },
+    winPlayer: {
+      textDecorationLine: "underline",
+    },
+    coopVictory: {
+      fontSize: 14,
+      fontWeight: "bold",
+      textDecorationLine: "underline",
+    },
+    gameItem: {
+      paddingBottom: 4,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY_OPACITY,
+      padding: 2,
+      borderRadius: 8,
+      margin: 1,
+      borderColor: currentColors.PRIMARY,
+    },
+    gameName: {
+      fontSize: 14,
+      fontWeight: "bold",
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -273,7 +384,7 @@ const PlayerDetail = (props) => {
           placeholder="Player name"
           style={[styles.input(windowHeight), styles.playerStyle]}
           multiline={true}
-          placeholderTextColor={colors.PLACEHOLDER}
+          placeholderTextColor={currentColors.PLACEHOLDER}
         />
         {gamesPlayed ? (
           <View>
@@ -371,115 +482,5 @@ const PlayerDetail = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.BACKGROUND,
-  },
-  input: (windowHeight) => {
-    return {
-      fontSize: 20,
-      // marginTop: windowHeight / 6,
-      marginHorizontal: 20,
-    };
-  },
-  playerStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 12,
-    margin: 2,
-    borderRadius: 5,
-  },
-  flexBackground: {
-    flex: 1,
-    // zIndex: -1,
-  },
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  horizontalContainer: {
-    flexDirection: "row",
-    marginHorizontal: 20,
-  },
-  horizontalView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-    padding: 6,
-    paddingVertical: 2,
-    backgroundColor: colors.BACKGROUND,
-    borderRadius: 10,
-    margin: 1,
-  },
-
-  horizontalViewGames: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  gameInfo: {
-    fontSize: 16,
-    paddingVertical: 5,
-    opacity: 1,
-    color: colors.DARK,
-    fontWeight: "bold",
-  },
-  gameInfoValue: {
-    fontSize: 16,
-    paddingVertical: 5,
-    color: colors.DARK,
-  },
-  flatListContainer: {
-    flex: 1,
-    marginBottom: 80,
-    margin: 2,
-    padding: 2,
-    borderRadius: 5,
-    backgroundColor: colors.LIGHT_YELLOW,
-  },
-  gamesContainer: {
-    padding: 5,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  winPlayer: {
-    textDecorationLine: "underline",
-  },
-  coopVictory: {
-    fontSize: 14,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-  },
-  gameItem: {
-    paddingBottom: 4,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY_OPACITY,
-    padding: 2,
-    borderRadius: 8,
-    margin: 1,
-    borderColor: colors.PRIMARY,
-  },
-  gameName: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-});
 
 export default PlayerDetail;

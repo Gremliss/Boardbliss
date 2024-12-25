@@ -8,14 +8,15 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import { StorageAccessFramework } from "expo-file-system";
 import { Platform } from "react-native";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const TransferData = () => {
+  const { currentColors } = useContext(ColorContext);
   const [appData, setAppData] = useState({ collection: {}, players: {} });
 
   const fetchCollection = async () => {
@@ -131,6 +132,39 @@ const TransferData = () => {
     }
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      justifyContent: "center",
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 10,
+      paddingBottom: 12,
+      elevation: 5,
+      marginHorizontal: 40,
+      borderWidth: 1,
+      borderColor: currentColors.PRIMARY_OPACITY,
+    },
+    addButtonTopRadius: {
+      borderTopRightRadius: 30,
+      borderTopLeftRadius: 30,
+      marginTop: 10,
+    },
+    addButtonBottomRadius: {
+      borderBottomRightRadius: 30,
+      borderBottomLeftRadius: 30,
+      marginBottom: 5,
+    },
+    textBtn: {
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -156,36 +190,5 @@ const TransferData = () => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    justifyContent: "center",
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    paddingBottom: 12,
-    elevation: 5,
-    marginHorizontal: 40,
-    borderWidth: 1,
-    borderColor: colors.PRIMARY_OPACITY,
-  },
-  addButtonTopRadius: {
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: 10,
-  },
-  addButtonBottomRadius: {
-    borderBottomRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    marginBottom: 5,
-  },
-  textBtn: {
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-});
+
 export default TransferData;

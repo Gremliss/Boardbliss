@@ -1,7 +1,7 @@
 import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -20,12 +20,13 @@ import { TextInput } from "react-native-gesture-handler";
 import FilterModal from "../components/FilterModal";
 import NewGameModal from "../components/NewGameModal";
 import RoundIconBtn from "../components/RoundIconButton";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Collection = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState();
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
@@ -145,7 +146,9 @@ const Collection = (props) => {
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
-      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+      index % 2 === 0
+        ? currentColors.LIST_COLOR_ONE
+        : currentColors.LIST_COLOR_TWO;
 
     const allDates = item.stats.map((stat) => stat.date);
 
@@ -180,7 +183,7 @@ const Collection = (props) => {
                     item.isChecked ? "check-box" : "check-box-outline-blank"
                   }
                   size={20}
-                  color={colors.LIGHT}
+                  color={currentColors.LIGHT}
                 />
               </View>
             ) : null}
@@ -397,6 +400,116 @@ const Collection = (props) => {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    searchRow: {
+      flexDirection: "row",
+      marginBottom: 4,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    searchBar: {
+      backgroundColor: currentColors.GRAY,
+      fontSize: 20,
+      color: currentColors.LIGHT,
+      padding: 12,
+      flex: 5,
+      paddingRight: 40,
+    },
+    icon: {
+      textAlign: "center",
+      flex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 10,
+      paddingBottom: 12,
+      elevation: 5,
+      marginHorizontal: 40,
+      borderWidth: 1,
+      borderColor: currentColors.PRIMARY_OPACITY,
+    },
+    addButtonTopRadius: {
+      borderTopRightRadius: 30,
+      borderTopLeftRadius: 30,
+      marginTop: 10,
+    },
+    addButtonBottomRadius: {
+      borderBottomRightRadius: 30,
+      borderBottomLeftRadius: 30,
+      marginBottom: 10,
+    },
+    textBtn: {
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+    },
+    yearText: {
+      fontSize: 12,
+      opacity: 0.6,
+      paddingLeft: 8,
+      fontStyle: "italic",
+    },
+    deleteBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.RED,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+    checkIcon: {
+      justiftyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+      width: 20,
+      margin: 2,
+    },
+    cellContainer: {
+      borderRightWidth: 1,
+      paddingHorizontal: 0.3,
+      borderColor: currentColors.BACKGROUND,
+      paddingVertical: 4,
+    },
+    textStyle: {
+      color: currentColors.LIGHT,
+      fontSize: 12,
+      flexWrap: "wrap",
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: 70,
+      alignSelf: "center",
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -425,8 +538,8 @@ const Collection = (props) => {
               value={searchText}
               onChangeText={(text) => handleSearchText(text)}
               placeholder="Search collection"
-              style={[styles.searchBar, { color: colors.LIGHT }]}
-              placeholderTextColor={colors.PLACEHOLDER}
+              style={[styles.searchBar, { color: currentColors.LIGHT }]}
+              placeholderTextColor={currentColors.PLACEHOLDER}
             />
             <AntDesign
               name="close"
@@ -438,7 +551,7 @@ const Collection = (props) => {
               style={[styles.icon]}
               onPress={() => setFilterModalVisible(true)}
             >
-              <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
+              <Fontisto name={"filter"} size={20} color={currentColors.LIGHT} />
             </TouchableOpacity>
           </View>
         )}
@@ -453,7 +566,7 @@ const Collection = (props) => {
                 <MaterialIcons
                   name={checkAllItems ? "check-box" : "check-box-outline-blank"}
                   size={20}
-                  color={colors.LIGHT}
+                  color={currentColors.LIGHT}
                 />
               </TouchableOpacity>
             ) : null}
@@ -525,115 +638,5 @@ const Collection = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  searchRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  searchBar: {
-    backgroundColor: colors.GRAY,
-    fontSize: 20,
-    color: colors.LIGHT,
-    padding: 12,
-    flex: 5,
-    paddingRight: 40,
-  },
-  icon: {
-    textAlign: "center",
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    paddingBottom: 12,
-    elevation: 5,
-    marginHorizontal: 40,
-    borderWidth: 1,
-    borderColor: colors.PRIMARY_OPACITY,
-  },
-  addButtonTopRadius: {
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: 10,
-  },
-  addButtonBottomRadius: {
-    borderBottomRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    marginBottom: 10,
-  },
-  textBtn: {
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-  },
-  yearText: {
-    fontSize: 12,
-    opacity: 0.6,
-    paddingLeft: 8,
-    fontStyle: "italic",
-  },
-  deleteBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.RED,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  checkIcon: {
-    justiftyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 20,
-    margin: 2,
-  },
-  cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 0.3,
-    borderColor: colors.BACKGROUND,
-    paddingVertical: 4,
-  },
-  textStyle: {
-    color: colors.LIGHT,
-    fontSize: 12,
-    flexWrap: "wrap",
-  },
-  centerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: 70,
-    alignSelf: "center",
-    color: colors.LIGHT,
-  },
-});
 
 export default Collection;

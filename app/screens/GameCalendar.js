@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -15,15 +15,16 @@ import {
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RoundIconBtn from "../components/RoundIconButton";
-import colors from "../misc/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import NewGameplayModal from "../components/NewGameplayModal";
 import { useFocusEffect } from "@react-navigation/native";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const GameCalendar = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState([]);
   const [date, setDate] = useState(new Date());
   const currentDate = new Date();
@@ -161,10 +162,10 @@ const GameCalendar = (props) => {
       item.name.slice(-3) === "Sun" || item.name.slice(-3) === "Sat"
         ? isCurrentDate
           ? "#cc3e72"
-          : colors.RED
+          : currentColors.RED
         : isCurrentDate
-        ? colors.PRIMARY
-        : colors.PRIMARY_OPACITY;
+        ? currentColors.PRIMARY
+        : currentColors.PRIMARY_OPACITY;
 
     const fontWeight = isCurrentDate ? "bold" : "normal";
 
@@ -338,6 +339,96 @@ const GameCalendar = (props) => {
     setEditGameplaymodalVisible(true);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    containerTop: {
+      paddingBottom: 20,
+      paddingTop: 20,
+      color: "white",
+      alignItems: "center",
+    },
+    textTop: {
+      fontWeight: "bold",
+      fontSize: 22,
+      color: currentColors.PRIMARY,
+      letterSpacing: 1,
+    },
+    statsTop: {
+      fontWeight: "bold",
+      fontSize: 14,
+      color: currentColors.PRIMARY,
+    },
+    flatListContainer: {
+      flex: 1,
+      color: "white",
+    },
+    leftBtn: {
+      position: "absolute",
+      left: 25,
+      top: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: "white",
+    },
+    rightBtn: {
+      position: "absolute",
+      right: 25,
+      top: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: "white",
+    },
+    flatListItemContainer: {
+      width: windowWidth / 2,
+      padding: 2,
+    },
+    headingFlatListItem: (bcgColor, weight) => {
+      return {
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        backgroundColor: bcgColor,
+        borderColor: currentColors.BACKGROUND,
+        borderTopWidth: 1,
+        color: "white",
+        fontWeight: weight,
+        flex: 1,
+        paddingVertical: 2,
+        paddingLeft: 30,
+      };
+    },
+    dailyGamesContainer: {
+      padding: 5,
+      backgroundColor: currentColors.LIGHT_YELLOW,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+    },
+    winPlayer: {
+      textDecorationLine: "underline",
+    },
+    coopVictory: {
+      fontSize: 14,
+      fontWeight: "bold",
+      textDecorationLine: "underline",
+    },
+    gameItem: {
+      paddingBottom: 4,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY_OPACITY,
+      padding: 2,
+      borderRadius: 8,
+      margin: 1,
+      borderColor: currentColors.PRIMARY,
+    },
+    gameName: {
+      fontSize: 14,
+      fontWeight: "bold",
+    },
+    players: {},
+  });
+
   return (
     <>
       <View style={styles.container}>
@@ -383,93 +474,5 @@ const GameCalendar = (props) => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  containerTop: {
-    paddingBottom: 20,
-    paddingTop: 20,
-    color: "white",
-    alignItems: "center",
-  },
-  textTop: {
-    fontWeight: "bold",
-    fontSize: 22,
-    color: colors.PRIMARY,
-    letterSpacing: 1,
-  },
-  statsTop: {
-    fontWeight: "bold",
-    fontSize: 14,
-    color: colors.PRIMARY,
-  },
-  flatListContainer: {
-    flex: 1,
-    color: "white",
-  },
-  leftBtn: {
-    position: "absolute",
-    left: 25,
-    top: 20,
-    zIndex: 1,
-    backgroundColor: colors.PRIMARY,
-    color: "white",
-  },
-  rightBtn: {
-    position: "absolute",
-    right: 25,
-    top: 20,
-    zIndex: 1,
-    backgroundColor: colors.PRIMARY,
-    color: "white",
-  },
-  flatListItemContainer: {
-    width: windowWidth / 2,
-    padding: 2,
-  },
-  headingFlatListItem: (bcgColor, weight) => {
-    return {
-      borderTopLeftRadius: 15,
-      borderTopRightRadius: 15,
-      backgroundColor: bcgColor,
-      borderColor: colors.BACKGROUND,
-      borderTopWidth: 1,
-      color: "white",
-      fontWeight: weight,
-      flex: 1,
-      paddingVertical: 2,
-      paddingLeft: 30,
-    };
-  },
-  dailyGamesContainer: {
-    padding: 5,
-    backgroundColor: "#F9F3CC80",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  winPlayer: {
-    textDecorationLine: "underline",
-  },
-  coopVictory: {
-    fontSize: 14,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-  },
-  gameItem: {
-    paddingBottom: 4,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY_OPACITY,
-    padding: 2,
-    borderRadius: 8,
-    margin: 1,
-    borderColor: colors.PRIMARY,
-  },
-  gameName: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  players: {},
-});
+
 export default GameCalendar;
