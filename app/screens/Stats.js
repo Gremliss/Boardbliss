@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -12,12 +12,13 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RoundIconBtn from "../components/RoundIconButton";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Stats = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState([]);
   const [date, setDate] = useState(new Date());
   const months = [
@@ -193,6 +194,116 @@ const Stats = (props) => {
     Keyboard.dismiss();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      paddingHorizontal: 30,
+    },
+    containerTop: {
+      paddingBottom: 20,
+      paddingTop: 20,
+      color: "white",
+      alignItems: "center",
+    },
+    textTop: {
+      fontWeight: "bold",
+      fontSize: 22,
+      color: currentColors.PRIMARY,
+      letterSpacing: 1,
+    },
+    leftBtn: {
+      position: "absolute",
+      left: 25,
+      top: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: "white",
+    },
+    rightBtn: {
+      position: "absolute",
+      right: 25,
+      top: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: "white",
+    },
+    horizontalView: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingHorizontal: 10,
+    },
+    gameInfo: {
+      fontSize: 16,
+      paddingVertical: 5,
+      opacity: 1,
+      color: currentColors.DARK,
+      fontWeight: "bold",
+    },
+    gameInfoValue: {
+      fontSize: 16,
+      paddingVertical: 5,
+      color: currentColors.DARK,
+    },
+    group: {
+      backgroundColor: currentColors.LIST_COLOR_ONE,
+      padding: 10,
+      margin: 2,
+      borderRadius: 5,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    cellContainer: {
+      borderRightWidth: 1,
+      paddingHorizontal: 0.3,
+      borderColor: currentColors.BACKGROUND,
+      paddingVertical: 4,
+    },
+    textStyle: {
+      color: currentColors.LIGHT,
+      fontSize: 12,
+      flexWrap: "wrap",
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.BACKGROUND,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <View style={styles.container}>
@@ -265,7 +376,9 @@ const Stats = (props) => {
           </View>
           {monthlyGames.map((game, index) => {
             const backgroundColor =
-              index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+              index % 2 === 0
+                ? currentColors.LIST_COLOR_ONE
+                : currentColors.LIST_COLOR_TWO;
 
             return (
               <View
@@ -340,7 +453,9 @@ const Stats = (props) => {
           </View>
           {monthlyPlayers.map((player, index) => {
             const backgroundColor =
-              index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+              index % 2 === 0
+                ? currentColors.LIST_COLOR_ONE
+                : currentColors.LIST_COLOR_TWO;
 
             return (
               <View
@@ -408,113 +523,5 @@ const Stats = (props) => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    textAlign: "center",
-    color: colors.LIGHT,
-    paddingHorizontal: 30,
-  },
-  containerTop: {
-    paddingBottom: 20,
-    paddingTop: 20,
-    color: "white",
-    alignItems: "center",
-  },
-  textTop: {
-    fontWeight: "bold",
-    fontSize: 22,
-    color: colors.PRIMARY,
-    letterSpacing: 1,
-  },
-  leftBtn: {
-    position: "absolute",
-    left: 25,
-    top: 20,
-    zIndex: 1,
-    backgroundColor: colors.PRIMARY,
-    color: "white",
-  },
-  rightBtn: {
-    position: "absolute",
-    right: 25,
-    top: 20,
-    zIndex: 1,
-    backgroundColor: colors.PRIMARY,
-    color: "white",
-  },
-  horizontalView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-  },
-  gameInfo: {
-    fontSize: 16,
-    paddingVertical: 5,
-    opacity: 1,
-    color: colors.DARK,
-    fontWeight: "bold",
-  },
-  gameInfoValue: {
-    fontSize: 16,
-    paddingVertical: 5,
-    color: colors.DARK,
-  },
-  group: {
-    backgroundColor: colors.LIST_COLOR_ONE,
-    padding: 10,
-    margin: 2,
-    borderRadius: 5,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 0.3,
-    borderColor: colors.BACKGROUND,
-    paddingVertical: 4,
-  },
-  textStyle: {
-    color: colors.LIGHT,
-    fontSize: 12,
-    flexWrap: "wrap",
-  },
-  centerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-});
+
 export default Stats;

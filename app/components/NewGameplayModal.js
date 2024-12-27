@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -15,13 +15,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
-import colors from "../misc/colors";
+import { ScrollView } from "react-native-gesture-handler";
 import AddPlayersModal from "./AddPlayersModal";
 import RoundIconBtn from "./RoundIconButton";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowHeight = Dimensions.get("window").height;
 
 const NewGameplayModal = ({
   visible,
@@ -33,6 +33,7 @@ const NewGameplayModal = ({
   gameParams,
   chosenDate,
 }) => {
+  const { currentColors } = useContext(ColorContext);
   const currentDate = new Date();
   // const [collection, setCollection] = useState([]);
   const [players, setPlayers] = useState([]);
@@ -168,17 +169,20 @@ const NewGameplayModal = ({
     }
     if (
       parseInt(addGameplay.date.day) < 1 ||
-      parseInt(addGameplay.date.day) > 59
+      parseInt(addGameplay.date.day) > 59 ||
+      addGameplay.date.day.length > 2
     ) {
       displayDateAlert(1, 59, "day");
     } else if (
       parseInt(addGameplay.date.month) > 12 ||
-      parseInt(addGameplay.date.month) < 1
+      parseInt(addGameplay.date.month) < 1 ||
+      addGameplay.date.month.length > 2
     ) {
       displayDateAlert(1, 12, "month");
     } else {
       if (chooseWinners === false) {
         let winningPlayers = [];
+        let loosingPlayers = [];
         if (addGameplay.players.length > 0) {
           if (addGameplay.type === "Rivalry") {
             let maxScore;
@@ -343,7 +347,7 @@ const NewGameplayModal = ({
   };
 
   const renderItem = ({ item, index }) => {
-    const backgroundColor = colors.LIST_COLOR_TWO;
+    const backgroundColor = currentColors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity key={index} onPress={() => handleCheckButton(item)}>
         <View
@@ -354,7 +358,7 @@ const NewGameplayModal = ({
               <MaterialIcons
                 name={item.isChecked ? "check-box" : "check-box-outline-blank"}
                 size={20}
-                color={colors.PRIMARY}
+                color={currentColors.PRIMARY}
               />
             </View>
             <View style={[styles.cellContainer]}>
@@ -365,6 +369,105 @@ const NewGameplayModal = ({
       </TouchableOpacity>
     );
   };
+
+  const styles = StyleSheet.create({
+    keyboardContainer: {
+      flex: 1,
+    },
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      paddingBottom: 80,
+    },
+    flexRow: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    playerRow: {
+      backgroundColor: currentColors.LIST_COLOR_ONE,
+      borderRadius: 8,
+      margin: 1,
+    },
+    nameOfInputStyle: {
+      padding: 8,
+      flex: 2,
+      margin: 4,
+    },
+    inputTextStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 11,
+      flex: 2,
+      margin: 2,
+      borderRadius: 5,
+    },
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    addBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+      padding: 10,
+      width: windowWidth / 2,
+    },
+    checkIcon: {
+      justiftyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+      width: 20,
+      margin: 2,
+    },
+    cellContainer: {
+      padding: 5,
+    },
+    addNewPlayer: {
+      padding: 9,
+      color: currentColors.LIGHT,
+      borderRadius: 5,
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 8,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      elevation: 5,
+      marginHorizontal: 1,
+    },
+    boargameImgContainer: {
+      alignItems: "center",
+    },
+    boargameImg: {
+      width: windowWidth,
+      height: 120,
+    },
+    gameNameStyle: {
+      flex: 1,
+      textAlign: "center",
+      fontWeight: "bold",
+      padding: 5,
+      fontSize: 18,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+  });
 
   return (
     <>
@@ -401,7 +504,7 @@ const NewGameplayModal = ({
                     style={[styles.inputTextStyle]}
                     onPress={() => changeType()}
                   >
-                    <Text style={[{ color: colors.LIGHT }]}>
+                    <Text style={[{ color: currentColors.LIGHT }]}>
                       {addGameplay.type}
                     </Text>
                   </TouchableOpacity>
@@ -414,7 +517,7 @@ const NewGameplayModal = ({
                         style={[styles.inputTextStyle]}
                         onPress={() => changeScoreType()}
                       >
-                        <Text style={[{ color: colors.LIGHT }]}>
+                        <Text style={[{ color: currentColors.LIGHT }]}>
                           {addGameplay.scoreType}
                         </Text>
                       </TouchableOpacity>
@@ -427,7 +530,7 @@ const NewGameplayModal = ({
                         style={[styles.inputTextStyle]}
                         onPress={() => changeChooseWinners()}
                       >
-                        <Text style={[{ color: colors.LIGHT }]}>
+                        <Text style={[{ color: currentColors.LIGHT }]}>
                           {chooseWinners ? "Manually" : "Automatic"}
                         </Text>
                       </TouchableOpacity>
@@ -441,7 +544,7 @@ const NewGameplayModal = ({
                         style={[styles.inputTextStyle]}
                         onPress={() => changeVictory()}
                       >
-                        <Text style={[{ color: colors.LIGHT }]}>
+                        <Text style={[{ color: currentColors.LIGHT }]}>
                           {addGameplay.coop?.victory}
                         </Text>
                       </TouchableOpacity>
@@ -459,7 +562,7 @@ const NewGameplayModal = ({
                         placeholder="Points"
                         style={[styles.inputTextStyle]}
                         keyboardType="numeric"
-                        placeholderTextColor={colors.PLACEHOLDER}
+                        placeholderTextColor={currentColors.PLACEHOLDER}
                       />
                     </View>
                   </>
@@ -482,7 +585,7 @@ const NewGameplayModal = ({
                     {
                       fontSize: 18,
                       textAlign: "center",
-                      color: colors.LIGHT,
+                      color: currentColors.LIGHT,
                     },
                   ]}
                 >
@@ -536,7 +639,7 @@ const NewGameplayModal = ({
                                               : "check-box-outline-blank"
                                           }
                                           size={20}
-                                          color={colors.PRIMARY}
+                                          color={currentColors.PRIMARY}
                                         />
                                       </View>
                                     </View>
@@ -580,7 +683,9 @@ const NewGameplayModal = ({
                                   placeholder={addGameplay.scoreType}
                                   style={[styles.inputTextStyle]}
                                   keyboardType="numeric"
-                                  placeholderTextColor={colors.PLACEHOLDER}
+                                  placeholderTextColor={
+                                    currentColors.PLACEHOLDER
+                                  }
                                 />
                               </View>
                             </>
@@ -627,7 +732,7 @@ const NewGameplayModal = ({
                 placeholder="Hours"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
               <TextInput
                 defaultValue={addGameplay?.duration?.min?.toString()}
@@ -651,7 +756,7 @@ const NewGameplayModal = ({
                 placeholder="Minutes"
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
 
@@ -674,7 +779,7 @@ const NewGameplayModal = ({
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
                 defaultValue={addGameplay?.date?.day?.toString()}
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
 
               <TextInput
@@ -690,7 +795,7 @@ const NewGameplayModal = ({
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
                 defaultValue={addGameplay?.date?.month?.toString()}
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
               <TextInput
                 onChangeText={(text) =>
@@ -703,7 +808,7 @@ const NewGameplayModal = ({
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
                 defaultValue={addGameplay?.date?.year?.toString()}
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
               />
             </View>
             <TextInput
@@ -716,7 +821,7 @@ const NewGameplayModal = ({
               }
               placeholder="Notes"
               style={[styles.inputTextStyle]}
-              placeholderTextColor={colors.PLACEHOLDER}
+              placeholderTextColor={currentColors.PLACEHOLDER}
               textAlignVertical="top"
               multiline
             />
@@ -747,104 +852,5 @@ const NewGameplayModal = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  keyboardContainer: {
-    flex: 1,
-  },
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    paddingBottom: 80,
-  },
-  flexRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  playerRow: {
-    backgroundColor: colors.LIST_COLOR_ONE,
-    borderRadius: 8,
-    margin: 1,
-  },
-  nameOfInputStyle: {
-    padding: 8,
-    flex: 2,
-    margin: 4,
-  },
-  inputTextStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 11,
-    flex: 2,
-    margin: 2,
-    borderRadius: 5,
-  },
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-    padding: 10,
-    width: windowWidth / 2,
-  },
-  checkIcon: {
-    justiftyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 20,
-    margin: 2,
-  },
-  cellContainer: {
-    padding: 5,
-  },
-  addNewPlayer: {
-    padding: 9,
-    color: colors.LIGHT,
-    borderRadius: 5,
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 8,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    elevation: 5,
-    marginHorizontal: 1,
-  },
-  boargameImgContainer: {
-    alignItems: "center",
-  },
-  boargameImg: {
-    width: windowWidth,
-    height: 120,
-  },
-  gameNameStyle: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: "bold",
-    padding: 5,
-    fontSize: 18,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-});
 
 export default NewGameplayModal;

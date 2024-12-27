@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -12,12 +12,13 @@ import {
   View,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const EditBoardGame = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const gameParams = props.route.params.gameParams;
   const [collection, setCollection] = useState([]);
   const [name, setName] = useState(gameParams.name);
@@ -77,6 +78,65 @@ const EditBoardGame = (props) => {
     props.navigation.goBack();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    nameOfInputStyle: {
+      padding: 10,
+      flex: 2,
+      margin: 4,
+    },
+    inputTextStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 12,
+      flex: 5,
+      margin: 2,
+      borderRadius: 5,
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.BACKGROUND,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    submitButton: {
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      padding: 10,
+      borderRadius: 15,
+      elevation: 5,
+      marginVertical: 20,
+      marginHorizontal: 40,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -108,7 +168,7 @@ const EditBoardGame = (props) => {
               style={[styles.inputTextStyle]}
               onPress={() => changeOwner()}
             >
-              <Text style={[{ color: colors.LIGHT }]}>{owner}</Text>
+              <Text style={[{ color: currentColors.LIGHT }]}>{owner}</Text>
             </TouchableOpacity>
           </View>
           <View style={[styles.flexRow]}>
@@ -117,7 +177,7 @@ const EditBoardGame = (props) => {
               style={[styles.inputTextStyle]}
               onPress={() => changeExpansion()}
             >
-              <Text style={[{ color: colors.LIGHT }]}>
+              <Text style={[{ color: currentColors.LIGHT }]}>
                 {expansion ? "Yes" : "No"}
               </Text>
             </TouchableOpacity>
@@ -231,64 +291,5 @@ const EditBoardGame = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  nameOfInputStyle: {
-    padding: 10,
-    flex: 2,
-    margin: 4,
-  },
-  inputTextStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 12,
-    flex: 5,
-    margin: 2,
-    borderRadius: 5,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  submitButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 15,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 40,
-  },
-});
 
 export default EditBoardGame;

@@ -1,8 +1,22 @@
 import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
+import { useContext } from "react";
 
 const RoundIconBtn = ({ antIconName, size, color, style, onPress }) => {
+  const { currentColors } = useContext(ColorContext);
+
+  const styles = StyleSheet.create({
+    icon: () => {
+      return {
+        backgroundColor: currentColors.PRIMARY,
+        padding: 15,
+        borderRadius: 50,
+        elevation: 5,
+      };
+    },
+  });
+
   return (
     <AntDesign
       name={antIconName}
@@ -13,16 +27,5 @@ const RoundIconBtn = ({ antIconName, size, color, style, onPress }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  icon: () => {
-    return {
-      backgroundColor: colors.PRIMARY,
-      padding: 15,
-      borderRadius: 50,
-      elevation: 5,
-    };
-  },
-});
 
 export default RoundIconBtn;

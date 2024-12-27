@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -14,12 +14,15 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import colors from "../misc/colors";
 import NewGameplayModal from "./NewGameplayModal";
 import RoundIconBtn from "./RoundIconButton";
+import { ColorContext } from "../misc/ColorContext";
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+
 const GamesPlayed = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [gameParams, setGameParams] = useState(props.route.params.gameParams);
   const [collection, setCollection] = useState([]);
   const currentDate = new Date();
@@ -157,16 +160,20 @@ const GamesPlayed = (props) => {
     return `${day}/${month}/${year}`;
   };
   const checkFormat = (value) => {
-    if (value > 9) {
-      let newValue = value;
-    } else {
-      let newValue = "0" + value;
+    const numericValue = Number(value);
+
+    if (isNaN(numericValue) || numericValue < 0) {
+      return "1";
     }
-    return newValue;
+
+    return numericValue < 10 ? "0" + numericValue : String(numericValue);
   };
+
   const renderItem = ({ item, index }) => {
     const backgroundColor =
-      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+      index % 2 === 0
+        ? currentColors.LIST_COLOR_ONE
+        : currentColors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity
         onPress={() => handleItemPressed(item)}
@@ -355,6 +362,121 @@ const GamesPlayed = (props) => {
     return date1.day - date2.day;
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    searchRow: {
+      flexDirection: "row",
+      marginBottom: 4,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    searchBar: {
+      backgroundColor: currentColors.GRAY,
+      fontSize: 20,
+      color: currentColors.LIGHT,
+      padding: 10,
+      flex: 5,
+      paddingRight: 40,
+    },
+    icon: {
+      textAlign: "center",
+      flex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 10,
+      borderRadius: 15,
+      elevation: 5,
+      marginVertical: 20,
+      marginHorizontal: 40,
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+    },
+    opacityText: {
+      fontSize: 12,
+      opacity: 0.6,
+      fontStyle: "italic",
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.BACKGROUND,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    deleteBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.RED,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 60,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+    checkIcon: {
+      justiftyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+      width: 20,
+      margin: 2,
+    },
+    cellContainer: {
+      // borderRightWidth: 1,
+      // paddingHorizontal: 1,
+      // borderColor: currentColors.DARK,
+      // paddingVertical: 4,
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+      borderRightWidth: 1,
+      paddingBottom: 1,
+      borderColor: currentColors.BACKGROUND,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: 70,
+      alignSelf: "center",
+    },
+  });
+
   return (
     <View style={[styles.container]}>
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
@@ -365,7 +487,11 @@ const GamesPlayed = (props) => {
           >
             <Text
               style={[
-                { fontSize: 20, textAlign: "center", color: colors.LIGHT },
+                {
+                  fontSize: 20,
+                  textAlign: "center",
+                  color: currentColors.LIGHT,
+                },
               ]}
             >
               Add gameplay
@@ -378,20 +504,26 @@ const GamesPlayed = (props) => {
           <View
             style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
           >
-            <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
+            <Text style={[{ color: currentColors.LIGHT }]}>Nr</Text>
           </View>
           <View style={[styles.centerStyle, styles.cellContainer, { flex: 2 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
+            <Text
+              style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
+            >
               Info
             </Text>
           </View>
           <View style={[styles.centerStyle, styles.cellContainer, { flex: 2 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
+            <Text
+              style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
+            >
               Players
             </Text>
           </View>
           <View style={[styles.centerStyle, styles.cellContainer, { flex: 2 }]}>
-            <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
+            <Text
+              style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
+            >
               Result
             </Text>
           </View>
@@ -476,118 +608,5 @@ const GamesPlayed = (props) => {
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  searchRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  searchBar: {
-    backgroundColor: colors.GRAY,
-    fontSize: 20,
-    color: colors.LIGHT,
-    padding: 10,
-    flex: 5,
-    paddingRight: 40,
-  },
-  icon: {
-    textAlign: "center",
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 15,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 40,
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-  },
-  opacityText: {
-    fontSize: 12,
-    opacity: 0.6,
-    fontStyle: "italic",
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  deleteBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.RED,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 60,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-  checkIcon: {
-    justiftyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: 20,
-    margin: 2,
-  },
-  cellContainer: {
-    // borderRightWidth: 1,
-    // paddingHorizontal: 1,
-    // borderColor: colors.DARK,
-    // paddingVertical: 4,
-  },
-  centerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-    borderRightWidth: 1,
-    paddingBottom: 1,
-    borderColor: colors.BACKGROUND,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: 70,
-    alignSelf: "center",
-  },
-});
+
 export default GamesPlayed;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -14,13 +14,14 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import GamesPlayed from "./GamesPlayed";
-import colors from "../misc/colors";
+// import GamesPlayed from "./GamesPlayed";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const BoardGameStats = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [gameParams, setGameParams] = useState(props.route.params.gameParams);
 
   const fetchGameParams = async () => {
@@ -178,7 +179,9 @@ const BoardGameStats = (props) => {
           { alignItems: "center", justifyContent: "center" },
         ]}
       >
-        <Text style={[styles.gameInfo, { opacity: 1, color: colors.DARK }]}>
+        <Text
+          style={[styles.gameInfo, { opacity: 1, color: currentColors.DARK }]}
+        >
           {item.name}
         </Text>
       </View>
@@ -202,6 +205,101 @@ const BoardGameStats = (props) => {
       </View>
     </View>
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      paddingHorizontal: 30,
+    },
+    boargameImgContainer: {
+      alignItems: "center",
+    },
+    boargameImg: {
+      width: windowWidth,
+      height: 300,
+    },
+    gameName: {
+      fontSize: 26,
+      paddingVertical: 5,
+      color: currentColors.PRIMARY,
+      fontWeight: "bold",
+      marginVertical: 10,
+      textAlign: "center",
+    },
+    horizontalContainer: {
+      flexDirection: "row",
+    },
+    horizontalView: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      flex: 1,
+      padding: 10,
+      backgroundColor: currentColors.BACKGROUND,
+      borderRadius: 10,
+      margin: 2,
+    },
+    gameInfo: {
+      fontSize: 16,
+      paddingVertical: 5,
+      opacity: 1,
+      color: currentColors.DARK,
+      fontWeight: "bold",
+    },
+    gameInfoValue: {
+      fontSize: 16,
+      paddingVertical: 5,
+      color: currentColors.DARK,
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.BACKGROUND,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    playerContainer: {
+      backgroundColor: currentColors.BACKGROUND,
+      margin: 3,
+      borderRadius: 8,
+    },
+    playerInfo: {
+      color: currentColors.DARK,
+      margin: 2,
+      fontWeight: "bold",
+    },
+    playerInfoValue: {
+      margin: 2,
+      color: currentColors.DARK,
+    },
+    horizontalViewPlayers: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      flex: 1,
+      borderRadius: 20,
+      margin: 2,
+    },
+  });
 
   return (
     <>
@@ -349,100 +447,5 @@ const BoardGameStats = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    textAlign: "center",
-    color: colors.LIGHT,
-    paddingHorizontal: 30,
-  },
-  boargameImgContainer: {
-    alignItems: "center",
-  },
-  boargameImg: {
-    width: windowWidth,
-    height: 300,
-  },
-  gameName: {
-    fontSize: 26,
-    paddingVertical: 5,
-    color: colors.PRIMARY,
-    fontWeight: "bold",
-    marginVertical: 10,
-    textAlign: "center",
-  },
-  horizontalContainer: {
-    flexDirection: "row",
-  },
-  horizontalView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-    padding: 10,
-    backgroundColor: colors.BACKGROUND,
-    borderRadius: 10,
-    margin: 2,
-  },
-  gameInfo: {
-    fontSize: 16,
-    paddingVertical: 5,
-    opacity: 1,
-    color: colors.DARK,
-    fontWeight: "bold",
-  },
-  gameInfoValue: {
-    fontSize: 16,
-    paddingVertical: 5,
-    color: colors.DARK,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.BACKGROUND,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  playerContainer: {
-    backgroundColor: colors.BACKGROUND,
-    margin: 3,
-    borderRadius: 8,
-  },
-  playerInfo: {
-    color: colors.DARK,
-    margin: 2,
-    fontWeight: "bold",
-  },
-  playerInfoValue: {
-    margin: 2,
-    color: colors.DARK,
-  },
-  horizontalViewPlayers: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-    borderRadius: 20,
-    margin: 2,
-  },
-});
 
 export default BoardGameStats;

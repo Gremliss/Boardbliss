@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -15,12 +15,13 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const NewGameModal = ({ visible, onClose, onSubmit }) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState([]);
   const [addGame, setAddGame] = useState({
     name: "",
@@ -114,6 +115,87 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
       : setAddGame({ ...addGame, expansion: false });
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    nameOfInputStyle: {
+      padding: 10,
+      flex: 2,
+      margin: 4,
+    },
+    inputTextStyle: {
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+      padding: 11,
+      flex: 5,
+      margin: 2,
+      borderRadius: 5,
+    },
+    bottomContainer: {
+      width: windowWidth,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonBottom: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      borderColor: currentColors.DARK,
+      borderWidth: 1,
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      height: windowHeight / 8,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      opacity: 0.6,
+    },
+    textBtn: {
+      fontSize: 18,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    closeButton: {
+      backgroundColor: currentColors.PRIMARY,
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+      padding: 10,
+      borderRadius: 50,
+      elevation: 5,
+      marginVertical: 20,
+      marginHorizontal: 30,
+    },
+
+    btnContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+    },
+    addBtn: {
+      position: "absolute",
+      right: 25,
+      bottom: 20,
+      zIndex: 1,
+      color: currentColors.LIGHT,
+    },
+    closeBtn: {
+      position: "absolute",
+      left: 25,
+      bottom: 20,
+      zIndex: 1,
+      backgroundColor: currentColors.GRAY,
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -125,7 +207,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
               <TextInput
                 onChangeText={(text) => setAddGame({ ...addGame, name: text })}
                 placeholder="Name"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 multiline={true}
               />
@@ -137,7 +219,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, yearpublished: text })
                 }
                 placeholder="Year published"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -148,7 +230,9 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 style={[styles.inputTextStyle, { padding: 14 }]}
                 onPress={() => changeOwner()}
               >
-                <Text style={[{ color: colors.LIGHT }]}>{addGame.owner}</Text>
+                <Text style={[{ color: currentColors.LIGHT }]}>
+                  {addGame.owner}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.flexRow]}>
@@ -157,7 +241,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                 style={[styles.inputTextStyle, { padding: 14 }]}
                 onPress={() => changeExpansion()}
               >
-                <Text style={[{ color: colors.LIGHT }]}>
+                <Text style={[{ color: currentColors.LIGHT }]}>
                   {addGame?.expansion ? "Yes" : "No"}
                 </Text>
               </TouchableOpacity>
@@ -169,7 +253,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, minPlayers: text })
                 }
                 placeholder="Min players"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -181,7 +265,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, maxPlayers: text })
                 }
                 placeholder="Max players"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -193,7 +277,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, minPlaytime: text })
                 }
                 placeholder="Min playtime"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -205,7 +289,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, maxPlaytime: text })
                 }
                 placeholder="Max playtime"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -218,7 +302,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, rating: changeCommaText });
                 }}
                 placeholder="Rating"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 keyboardType="numeric"
               />
@@ -230,7 +314,7 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
                   setAddGame({ ...addGame, bggImage: text })
                 }
                 placeholder="Img link"
-                placeholderTextColor={colors.PLACEHOLDER}
+                placeholderTextColor={currentColors.PLACEHOLDER}
                 style={[styles.inputTextStyle]}
                 multiline={true}
               />
@@ -256,86 +340,5 @@ const NewGameModal = ({ visible, onClose, onSubmit }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  nameOfInputStyle: {
-    padding: 10,
-    flex: 2,
-    margin: 4,
-  },
-  inputTextStyle: {
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-    padding: 11,
-    flex: 5,
-    margin: 2,
-    borderRadius: 5,
-  },
-  bottomContainer: {
-    width: windowWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    textAlign: "center",
-    borderColor: colors.DARK,
-    borderWidth: 1,
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    height: windowHeight / 8,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    opacity: 0.6,
-  },
-  textBtn: {
-    fontSize: 18,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  closeButton: {
-    backgroundColor: colors.PRIMARY,
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-    padding: 10,
-    borderRadius: 50,
-    elevation: 5,
-    marginVertical: 20,
-    marginHorizontal: 30,
-  },
-
-  btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addBtn: {
-    position: "absolute",
-    right: 25,
-    bottom: 20,
-    zIndex: 1,
-    color: colors.LIGHT,
-  },
-  closeBtn: {
-    position: "absolute",
-    left: 25,
-    bottom: 20,
-    zIndex: 1,
-    backgroundColor: colors.GRAY,
-    color: colors.LIGHT,
-  },
-});
 
 export default NewGameModal;

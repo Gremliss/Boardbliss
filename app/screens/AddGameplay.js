@@ -1,7 +1,7 @@
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   BackHandler,
   Dimensions,
@@ -21,12 +21,13 @@ import {
 import FilterModal from "../components/FilterModal";
 import NewGameplayModal from "../components/NewGameplayModal";
 import NewGameModal from "../components/NewGameModal";
-import colors from "../misc/colors";
+import { ColorContext } from "../misc/ColorContext";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowWidth = Dimensions.get("window").width;
+// const windowHeight = Dimensions.get("window").height;
 
 const AddGameplay = (props) => {
+  const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState();
   const [gameParams, setGameParams] = useState({
     name: "",
@@ -104,7 +105,9 @@ const AddGameplay = (props) => {
 
   const renderItem = ({ item, index }) => {
     const backgroundColor =
-      index % 2 === 0 ? colors.LIST_COLOR_ONE : colors.LIST_COLOR_TWO;
+      index % 2 === 0
+        ? currentColors.LIST_COLOR_ONE
+        : currentColors.LIST_COLOR_TWO;
     return (
       <TouchableOpacity onPress={() => handleItemPressed(item)}>
         <View
@@ -292,6 +295,94 @@ const AddGameplay = (props) => {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+    },
+    searchRow: {
+      flexDirection: "row",
+      marginBottom: 4,
+    },
+    flexRow: {
+      flexDirection: "row",
+    },
+    searchBar: {
+      backgroundColor: currentColors.GRAY,
+      fontSize: 20,
+      color: currentColors.LIGHT,
+      padding: 12,
+      flex: 5,
+      paddingRight: 40,
+    },
+    icon: {
+      textAlign: "center",
+      flex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    itemContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      borderRadius: 8,
+      margin: 1,
+    },
+    yearText: {
+      fontSize: 12,
+      opacity: 0.6,
+      paddingLeft: 8,
+      fontStyle: "italic",
+    },
+    cellContainer: {
+      borderRightWidth: 1,
+      paddingHorizontal: 1,
+      borderColor: currentColors.BACKGROUND,
+      paddingVertical: 4,
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: 70,
+      alignSelf: "center",
+      color: currentColors.LIGHT,
+    },
+    addButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 10,
+      paddingBottom: 12,
+      elevation: 5,
+      marginHorizontal: 40,
+      borderWidth: 1,
+      borderColor: currentColors.PRIMARY_OPACITY,
+    },
+    addButtonTopRadius: {
+      borderTopRightRadius: 30,
+      borderTopLeftRadius: 30,
+      marginTop: 10,
+    },
+    addButtonBottomRadius: {
+      borderBottomRightRadius: 30,
+      borderBottomLeftRadius: 30,
+      marginBottom: 5,
+    },
+    blueText: {
+      fontSize: 20,
+      padding: 10,
+      color: currentColors.PRIMARY,
+      fontWeight: "bold",
+    },
+    textBtn: {
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+  });
+
   return (
     <>
       <StatusBar />
@@ -302,8 +393,8 @@ const AddGameplay = (props) => {
             value={searchText}
             onChangeText={(text) => handleSearchText(text)}
             placeholder="Search game"
-            style={[styles.searchBar, { color: colors.LIGHT }]}
-            placeholderTextColor={colors.PLACEHOLDER}
+            style={[styles.searchBar, { color: currentColors.LIGHT }]}
+            placeholderTextColor={currentColors.PLACEHOLDER}
           />
           <AntDesign
             name="close"
@@ -315,7 +406,7 @@ const AddGameplay = (props) => {
             style={[styles.icon]}
             onPress={() => setFilterModalVisible(true)}
           >
-            <Fontisto name={"filter"} size={20} color={colors.LIGHT} />
+            <Fontisto name={"filter"} size={20} color={currentColors.LIGHT} />
           </TouchableOpacity>
         </View>
 
@@ -324,21 +415,23 @@ const AddGameplay = (props) => {
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.8 }]}
             >
-              <Text style={[{ color: colors.LIGHT }]}>Nr</Text>
+              <Text style={[{ color: currentColors.LIGHT }]}>Nr</Text>
             </View>
             <View style={[styles.cellContainer, { flex: 4 }]}>
-              <Text style={[{ paddingHorizontal: 8, color: colors.LIGHT }]}>
+              <Text
+                style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
+              >
                 Name
               </Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Rating</Text>
+              <Text style={[{ color: currentColors.LIGHT }]}>Rating</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Players</Text>
+              <Text style={[{ color: currentColors.LIGHT }]}>Players</Text>
             </View>
             <View style={[styles.centerStyle, styles.cellContainer]}>
-              <Text style={[{ color: colors.LIGHT }]}>Time</Text>
+              <Text style={[{ color: currentColors.LIGHT }]}>Time</Text>
             </View>
           </View>
         </View>
@@ -393,93 +486,5 @@ const AddGameplay = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-  },
-  searchRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  searchBar: {
-    backgroundColor: colors.GRAY,
-    fontSize: 20,
-    color: colors.LIGHT,
-    padding: 12,
-    flex: 5,
-    paddingRight: 40,
-  },
-  icon: {
-    textAlign: "center",
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  itemContainer: {
-    backgroundColor: colors.PRIMARY,
-    borderRadius: 8,
-    margin: 1,
-  },
-  yearText: {
-    fontSize: 12,
-    opacity: 0.6,
-    paddingLeft: 8,
-    fontStyle: "italic",
-  },
-  cellContainer: {
-    borderRightWidth: 1,
-    paddingHorizontal: 1,
-    borderColor: colors.BACKGROUND,
-    paddingVertical: 4,
-  },
-  centerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: 70,
-    alignSelf: "center",
-    color: colors.LIGHT,
-  },
-  addButton: {
-    backgroundColor: colors.PRIMARY,
-    color: colors.LIGHT,
-    padding: 10,
-    paddingBottom: 12,
-    elevation: 5,
-    marginHorizontal: 40,
-    borderWidth: 1,
-    borderColor: colors.PRIMARY_OPACITY,
-  },
-  addButtonTopRadius: {
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: 10,
-  },
-  addButtonBottomRadius: {
-    borderBottomRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    marginBottom: 5,
-  },
-  blueText: {
-    fontSize: 20,
-    padding: 10,
-    color: colors.PRIMARY,
-    fontWeight: "bold",
-  },
-  textBtn: {
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-});
 
 export default AddGameplay;

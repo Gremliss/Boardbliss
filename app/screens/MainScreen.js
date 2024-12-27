@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -6,14 +6,70 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import colors from "../misc/colors";
+
+import { ColorContext } from "../misc/ColorContext";
+import OptionsModal from "../components/OptionsModal";
+import { AntDesign } from "@expo/vector-icons";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const MainScreen = (props) => {
+  const { currentColors } = useContext(ColorContext);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: currentColors.BACKGROUND,
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    btnContainer: {
+      backgroundColor: currentColors.PRIMARY,
+      padding: 20,
+      paddingBottom: 22,
+      elevation: 5,
+      width: windowWidth / 1.3,
+      borderWidth: 1,
+      borderRadius: 1,
+      borderColor: currentColors.PRIMARY_OPACITY,
+    },
+    textBtn: {
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
+    },
+    addButtonTopRadius: {
+      borderTopRightRadius: 50,
+      borderTopLeftRadius: 50,
+      marginTop: 10,
+    },
+    addButtonBottomRadius: {
+      borderBottomRightRadius: 50,
+      borderBottomLeftRadius: 50,
+      marginBottom: 5,
+    },
+    options: {
+      position: "absolute",
+      right: 0,
+      top: 0,
+      zIndex: 1,
+      backgroundColor: currentColors.PRIMARY,
+      color: "white",
+      padding: 10,
+      borderBottomLeftRadius: 25,
+    },
+  });
+
   return (
     <View style={[styles.container]}>
+      <AntDesign
+        name={"setting"}
+        size={36}
+        style={[styles.options]}
+        onPress={() => setModalVisible(true)}
+      />
       <TouchableOpacity
         style={[styles.btnContainer, styles.addButtonTopRadius]}
         onPress={() => props.navigation.navigate("AddGameplay")}
@@ -56,42 +112,13 @@ const MainScreen = (props) => {
       >
         <Text style={[styles.textBtn]}>Players</Text>
       </TouchableOpacity>
+
+      <OptionsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.BACKGROUND,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btnContainer: {
-    backgroundColor: colors.PRIMARY,
-    padding: 20,
-    paddingBottom: 22,
-    elevation: 5,
-    width: windowWidth / 1.3,
-    borderWidth: 1,
-    borderRadius: 1,
-    borderColor: colors.PRIMARY_OPACITY,
-  },
-  textBtn: {
-    fontSize: 20,
-    textAlign: "center",
-    color: colors.LIGHT,
-  },
-  addButtonTopRadius: {
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
-    marginTop: 10,
-  },
-  addButtonBottomRadius: {
-    borderBottomRightRadius: 50,
-    borderBottomLeftRadius: 50,
-    marginBottom: 5,
-  },
-});
 
 export default MainScreen;
