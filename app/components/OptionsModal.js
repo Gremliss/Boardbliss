@@ -6,8 +6,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
-  Button,
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,23 +18,14 @@ import ColorPicker, {
   OpacitySlider,
   HueSlider,
 } from "reanimated-color-picker";
-// import { ColorPicker } from "react-native-color-picker";
-// import Slider from "@react-native-community/slider";
-
-// const windowWidth = Dimensions.get("window").width;
-// const windowHeight = Dimensions.get("window").height;
 
 const OptionsModal = ({ visible, onClose }) => {
   const { currentColors, setCurrentColors } = useContext(ColorContext);
-  const [selectedColor, setSelectedColor] = useState("#007980");
-  // const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [red, setRed] = useState(0);
-  // const [green, setGreen] = useState(121);
-  // const [blue, setBlue] = useState(128);
   const [showModal, setShowModal] = useState(false);
+  let selectedColor = currentColors.PRIMARY;
+
   const onSelectColor = ({ hex }) => {
-    // do something with the selected color.
-    setSelectedColor(hex);
+    selectedColor = hex;
   };
 
   const closeModal = () => {
@@ -63,13 +52,6 @@ const OptionsModal = ({ visible, onClose }) => {
       flex: 1,
       backgroundColor: currentColors.BACKGROUND,
     },
-    // input: (windowHeight) => {
-    //   return {
-    //     fontSize: 20,
-    //     marginTop: windowHeight / 3,
-    //     marginHorizontal: 20,
-    //   };
-    // },
     btnContainer: {
       flexDirection: "row",
       justifyContent: "center",
@@ -82,10 +64,17 @@ const OptionsModal = ({ visible, onClose }) => {
       color: currentColors.LIGHT,
     },
     button: {
+      color: currentColors.LIGHT,
       padding: 10,
-      borderRadius: 5,
-      alignItems: "center",
-      justifyContent: "center",
+      borderRadius: 15,
+      elevation: 5,
+      marginVertical: 15,
+      marginHorizontal: 40,
+    },
+    textStyle: {
+      fontSize: 20,
+      textAlign: "center",
+      color: currentColors.LIGHT,
     },
     coloredText: {
       marginTop: 50,
@@ -94,6 +83,12 @@ const OptionsModal = ({ visible, onClose }) => {
       color: currentColors.PRIMARY,
       fontWeight: "bold",
     },
+    // swatchesStyle: {
+    //   margin: 10,
+    // },
+    hueSliderStyle: {
+      marginVertical: 15,
+    },
   });
 
   return (
@@ -101,51 +96,62 @@ const OptionsModal = ({ visible, onClose }) => {
       <StatusBar />
       <Modal visible={visible} animationType="fade" onRequestClose={closeModal}>
         <View style={styles.container}>
-          <Text style={styles.coloredText}>Choose theme:</Text>
+          <Text style={styles.coloredText}>Theme:</Text>
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "#007980" }]}
             onPress={() => changePrimaryColor("#007980")}
           >
-            <Text style={{ color: currentColors.LIGHT }}>Theme 1</Text>
+            <Text style={styles.textStyle}>Reset to default</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#95DE3A" }]}
-            onPress={() => console.log(currentColors)}
+            style={[styles.button, { backgroundColor: currentColors.PRIMARY }]}
+            onPress={() => setShowModal(true)}
           >
-            <Text style={{ color: currentColors.LIGHT }}>Test</Text>
+            <Text style={styles.textStyle}>Change main color</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#B271F0" }]}
-            onPress={() => changePrimaryColor("#B271F0")}
-          >
-            <Text style={{ color: currentColors.LIGHT }}>Theme 3</Text>
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.container}>
-          <Button title="Color Picker" onPress={() => setShowModal(true)} />
           <Modal visible={showModal} animationType="slide">
-            <ColorPicker
-              style={{
-                width: "70%",
-                alignSelf: "center",
-              }}
-              value={currentColors.PRIMARY}
-              onComplete={onSelectColor}
-            >
-              <Preview />
-              <Panel1 />
-              <HueSlider />
-              <OpacitySlider />
-              <Swatches />
-            </ColorPicker>
-            <Button
-              title="Ok"
-              onPress={() => {
-                changePrimaryColor(selectedColor);
-                setShowModal(false);
-              }}
-            />
+            <View style={styles.container}>
+              <ColorPicker
+                style={{
+                  marginTop: 40,
+                  width: "80%",
+                  alignSelf: "center",
+                }}
+                value={currentColors.PRIMARY}
+                onComplete={onSelectColor}
+              >
+                <Preview />
+                <Panel1 />
+                <HueSlider style={styles.hueSliderStyle} />
+                {/* <OpacitySlider /> */}
+                {/* <Swatches
+                  colors={SWATCHES_COLORS}
+                  style={styles.swatchesStyle}
+                /> */}
+              </ColorPicker>
+
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  { backgroundColor: currentColors.PRIMARY },
+                ]}
+                onPress={() => {
+                  changePrimaryColor(selectedColor);
+                  setShowModal(false);
+                }}
+              >
+                <Text style={styles.textStyle}>Change color</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: currentColors.GRAY }]}
+                onPress={() => {
+                  setShowModal(false);
+                }}
+              >
+                <Text style={styles.textStyle}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </Modal>
         </View>
 
