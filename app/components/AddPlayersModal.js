@@ -18,8 +18,8 @@ import {
 import RoundIconBtn from "./RoundIconButton";
 import { ColorContext } from "../misc/ColorContext";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowWidth = Dimensions.get("window").width;
+// const windowHeight = Dimensions.get("window").height;
 
 const AddPlayersModal = ({
   visible,

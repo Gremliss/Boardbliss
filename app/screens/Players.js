@@ -1,4 +1,4 @@
-import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
@@ -16,13 +16,12 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import FilterModal from "../components/FilterModal";
 import RoundIconBtn from "../components/RoundIconButton";
 import NewPlayerModal from "../components/NewPlayerModal";
 import { ColorContext } from "../misc/ColorContext";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowWidth = Dimensions.get("window").width;
+// const windowHeight = Dimensions.get("window").height;
 
 const Players = (props) => {
   const { currentColors } = useContext(ColorContext);
@@ -97,29 +96,63 @@ const Players = (props) => {
           style={[styles.itemContainer, { backgroundColor: backgroundColor }]}
         >
           <View style={[styles.flexRow]}>
-            {longPressActive ? (
-              <View style={styles.checkIcon}>
-                <MaterialIcons
-                  name={
-                    item.isChecked ? "check-box" : "check-box-outline-blank"
-                  }
-                  size={20}
-                  color={currentColors.LIGHT}
-                />
-              </View>
-            ) : null}
             <View
               style={[styles.centerStyle, styles.cellContainer, { flex: 0.5 }]}
             >
               <Text>{index + 1}</Text>
             </View>
-            <View style={[styles.cellContainer, { flex: 4 }]}>
+            <View style={[styles.cellContainer, { flex: 3 }]}>
               <Text style={[{ paddingHorizontal: 8 }]}>{item.name}</Text>
             </View>
+            {!longPressActive ? (
+              <View style={[styles.buttonContainer]}>
+                <AntDesign
+                  name="arrowup"
+                  size={20}
+                  onPress={() => movePlayer(index, "up")}
+                  style={styles.arrowButton}
+                />
+                <AntDesign
+                  name="arrowdown"
+                  size={20}
+                  onPress={() => movePlayer(index, "down")}
+                  style={styles.arrowButton}
+                />
+              </View>
+            ) : (
+              <View style={styles.checkIcon}>
+                <MaterialIcons
+                  name={
+                    item.isChecked ? "check-box" : "check-box-outline-blank"
+                  }
+                  size={25}
+                  color={currentColors.LIGHT}
+                />
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>
     );
+  };
+
+  const movePlayer = async (index, direction) => {
+    if (
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === players.length - 1)
+    ) {
+      return;
+    }
+
+    const newPlayers = [...players];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+    [newPlayers[index], newPlayers[targetIndex]] = [
+      newPlayers[targetIndex],
+      newPlayers[index],
+    ];
+    setPlayers(newPlayers);
+    await AsyncStorage.setItem("players", JSON.stringify(newPlayers));
   };
 
   const handleItemPressed = async (item) => {
@@ -266,7 +299,8 @@ const Players = (props) => {
       color: currentColors.LIGHT,
     },
     checkIcon: {
-      justiftyContent: "center",
+      flex: 1,
+      justifyContent: "center",
       alignItems: "center",
       flexDirection: "row",
       width: 20,
@@ -288,6 +322,18 @@ const Players = (props) => {
       right: 20,
       alignSelf: "center",
       color: currentColors.LIGHT,
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    arrowButton: {
+      backgroundColor: currentColors.PRIMARY,
+      color: currentColors.LIGHT,
+      padding: 8,
+      paddingTop: 11,
+      borderRadius: 4,
+      marginHorizontal: 4,
     },
   });
 
@@ -336,11 +382,16 @@ const Players = (props) => {
           >
             <Text style={[{ color: currentColors.LIGHT }]}>Nr</Text>
           </View>
-          <View style={[styles.cellContainer, { flex: 4 }]}>
+          <View style={[styles.cellContainer, { flex: 3 }]}>
             <Text
               style={[{ paddingHorizontal: 8, color: currentColors.LIGHT }]}
             >
               {longPressActive ? "Default Player" : "Player"}
+            </Text>
+          </View>
+          <View style={[styles.centerStyle, styles.cellContainer, { flex: 1 }]}>
+            <Text style={[{ color: currentColors.LIGHT }]}>
+              {longPressActive ? "Check mark" : "Position"}
             </Text>
           </View>
         </View>
