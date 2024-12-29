@@ -2,7 +2,7 @@
   "expo": {
     "name": "Boardbliss",
     "slug": "Boardbliss",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/Boardbliss_icon.png",
     "userInterfaceStyle": "light",
@@ -20,7 +20,7 @@
       "bundleIdentifier": "com.gremliss.Boardbliss"
     },
     "android": {
-      "versionCode": 9,
+      "versionCode": 10,
       "permissions": [
         "WRITE_EXTERNAL_STORAGE"
       ],
