@@ -19,6 +19,7 @@ import AddGameplay from "./app/screens/AddGameplay";
 import * as NavigationBar from "expo-navigation-bar";
 import TransferData from "./app/screens/TransferData";
 import { ColorContext, ColorProvider } from "./app/misc/ColorContext";
+import { StatusBar } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -74,6 +75,7 @@ const MainApp = () => {
 
   return (
     <>
+      <StatusBar backgroundColor={currentColors.PRIMARY} />
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
