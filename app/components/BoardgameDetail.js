@@ -2,6 +2,7 @@ import axios from "axios";
 import { decode } from "html-entities";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
@@ -52,78 +53,13 @@ const BoardGameDetail = (props) => {
     }
   };
 
-  if (!detailData) {
-    return (
-      <View style={[styles.loadingView]}>
-        <Text>Loading data...</Text>
-      </View>
-    );
-  }
-
-  const addToCollection = async (owner) => {
-    if (!collection) {
-      collection = [];
-    }
-    if (collection.some((obj) => obj.name === gameName)) {
-      displayExistAlert();
-    } else {
-      const newGame = {
-        name: gameName,
-        yearpublished: game.yearpublished[0],
-        minPlayers: game.minplayers[0],
-        maxPlayers: game.maxplayers[0],
-        minPlaytime: game.minplaytime[0],
-        maxPlaytime: game.maxplaytime[0],
-        bggImage: game.image,
-        id: gameId,
-        owner: owner,
-        expansion: isExpansion,
-        rating: fixedRating,
-        isChecked: false,
-        stats: [],
-      };
-
-      const updatedCollection = [...collection, newGame];
-      setCollection(updatedCollection);
-      displayAddedAlert();
-      await AsyncStorage.setItem(
-        "collection",
-        JSON.stringify(updatedCollection)
-      );
-    }
-  };
-
-  const displayExistAlert = () => {
-    Alert.alert(
-      "Duplicate",
-      "Board game with that name already exists in collection",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
-  };
-  const displayAddedAlert = () => {
-    Alert.alert(
-      "Added to collection",
-      "",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
-  };
-
-  let game = detailData?.boardgames?.boardgame[0];
-  let decodedDescription = decode(`${game.description}`);
-  let descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
-  let ratingBgg = game.statistics[0].ratings[0].average;
-  let fixedRating = parseFloat(ratingBgg).toFixed(2);
-  let isExpansion =
-    game.boardgamecategory?.[0]?._?.includes("Expansion") ?? false;
-
   const styles = StyleSheet.create({
     loadingView: {
       textAlign: "center",
       justifyContent: "center",
       alignItems: "center",
       flex: 1,
+      backgroundColor: currentColors.BACKGROUND,
     },
     container: {
       backgroundColor: currentColors.BACKGROUND,
@@ -190,6 +126,73 @@ const BoardGameDetail = (props) => {
       marginHorizontal: 10,
     },
   });
+
+  if (!detailData) {
+    return (
+      <View style={[styles.loadingView]}>
+        <ActivityIndicator size="large" />
+        <Text>Loading data...</Text>
+      </View>
+    );
+  }
+
+  const addToCollection = async (owner) => {
+    if (!collection) {
+      collection = [];
+    }
+    if (collection.some((obj) => obj.name === gameName)) {
+      displayExistAlert();
+    } else {
+      const newGame = {
+        name: gameName,
+        yearpublished: game.yearpublished[0],
+        minPlayers: game.minplayers[0],
+        maxPlayers: game.maxplayers[0],
+        minPlaytime: game.minplaytime[0],
+        maxPlaytime: game.maxplaytime[0],
+        bggImage: game.image,
+        id: gameId,
+        owner: owner,
+        expansion: isExpansion,
+        rating: fixedRating,
+        isChecked: false,
+        stats: [],
+      };
+
+      const updatedCollection = [...collection, newGame];
+      setCollection(updatedCollection);
+      displayAddedAlert();
+      await AsyncStorage.setItem(
+        "collection",
+        JSON.stringify(updatedCollection)
+      );
+    }
+  };
+
+  const displayExistAlert = () => {
+    Alert.alert(
+      "Duplicate",
+      "Board game with that name already exists in collection",
+      [{ text: "Ok", onPress: () => null }],
+      { cancelable: true }
+    );
+  };
+  const displayAddedAlert = () => {
+    Alert.alert(
+      "Added to collection",
+      "",
+      [{ text: "Ok", onPress: () => null }],
+      { cancelable: true }
+    );
+  };
+
+  let game = detailData?.boardgames?.boardgame[0];
+  let decodedDescription = decode(`${game.description}`);
+  let descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
+  let ratingBgg = game.statistics[0].ratings[0].average;
+  let fixedRating = parseFloat(ratingBgg).toFixed(2);
+  let isExpansion =
+    game.boardgamecategory?.[0]?._?.includes("Expansion") ?? false;
 
   return (
     <>

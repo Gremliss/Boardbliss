@@ -5,7 +5,6 @@ import MainApp from "./MainApp";
 export default function App() {
   return (
     <ColorProvider>
-      <StatusBar />
       <MainApp />
     </ColorProvider>
   );

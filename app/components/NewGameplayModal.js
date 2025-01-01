@@ -212,21 +212,44 @@ const NewGameplayModal = ({
         }
       }
       onSubmit(addGameplay);
-      setAddGameplay({
-        id: Date.now(),
-        date: {
-          day: currentDate.getDate(),
-          month: currentDate.getMonth() + 1,
-          year: currentDate.getFullYear(),
-          hour: currentDate.getHours(),
-          minutes: currentDate.getMinutes(),
-        },
-        players: [],
-        type: "Rivalry",
-        scoreType: "Points",
-        isChecked: false,
-        duration: { hours: null, min: null },
-      });
+
+      if (chosenDate) {
+        const parts = chosenDate.id.split(".");
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]);
+        const year = parseInt(parts[2]);
+        setAddGameplay({
+          id: Date.now(),
+          date: {
+            day: day,
+            month: month + 1,
+            year: year,
+            hour: currentDate.getHours(),
+            minutes: currentDate.getMinutes(),
+          },
+          players: players.filter((player) => player.isChecked),
+          type: "Rivalry",
+          scoreType: "Points",
+          isChecked: false,
+          duration: { hours: null, min: null },
+        });
+      } else {
+        setAddGameplay({
+          id: Date.now(),
+          date: {
+            day: currentDate.getDate(),
+            month: currentDate.getMonth() + 1,
+            year: currentDate.getFullYear(),
+            hour: currentDate.getHours(),
+            minutes: currentDate.getMinutes(),
+          },
+          players: [],
+          type: "Rivalry",
+          scoreType: "Points",
+          isChecked: false,
+          duration: { hours: null, min: null },
+        });
+      }
       onClose();
     }
     // changePlayersIsCheckedToFalse();
