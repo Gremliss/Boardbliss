@@ -1,5 +1,5 @@
 import axios from "axios";
-import xml2js from "react-native-xml2js";
+import XMLParser from "fast-xml-parser";
 import React, { useState, useEffect, useContext } from "react";
 import {
   View,
@@ -10,7 +10,6 @@ import {
   Dimensions,
   Keyboard,
   TouchableOpacity,
-  Modal,
   BackHandler,
   Alert,
   ToastAndroid,
@@ -19,26 +18,25 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NewPlayerModal from "../components/NewPlayerModal";
 import { ColorContext } from "../misc/ColorContext";
-
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const { currentColors } = useContext(ColorContext);
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
+  const [toastVisible, setToastVisible] = useState(false);
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
   const [loading, setLoading] = useState(false);
   let countUserGamesToAdd = 0;
 
-  const handleKeyboardClose = () => {
-    Keyboard.dismiss();
-  };
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "",
+  });
+
   const handleSearchText = (text) => {
     setSearchText(text);
   };
@@ -55,21 +53,12 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
       }
 
       const xmlData = await response.text();
-
-      xml2js.parseString(xmlData, (error, result) => {
-        if (error) {
-          console.error("XML Parsing Error:", error);
-          ToastAndroid.show("Error parsing XML data", 2000);
-          setLoading(false);
-          return;
-        }
-
-        setData(result);
-        setLoading(false);
-      });
+      const result = parser.parse(xmlData);
+      setData(result);
     } catch (error) {
       console.error("API Request Error:", error);
       ToastAndroid.show("Error fetching search results", 2000);
+    } finally {
       setLoading(false);
     }
   };
@@ -81,26 +70,28 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
       const response = await axios.get(searchLink);
       const xmlData = response.data;
 
-      xml2js.parseString(xmlData, (error, result) => {
-        if (error) {
-          console.error("XML Parsing Error:", error);
-          ToastAndroid.show("Error parsing XML data", 2000);
-        } else {
-          if (result.items?.item && result.items.item.length > 0) {
-            result.items.item.forEach((item) => {
-              addToCollection(item);
-            });
-            displayAddAlert();
-            countUserGamesToAdd = 0;
-          } else {
-            ToastAndroid.show("BGG user not found", 2000);
-          }
+      const result = parser.parse(xmlData);
+
+      if (result.items?.item && result.items.item.length > 0) {
+        result.items.item.forEach((item) => {
+          addToCollection(item);
+        });
+        displayAddAlert();
+        countUserGamesToAdd = 0;
+      } else {
+        if (!toastVisible) {
+          setToastVisible(true);
+          ToastAndroid.show("BGG user not found", ToastAndroid.SHORT);
+
+          setTimeout(() => {
+            setToastVisible(false);
+          }, 2000);
         }
-        setLoading(false);
-      });
+      }
     } catch (error) {
       console.error("API Request Error:", error);
       ToastAndroid.show("Error fetching user collection", 2000);
+    } finally {
       setLoading(false);
     }
   };

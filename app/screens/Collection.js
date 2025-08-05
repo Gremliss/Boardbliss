@@ -22,8 +22,8 @@ import NewGameModal from "../components/NewGameModal";
 import RoundIconBtn from "../components/RoundIconButton";
 import { ColorContext } from "../misc/ColorContext";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowWidth = Dimensions.get("window").width;
+// const windowHeight = Dimensions.get("window").height;
 
 const Collection = (props) => {
   const { currentColors } = useContext(ColorContext);
@@ -31,6 +31,7 @@ const Collection = (props) => {
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [checkAllItems, setCheckAllItems] = useState(false);
   let todayDate = new Date();
@@ -73,18 +74,32 @@ const Collection = (props) => {
 
   const sortCollection = (key, comparator, ascending = false) => {
     collection?.sort((a, b) => {
-      const value_A =
-        key === "Days ago" ? comparator(a) : a[key]?.toString().toLowerCase();
-      const value_B =
-        key === "Days ago" ? comparator(b) : b[key]?.toString().toLowerCase();
+      let value_A;
+      let value_B;
 
-      if (value_A > value_B) {
-        return ascending ? 1 : -1;
-      } else if (value_A < value_B) {
-        return ascending ? -1 : 1;
+      if (comparator) {
+        value_A = comparator(a);
+        value_B = comparator(b);
       } else {
-        return 0;
+        value_A = a[key];
+        value_B = b[key];
+
+        if (!isNaN(value_A) && value_A !== null && value_A !== undefined) {
+          value_A = Number(value_A);
+        } else {
+          value_A = value_A?.toString().toLowerCase() || "";
+        }
+
+        if (!isNaN(value_B) && value_B !== null && value_B !== undefined) {
+          value_B = Number(value_B);
+        } else {
+          value_B = value_B?.toString().toLowerCase() || "";
+        }
       }
+
+      if (value_A > value_B) return ascending ? 1 : -1;
+      if (value_A < value_B) return ascending ? -1 : 1;
+      return 0;
     });
   };
 
@@ -285,7 +300,14 @@ const Collection = (props) => {
       setCollection([...filteredCollection]);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 
@@ -382,7 +404,14 @@ const Collection = (props) => {
       setSortBy(sortBy);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 

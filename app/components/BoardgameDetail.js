@@ -13,13 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import xml2js from "react-native-xml2js";
+import XMLParser from "fast-xml-parser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//
 import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowHeight = Dimensions.get("window").height;
 
 const BoardGameDetail = (props) => {
   const { currentColors } = useContext(ColorContext);
@@ -27,24 +26,6 @@ const BoardGameDetail = (props) => {
   const gameId = props.route.params.stringGameId;
   const gameName = props.route.params.name;
   const [collection, setCollection] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`)
-      .then((response) => {
-        const xmlData = response.data;
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error(error);
-          } else {
-            setDetailData(result);
-          }
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    fetchCollection();
-  }, []);
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -52,6 +33,29 @@ const BoardGameDetail = (props) => {
       setCollection(JSON.parse(result));
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`
+        );
+
+        const parser = new XMLParser({
+          ignoreAttributes: false,
+          attributeNamePrefix: "",
+        });
+
+        const result = parser.parse(response.data);
+        setDetailData(result);
+      } catch (error) {
+        console.error("API Request Error:", error);
+      }
+    };
+
+    fetchData();
+    fetchCollection();
+  }, []);
 
   const styles = StyleSheet.create({
     loadingView: {

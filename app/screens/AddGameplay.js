@@ -48,6 +48,7 @@ const AddGameplay = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const [chosenDate, setChosenDate] = props.route.params?.item
     ? useState(props.route.params.item)
     : useState(null);
@@ -205,7 +206,14 @@ const AddGameplay = (props) => {
       setCollection([...filteredCollection]);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 
@@ -291,7 +299,14 @@ const AddGameplay = (props) => {
       setCollection(filteredCollection);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 
