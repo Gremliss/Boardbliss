@@ -2,11 +2,14 @@
   "expo": {
     "name": "Boardbliss",
     "slug": "Boardbliss",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./assets/Boardbliss_icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "androidStatusBar": {
+      "translucent": false
+    },
     "splash": {
       "image": "./assets/splash_Boardbliss.png",
       "resizeMode": "contain",
@@ -20,7 +23,7 @@
       "bundleIdentifier": "com.gremliss.Boardbliss"
     },
     "android": {
-      "versionCode": 11,
+      "versionCode": 12,
       "permissions": [
         "WRITE_EXTERNAL_STORAGE"
       ],
@@ -28,6 +31,7 @@
         "foregroundImage": "./assets/Boardbliss_icon.png",
         "backgroundColor": "#ffffff"
       },
+      "edgeToEdge": false,
       "package": "com.gremliss.Boardbliss"
     },
     "web": {

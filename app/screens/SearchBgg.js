@@ -1,5 +1,5 @@
 import axios from "axios";
-import XMLParser from "fast-xml-parser";
+import XMLParser from "react-xml-parser";
 import React, { useState, useEffect, useContext } from "react";
 import {
   View,
@@ -25,17 +25,11 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   const [collection, setCollection] = useState(renderedCollection);
   const [players, setPlayers] = useState(renderedPlayers);
   const [data, setData] = useState([]);
-  const [toastVisible, setToastVisible] = useState(false);
   const [updatedCollection, setUpdatedCollection] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchUserCollectionText, setSearchUserCollectionText] = useState("");
   const [loading, setLoading] = useState(false);
   let countUserGamesToAdd = 0;
-
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: "",
-  });
 
   const handleSearchText = (text) => {
     setSearchText(text);
@@ -47,14 +41,11 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
 
     try {
       const response = await fetch(searchLink);
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
+      if (!response.ok) throw new Error("Network response was not ok");
       const xmlData = await response.text();
-      const result = parser.parse(xmlData);
-      setData(result);
+      const parsed = new XMLParser().parseFromString(xmlData);
+      const items = parsed.getElementsByTagName("item");
+      setData(items);
     } catch (error) {
       console.error("API Request Error:", error);
       ToastAndroid.show("Error fetching search results", 2000);
@@ -70,23 +61,14 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
       const response = await axios.get(searchLink);
       const xmlData = response.data;
 
-      const result = parser.parse(xmlData);
-
-      if (result.items?.item && result.items.item.length > 0) {
-        result.items.item.forEach((item) => {
-          addToCollection(item);
-        });
+      const parsed = new XMLParser().parseFromString(xmlData);
+      const items = parsed.getElementsByTagName("item");
+      if (items.length > 0) {
+        items.forEach((item) => addToCollection(item));
         displayAddAlert();
         countUserGamesToAdd = 0;
       } else {
-        if (!toastVisible) {
-          setToastVisible(true);
-          ToastAndroid.show("BGG user not found", ToastAndroid.SHORT);
-
-          setTimeout(() => {
-            setToastVisible(false);
-          }, 2000);
-        }
+        ToastAndroid.show("BGG user not found", 2000);
       }
     } catch (error) {
       console.error("API Request Error:", error);
@@ -100,24 +82,36 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
     if (!collection) {
       collection = [];
     }
+    const nameNode = item.children.find((c) => c.name === "name");
+
+    const nameValue = nameNode?.value;
 
     const isGameAlreadyExists = collection.some(
-      (obj) => obj.name === item.name[0]._
+      (obj) => obj.name === nameValue
     );
-    const isNotOwned = item.status[0].$.own !== "1";
+
+    const statusNode = item.children.find((c) => c.name === "status");
+    const isNotOwned = statusNode?.attributes?.own !== "1";
+
     if (!isGameAlreadyExists && !isNotOwned) {
       countUserGamesToAdd++;
+
+      const statsNode = item.children.find((c) => c.name === "stats");
+
       const newGame = {
-        name: item.name[0]._,
-        yearpublished: item.yearpublished[0],
-        minPlayers: item.stats[0].$.minplayers,
-        maxPlayers: item.stats[0].$.maxplayers,
-        minPlaytime: item.stats[0].$.minplaytime,
-        maxPlaytime: item.stats[0].$.maxplaytime,
-        bggImage: item.image[0],
-        id: item.$.objectid,
+        name: nameValue,
+        yearpublished: item.children.find((c) => c.name === "yearpublished")
+          ?.value,
+        minPlayers: statsNode?.attributes?.minplayers,
+        maxPlayers: statsNode?.attributes?.maxplayers,
+        minPlaytime: statsNode?.attributes?.minplaytime,
+        maxPlaytime: statsNode?.attributes?.maxplaytime,
+        bggImage: item.children.find((c) => c.name === "image")?.value,
+        id: item.attributes?.objectid || item.attributes?.id,
         owner: "Yes",
-        rating: item.stats[0].rating[0].average[0].$.value,
+        rating: statsNode?.children
+          .find((c) => c.name === "rating")
+          ?.children.find((c) => c.name === "average")?.attributes?.value,
         isChecked: false,
         expansion: false,
         stats: [],
@@ -159,18 +153,20 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
   };
 
   const renderItem = ({ item, index }) => {
-    if (!item?.name || item?.$?.type !== "boardgame") return null;
-
-    const itemId = item.$.id;
-    const yearPublished = item.yearpublished?.[0].$.value;
+    if (!item?.attributes || item.attributes.type !== "boardgame") return null;
+    console.log(item.children.find((c) => c.name === "yearpublished"));
+    const nameValue = item.children.find((c) => c.name === "name")?.attributes
+      ?.value;
+    const yearPublished = item.children.find((c) => c.name === "yearpublished")
+      ?.attributes?.value;
 
     return (
       <TouchableOpacity
-        onPress={() => openBoardgameDetail(itemId, item.name[0].$.value)}
+        onPress={() => openBoardgameDetail(item.attributes.id, nameValue)}
       >
         <View style={styles.itemContainer}>
           <Text style={[{ color: currentColors.LIGHT }]}>
-            {index + 1}. {item.name[0].$.value}
+            {index + 1}. {nameValue}
           </Text>
           {yearPublished && (
             <Text style={[styles.yearText, { color: currentColors.LIGHT }]}>
@@ -337,9 +333,13 @@ const SearchBgg = ({ navigation, renderedCollection, renderedPlayers }) => {
           </View>
         ) : (
           <FlatList
-            data={data?.items?.item}
+            data={data}
             renderItem={renderItem}
-            keyExtractor={(item, index) => `${index}`}
+            keyExtractor={(item, index) =>
+              `${
+                item?.attributes?.id || item?.attributes?.objectid || "no-id"
+              }-${index}`
+            }
             keyboardShouldPersistTaps="always"
             initialNumToRender={15}
           />

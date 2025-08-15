@@ -62,6 +62,11 @@ const MainApp = () => {
         }
       }
     };
+    const setupNavigationBar = async () => {
+      await NavigationBar.setPositionAsync("relative");
+    };
+
+    setupNavigationBar();
     fetchCollection();
   }, []);
 
@@ -75,7 +80,7 @@ const MainApp = () => {
 
   return (
     <>
-      <StatusBar backgroundColor={currentColors.PRIMARY} />
+      <StatusBar backgroundColor={currentColors.PRIMARY} translucent={false} />
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
