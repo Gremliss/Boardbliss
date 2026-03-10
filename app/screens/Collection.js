@@ -44,7 +44,7 @@ const Collection = (props) => {
     fetchCollection();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
-      handleBackButton
+      handleBackButton,
     );
     return () => backHandler.remove();
   }, [props.navigation]);
@@ -60,7 +60,7 @@ const Collection = (props) => {
         currentDate.month - 1,
         currentDate.day,
         currentDate.hour || 0,
-        currentDate.minutes || 0
+        currentDate.minutes || 0,
       );
       return maxDate === null || current > maxDate ? current : maxDate;
     }, null);
@@ -123,7 +123,7 @@ const Collection = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchCollection();
-    }, [])
+    }, []),
   );
 
   const handleBackButton = () => {
@@ -173,7 +173,7 @@ const Collection = (props) => {
         currentDate.month - 1,
         currentDate.day,
         currentDate.hour,
-        currentDate.minutes
+        currentDate.minutes,
       );
       return current > maxDate ? current : maxDate;
     }, null);
@@ -267,7 +267,7 @@ const Collection = (props) => {
         { text: "Delete", onPress: () => deleteCheckedGames() },
         { text: "Cancel", onPress: () => null },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -467,9 +467,11 @@ const Collection = (props) => {
       borderColor: currentColors.PRIMARY_OPACITY,
     },
     addButtonTopRadius: {
-      borderTopRightRadius: 30,
-      borderTopLeftRadius: 30,
-      marginTop: 10,
+      // borderTopRightRadius: 30,
+      // borderTopLeftRadius: 30,
+      // marginTop: 10,
+      borderRadius: 15,
+      margin: 5,
     },
     addButtonBottomRadius: {
       borderBottomRightRadius: 30,
@@ -552,12 +554,12 @@ const Collection = (props) => {
               <Text style={[styles.textBtn]}>Add custom game</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[styles.addButton, styles.addButtonBottomRadius]}
               onPress={() => props.navigation.navigate("SearchBgg")}
             >
               <Text style={[styles.textBtn]}>Search game online</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </TouchableWithoutFeedback>
 
