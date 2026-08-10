@@ -82,12 +82,12 @@ const MainScreen = (props) => {
       >
         <Text style={[styles.textBtn]}>Collection</Text>
       </TouchableOpacity>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("SearchBgg")}
       >
         <Text style={[styles.textBtn]}>Search game online</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={[styles.btnContainer]}
         onPress={() => props.navigation.navigate("GameCalendar")}

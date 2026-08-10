@@ -13,38 +13,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import xml2js from "react-native-xml2js";
+import XMLParser from "react-xml-parser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//
 import { ColorContext } from "../misc/ColorContext";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowHeight = Dimensions.get("window").height;
 
 const BoardGameDetail = (props) => {
   const { currentColors } = useContext(ColorContext);
   const [detailData, setDetailData] = useState(null);
+  const [collection, setCollection] = useState([]);
+
   const gameId = props.route.params.stringGameId;
   const gameName = props.route.params.name;
-  const [collection, setCollection] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`)
-      .then((response) => {
-        const xmlData = response.data;
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error(error);
-          } else {
-            setDetailData(result);
-          }
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    fetchCollection();
-  }, []);
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -52,6 +34,24 @@ const BoardGameDetail = (props) => {
       setCollection(JSON.parse(result));
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.geekdo.com/xmlapi/boardgame/${gameId}?&stats=1`
+        );
+
+        const parsed = new XMLParser().parseFromString(response.data);
+        setDetailData(parsed);
+      } catch (error) {
+        console.error("API Request Error:", error);
+      }
+    };
+
+    fetchData();
+    fetchCollection();
+  }, []);
 
   const styles = StyleSheet.create({
     loadingView: {
@@ -136,6 +136,40 @@ const BoardGameDetail = (props) => {
     );
   }
 
+  // ------------------------
+  // Getting data from XML
+  // ------------------------
+  const gameNode = detailData.children.find((c) => c.name === "boardgame");
+
+  const getValue = (name) =>
+    gameNode?.children.find((c) => c.name === name)?.value || "";
+
+  const yearPublished = getValue("yearpublished");
+  const minPlayers = getValue("minplayers");
+  const maxPlayers = getValue("maxplayers");
+  const minPlaytime = getValue("minplaytime");
+  const maxPlaytime = getValue("maxplaytime");
+  const imageUrl = getValue("image");
+  const description = decode(getValue("description")).replace(/<[^>]*>/g, "");
+
+  // Rating
+  const statisticsNode = gameNode.children.find((c) => c.name === "statistics");
+  let fixedRating = "";
+  if (statisticsNode) {
+    const ratingsNode = statisticsNode.children
+      .find((c) => c.name === "ratings")
+      ?.children.find((c) => c.name === "average");
+    fixedRating = parseFloat(ratingsNode?.value || 0).toFixed(2);
+  }
+
+  // Expansion
+  const isExpansion = gameNode.children
+    .filter((c) => c.name === "boardgamecategory")
+    .some((cat) => cat.value?.toLowerCase().includes("expansion"));
+
+  // ------------------------
+  // Add to collection
+  // ------------------------
   const addToCollection = async (owner) => {
     if (!collection) {
       collection = [];
@@ -145,12 +179,12 @@ const BoardGameDetail = (props) => {
     } else {
       const newGame = {
         name: gameName,
-        yearpublished: game.yearpublished[0],
-        minPlayers: game.minplayers[0],
-        maxPlayers: game.maxplayers[0],
-        minPlaytime: game.minplaytime[0],
-        maxPlaytime: game.maxplaytime[0],
-        bggImage: game.image,
+        yearpublished: yearPublished,
+        minPlayers,
+        maxPlayers,
+        minPlaytime,
+        maxPlaytime,
+        bggImage: imageUrl,
         id: gameId,
         owner: owner,
         expansion: isExpansion,
@@ -173,27 +207,19 @@ const BoardGameDetail = (props) => {
     Alert.alert(
       "Duplicate",
       "Board game with that name already exists in collection",
-      [{ text: "Ok", onPress: () => null }],
+      [{ text: "Ok" }],
       { cancelable: true }
     );
   };
   const displayAddedAlert = () => {
-    Alert.alert(
-      "Added to collection",
-      "",
-      [{ text: "Ok", onPress: () => null }],
-      { cancelable: true }
-    );
+    Alert.alert("Added to collection", "", [{ text: "Ok" }], {
+      cancelable: true,
+    });
   };
 
-  let game = detailData?.boardgames?.boardgame[0];
-  let decodedDescription = decode(`${game.description}`);
-  let descriptionWithoutTags = decodedDescription.replace(/<[^>]*>/g, "");
-  let ratingBgg = game.statistics[0].ratings[0].average;
-  let fixedRating = parseFloat(ratingBgg).toFixed(2);
-  let isExpansion =
-    game.boardgamecategory?.[0]?._?.includes("Expansion") ?? false;
-
+  // ------------------------
+  // RENDER
+  // ------------------------
   return (
     <>
       <StatusBar />
@@ -203,41 +229,45 @@ const BoardGameDetail = (props) => {
             <Image
               style={styles.boargameImg}
               resizeMode="contain"
-              source={{
-                uri: `${game.image}`,
-              }}
+              source={{ uri: imageUrl }}
             />
           </View>
           <Text style={styles.gameName}>{gameName}</Text>
+
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Year published:</Text>
-            <Text style={styles.gameInfoValue}>{game.yearpublished[0]}</Text>
+            <Text style={styles.gameInfoValue}>{yearPublished}</Text>
           </View>
+
           <View style={styles.horizontalContainer}>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Min players:</Text>
-              <Text style={styles.gameInfoValue}>{game.minplayers[0]}</Text>
+              <Text style={styles.gameInfoValue}>{minPlayers}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Max players:</Text>
-              <Text style={styles.gameInfoValue}>{game.maxplayers[0]}</Text>
+              <Text style={styles.gameInfoValue}>{maxPlayers}</Text>
             </View>
           </View>
+
           <View style={styles.horizontalContainer}>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Min playtime:</Text>
-              <Text style={styles.gameInfoValue}>{game.minplaytime[0]}</Text>
+              <Text style={styles.gameInfoValue}>{minPlaytime}</Text>
             </View>
             <View style={styles.horizontalView}>
               <Text style={styles.gameInfo}>Max playtime:</Text>
-              <Text style={styles.gameInfoValue}>{game.maxplaytime[0]}</Text>
+              <Text style={styles.gameInfoValue}>{maxPlaytime}</Text>
             </View>
           </View>
+
           <View style={styles.horizontalView}>
             <Text style={styles.gameInfo}>Rating BGG:</Text>
             <Text style={styles.gameInfoValue}>{fixedRating}</Text>
           </View>
-          <Text style={styles.description}>{descriptionWithoutTags}</Text>
+
+          <Text style={styles.description}>{description}</Text>
+
           <TouchableOpacity onPress={() => addToCollection("Yes")}>
             <View>
               <Text style={styles.closeButton}>Add to your collection</Text>

@@ -48,6 +48,7 @@ const AddGameplay = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const [chosenDate, setChosenDate] = props.route.params?.item
     ? useState(props.route.params.item)
     : useState(null);
@@ -59,7 +60,7 @@ const AddGameplay = (props) => {
     fetchCollection();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
-      handleBackButton
+      handleBackButton,
     );
     return () => backHandler.remove();
   }, [props.navigation]);
@@ -79,7 +80,7 @@ const AddGameplay = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchCollection();
-    }, [])
+    }, []),
   );
 
   const handleBackButton = () => {
@@ -157,14 +158,14 @@ const AddGameplay = (props) => {
     }
     let newGameParams = { ...gameParams };
     const isExists = gameParams.stats.some(
-      (item) => item.id === newGameplay.id
+      (item) => item.id === newGameplay.id,
     );
 
     if (isExists) {
       newGameParams = {
         ...gameParams,
         stats: gameParams.stats.map((obj) =>
-          obj.id === newGameplay.id ? newGameplay : obj
+          obj.id === newGameplay.id ? newGameplay : obj,
         ),
       };
     } else {
@@ -205,7 +206,14 @@ const AddGameplay = (props) => {
       setCollection([...filteredCollection]);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 
@@ -291,7 +299,14 @@ const AddGameplay = (props) => {
       setCollection(filteredCollection);
     } else {
       fetchCollection();
-      ToastAndroid.show("Games not found", 2000);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Games not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 
@@ -361,9 +376,11 @@ const AddGameplay = (props) => {
       borderColor: currentColors.PRIMARY_OPACITY,
     },
     addButtonTopRadius: {
-      borderTopRightRadius: 30,
-      borderTopLeftRadius: 30,
-      marginTop: 10,
+      // borderTopRightRadius: 30,
+      // borderTopLeftRadius: 30,
+      // marginTop: 10,
+      borderRadius: 15,
+      margin: 5,
     },
     addButtonBottomRadius: {
       borderBottomRightRadius: 30,
@@ -444,23 +461,23 @@ const AddGameplay = (props) => {
           showsHorizontalScrollIndicator={true}
           initialNumToRender={15}
         />
-        <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-          <View>
-            <TouchableOpacity
-              style={[styles.addButton, styles.addButtonTopRadius]}
-              onPress={() => setNewGameModalVisible(true)}
-            >
-              <Text style={[styles.textBtn]}>Add custom game</Text>
-            </TouchableOpacity>
+        {/* <TouchableWithoutFeedback onPress={handleKeyboardDismiss}> */}
+        <View>
+          <TouchableOpacity
+            style={[styles.addButton, styles.addButtonTopRadius]}
+            onPress={() => setNewGameModalVisible(true)}
+          >
+            <Text style={[styles.textBtn]}>Add custom game</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
+          {/* <TouchableOpacity
               style={[styles.addButton, styles.addButtonBottomRadius]}
               onPress={() => props.navigation.navigate("SearchBgg")}
             >
               <Text style={[styles.textBtn]}>Search game online</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
+            </TouchableOpacity> */}
+        </View>
+        {/* </TouchableWithoutFeedback> */}
 
         <FilterModal
           visible={filterModalVisible}

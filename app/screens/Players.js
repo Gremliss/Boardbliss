@@ -30,6 +30,7 @@ const Players = (props) => {
   const [searchText, setSearchText] = useState("");
   const [longPressActive, setLongPressActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
 
   const fetchCollection = async () => {
     const result = await AsyncStorage.getItem("collection");
@@ -208,7 +209,14 @@ const Players = (props) => {
       setPlayers([...filteredPlayers]);
     } else {
       fetchPlayers();
-      ToastAndroid.show("Player not found", 1500);
+      if (!toastVisible) {
+        setToastVisible(true);
+        ToastAndroid.show("Player not found", ToastAndroid.SHORT);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
     }
   };
 

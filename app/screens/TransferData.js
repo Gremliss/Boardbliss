@@ -17,6 +17,7 @@ import { ColorContext } from "../misc/ColorContext";
 
 const TransferData = () => {
   const { currentColors } = useContext(ColorContext);
+  const [toastVisible, setToastVisible] = useState(false);
   const [appData, setAppData] = useState({ collection: {}, players: {} });
 
   const fetchCollection = async () => {
@@ -103,7 +104,14 @@ const TransferData = () => {
           const fileUri = files.find((file) => file.includes(filename));
 
           if (!fileUri) {
-            ToastAndroid.show("File not found.", 2000);
+            if (!toastVisible) {
+              setToastVisible(true);
+              ToastAndroid.show("File not found", ToastAndroid.SHORT);
+
+              setTimeout(() => {
+                setToastVisible(false);
+              }, 2000);
+            }
             return;
           }
 
