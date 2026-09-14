@@ -108,13 +108,13 @@ const Players = (props) => {
             {!longPressActive ? (
               <View style={[styles.buttonContainer]}>
                 <AntDesign
-                  name="arrowup"
+                  name="arrow-up"
                   size={20}
                   onPress={() => movePlayer(index, "up")}
                   style={styles.arrowButton}
                 />
                 <AntDesign
-                  name="arrowdown"
+                  name="arrow-down"
                   size={20}
                   onPress={() => movePlayer(index, "down")}
                   style={styles.arrowButton}

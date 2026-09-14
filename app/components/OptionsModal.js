@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import RoundIconBtn from "./RoundIconButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as NavigationBar from "expo-navigation-bar";
+// import * as NavigationBar from "expo-navigation-bar";
 import { ColorContext } from "../misc/ColorContext";
 import ColorPicker, {
   Panel1,
@@ -22,19 +22,18 @@ import ColorPicker, {
 const OptionsModal = ({ visible, onClose }) => {
   const { currentColors, setCurrentColors } = useContext(ColorContext);
   const [showModal, setShowModal] = useState(false);
-  let selectedColor = currentColors.PRIMARY;
+  const [selectedColor, setSelectedColor] = useState(currentColors.PRIMARY);
 
   const onSelectColor = ({ hex }) => {
-    selectedColor = hex;
+    setSelectedColor(hex);
   };
 
   const closeModal = () => {
     onClose();
   };
 
-  const changePrimaryColor = async (newColor) => {
-    NavigationBar.setBackgroundColorAsync(newColor);
-
+const changePrimaryColor = async (newColor) => {
+  try {
     const updatedColors = {
       ...currentColors,
       PRIMARY: newColor,
@@ -43,9 +42,16 @@ const OptionsModal = ({ visible, onClose }) => {
       LIST_COLOR_ONE: `${newColor}30`,
       LIST_COLOR_TWO: `${newColor}10`,
     };
+
     setCurrentColors(updatedColors);
+
     await AsyncStorage.setItem("userColors", JSON.stringify(updatedColors));
-  };
+
+    // await NavigationBar.setBackgroundColorAsync(newColor);
+  } catch (error) {
+    console.log("Error changing color:", error);
+  }
+};
 
   const styles = StyleSheet.create({
     container: {
@@ -105,7 +111,10 @@ const OptionsModal = ({ visible, onClose }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, { backgroundColor: currentColors.PRIMARY }]}
-            onPress={() => setShowModal(true)}
+            onPress={() => {
+              setSelectedColor(currentColors.PRIMARY);
+              setShowModal(true);
+            }}
           >
             <Text style={styles.textStyle}>Change main color</Text>
           </TouchableOpacity>

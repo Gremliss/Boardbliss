@@ -113,14 +113,19 @@ const GameCalendar = (props) => {
     });
     n++;
   }
-  setMonth = (month) => {
-    let monthNo = months.indexOf(month); // get month number
-    let dateObject = Object.assign({}, this.state.dateObject);
-    dateObject = moment(dateObject).set("month", monthNo); // change month value
-  };
-  changeMonth = async (n) => {
-    let newDateMs = date.setMonth(date.getMonth() + n);
-    const newDate = new Date(newDateMs);
+  // setMonth = (month) => {
+  //   let monthNo = months.indexOf(month); // get month number
+  //   let dateObject = Object.assign({}, this.state.dateObject);
+  //   dateObject = moment(dateObject).set("month", monthNo); // change month value
+  // };
+  // changeMonth = async (n) => {
+  //   let newDateMs = date.setMonth(date.getMonth() + n);
+  //   const newDate = new Date(newDateMs);
+  //   setDate(newDate);
+  // };
+  const changeMonth = (n) => {
+    const newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + n);
     setDate(newDate);
   };
 

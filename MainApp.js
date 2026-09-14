@@ -56,17 +56,17 @@ const MainApp = () => {
             LIST_COLOR_ONE: `${userColors.PRIMARY}30`,
             LIST_COLOR_TWO: `${userColors.PRIMARY}10`,
           }));
-          NavigationBar.setBackgroundColorAsync(userColors.PRIMARY);
+          // NavigationBar.setBackgroundColorAsync(userColors.PRIMARY);
         } else {
-          NavigationBar.setBackgroundColorAsync(currentColors.PRIMARY);
+          // NavigationBar.setBackgroundColorAsync(currentColors.PRIMARY);
         }
       }
     };
-    const setupNavigationBar = async () => {
-      await NavigationBar.setPositionAsync("relative");
-    };
+    // const setupNavigationBar = async () => {
+    //   await NavigationBar.setPositionAsync("relative");
+    // };
 
-    setupNavigationBar();
+    // setupNavigationBar();
     fetchCollection();
   }, []);
 
